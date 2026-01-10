@@ -4,14 +4,14 @@ using UnityEngine;
 public static class MeshGenerator
 {
 
-    public static GameObject GenerateSquareMesh(int mapWidth, int mapHeight, float height)
+    public static GameObject GenerateSquareMesh(int mapWidth, int mapHeight, float height, Material meshMaterial)
     {
         GameObject terrain = new GameObject("Procedural Terrain");
 
         MeshFilter meshFilter = terrain.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = terrain.AddComponent<MeshRenderer>();
         MeshCollider meshCollider = terrain.AddComponent<MeshCollider>();
-
+        meshRenderer.material = meshMaterial;
         Mesh mesh = new Mesh();
         mesh.name = "Terrain Mesh";
 
@@ -62,7 +62,7 @@ public static class MeshGenerator
 
         return terrain;
     }
-    public static GameObject GenerateTerrainMesh(int mapWidth, int mapHeight, float heightMultiplier, float[,] noise, int falloffHeight, int falloffDistance)
+    public static GameObject GenerateTerrainMesh(int mapWidth, int mapHeight, float heightMultiplier, float[,] noise, out float[,] vertexHeights, int falloffHeight, int falloffDistance, Material meshMaterial)
     {
         GameObject terrain = new GameObject("Procedural Terrain");
 
@@ -70,10 +70,12 @@ public static class MeshGenerator
         MeshRenderer meshRenderer = terrain.AddComponent<MeshRenderer>();
         MeshCollider meshCollider = terrain.AddComponent<MeshCollider>();
 
+        meshRenderer.material = meshMaterial;
         Mesh mesh = new Mesh();
         mesh.name = "Terrain Mesh";
 
         Vector3[] vertices = new Vector3[mapWidth * mapHeight];
+        vertexHeights = new float[mapHeight, mapWidth];
         Vector2[] uvs = new Vector2[mapWidth * mapHeight];
         int[] triangles = new int[(mapWidth - 1) * (mapHeight - 1) * 6];
 
@@ -92,15 +94,16 @@ public static class MeshGenerator
                 }
                 else
                 {
-                    if(noise[x, y] < 1f) height = 1.25f;
-                    if(noise[x, y] < 0.75f) height = 0.75f;
-                    if(noise[x, y] < 0.5f) height = 0.5f;
-                    if(noise[x, y] < 0.25f) height = 0f;
+                    if (noise[x, y] < 1f) height = 1.25f;
+                    if (noise[x, y] < 0.75f) height = 0.75f;
+                    if (noise[x, y] < 0.5f) height = 0.5f;
+                    if (noise[x, y] < 0.25f) height = 0f;
                     height = height * heightMultiplier;
                 }
 
 
                 vertices[vertexIndex] = new Vector3(x, height, y);
+                vertexHeights[x, y] = height;
                 uvs[vertexIndex] = new Vector2(
                     (float)x / mapWidth,
                     (float)y / mapHeight

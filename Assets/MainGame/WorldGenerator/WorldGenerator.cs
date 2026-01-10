@@ -12,7 +12,7 @@ public class WorldGenerator : MonoBehaviour
     Vector3 cubeSize = new Vector3(0.2f, 0.2f, 0.2f);
     void Start()
     {
-        terrainNoise = NoiseGenerator.GenerateNoiseMap(200, 200, 10, 12, 4, 0f, 16f, Vector2.zero);
+        terrainNoise = NoiseGenerator.GenerateNoiseMap(300, 300, 10, 12, 4, 0f, 16f, Vector2.zero);
         biomeNoise = NoiseGenerator.GenerateNoiseMap(10, 10, 10, 4, 4, 16f, 16f, Vector2.zero);
         weatherNoise = NoiseGenerator.GenerateNoiseMap(100, 100, 10, 4, 4, 16f, 16f, Vector2.zero);
 

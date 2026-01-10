@@ -64,8 +64,24 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_3132c742e19048f4ae1116deefe038db_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 7bb40a8bcbcc2e440ad7d83acc7cbaa0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_bff9857855e343fe911d9ce1a2b06724_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: f819d1e2580dba3488e8e11b29f8696a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_42cb59d85fb14c0a9c049fba8bef3db0_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 2c7db4bc97e7ffa4cb25b03b1a0a9e97, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_77fb66105c9b47959cf314fb6e710f8a_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 7bb40a8bcbcc2e440ad7d83acc7cbaa0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:

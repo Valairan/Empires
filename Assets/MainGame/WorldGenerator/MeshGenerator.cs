@@ -94,9 +94,9 @@ public static class MeshGenerator
                 }
                 else
                 {
-                    if (noise[x, y] < 1f) height = 1.25f;
-                    if (noise[x, y] < 0.75f) height = 0.75f;
-                    if (noise[x, y] < 0.5f) height = 0.5f;
+                    if (noise[x, y] < 1f) height = 4f;
+                    if (noise[x, y] < 0.75f) height = 2f;
+                    if (noise[x, y] < 0.5f) height = 1f;
                     if (noise[x, y] < 0.25f) height = 0f;
                     height = height * heightMultiplier;
                 }

@@ -84,6 +84,14 @@ Material:
         m_Texture: {fileID: 2800000, guid: 7bb40a8bcbcc2e440ad7d83acc7cbaa0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Triplanar_bd3b55c0acc141e692ba2a9adbfc387c_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: aafa165139e16d4418741373fcf25782, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_e4f431d70f8f48b9b92e1e8825e68ad7_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: d6d51ed783dfa244390708000469b857, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}

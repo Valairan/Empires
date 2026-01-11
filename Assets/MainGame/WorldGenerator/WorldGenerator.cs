@@ -20,8 +20,8 @@ public class WorldGenerator : MonoBehaviour
         weatherNoise = NoiseGenerator.GenerateNoiseMap(100, 100, 10, 4, 4, 16f, 16f, Vector2.zero);
 
         terrainVertexPositions = new float[100, 100];
-        GameObject terrain = MeshGenerator.GenerateTerrainMesh(250, 250, 5f, terrainNoise, out terrainVertexPositions, 40, 10, terrainMaterial);
-
+        GameObject terrain = MeshGenerator.GenerateTerrainMesh(250, 250, 100, 5f, terrainNoise, out terrainVertexPositions, 40, 10, terrainMaterial);
+        
         GameObject ocean = MeshGenerator.GenerateSquareMesh(250, 250, 0, oceanMaterial);
         ocean.transform.localPosition = new Vector3(0, 2, 0);
 
@@ -43,6 +43,7 @@ public class WorldGenerator : MonoBehaviour
                         Instantiate(vegetation[(int)Random.Range(0, availableItems)], new Vector3(i, availableSpots[i, j], j), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
                     else
                     {
+                        spawn = Random.Range(0, 100) > 50;
                         if (i - 1 > 0 && i + 1 < mapHeight && j - 1 > 0 && j + 1 < mapHeight)
                         {
                             if (availableSpots[i + 1, j + 1] == availableSpots[i, j] &&
@@ -50,16 +51,18 @@ public class WorldGenerator : MonoBehaviour
                                         availableSpots[i - 1, j + 1] == availableSpots[i, j] &&
                                         availableSpots[i - 1, j - 1] == availableSpots[i, j])
                             {
-                                Instantiate(grass, new Vector3(i, availableSpots[i, j], j), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
-                                Instantiate(grass, new Vector3(i + 0.5f, availableSpots[i, j], j + 0.5f), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
-                                Instantiate(grass, new Vector3(i + 0.5f, availableSpots[i, j], j - 0.5f), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
-                                Instantiate(grass, new Vector3(i - 0.5f, availableSpots[i, j], j + 0.5f), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
-                                Instantiate(grass, new Vector3(i - 0.5f, availableSpots[i, j], j - 0.5f), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
-                                Instantiate(grass, new Vector3(i + 0.25f, availableSpots[i, j], j + 0.25f), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
-                                Instantiate(grass, new Vector3(i + 0.25f, availableSpots[i, j], j - 0.25f), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
-                                Instantiate(grass, new Vector3(i - 0.25f, availableSpots[i, j], j + 0.25f), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
-                                Instantiate(grass, new Vector3(i - 0.25f, availableSpots[i, j], j - 0.25f), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
-
+                                if (true)
+                                {
+                                    Instantiate(grass, new Vector3(i, availableSpots[i, j], j), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
+                                    Instantiate(grass, new Vector3(i + Random.Range(0, 0.5f), availableSpots[i, j], j + Random.Range(0, 0.5f)), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
+                                    Instantiate(grass, new Vector3(i + Random.Range(0, 0.5f), availableSpots[i, j], j - Random.Range(0, 0.5f)), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
+                                    Instantiate(grass, new Vector3(i - Random.Range(0, 0.5f), availableSpots[i, j], j + Random.Range(0, 0.5f)), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
+                                    Instantiate(grass, new Vector3(i - Random.Range(0, 0.5f), availableSpots[i, j], j - Random.Range(0, 0.5f)), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
+                                    Instantiate(grass, new Vector3(i + Random.Range(0, 0.25f), availableSpots[i, j], j + Random.Range(0, 0.25f)), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
+                                    Instantiate(grass, new Vector3(i + Random.Range(0, 0.25f), availableSpots[i, j], j - Random.Range(0, 0.25f)), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
+                                    Instantiate(grass, new Vector3(i - Random.Range(0, 0.25f), availableSpots[i, j], j + Random.Range(0, 0.25f)), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
+                                    Instantiate(grass, new Vector3(i - Random.Range(0, 0.25f), availableSpots[i, j], j - Random.Range(0, 0.25f)), Quaternion.Euler(new Vector3(-90, Random.Range(0, 360), 0)));
+                                }
                             }
                         }
 

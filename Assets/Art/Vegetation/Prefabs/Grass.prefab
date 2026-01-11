@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 82427d5cb6fcba64cb618b5669857cf0, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -64,6 +68,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 4656759655019353767}
   m_SourcePrefab: {fileID: 100100000, guid: 82427d5cb6fcba64cb618b5669857cf0, type: 3}
+--- !u!23 &1130706250541442286 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 82427d5cb6fcba64cb618b5669857cf0, type: 3}
+  m_PrefabInstance: {fileID: 1761055861703489642}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1491235907493791035 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 82427d5cb6fcba64cb618b5669857cf0, type: 3}
@@ -77,13 +86,14 @@ LODGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1491235907493791035}
   serializedVersion: 2
-  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
-  m_Size: 1
+  m_LocalReferencePoint: {x: 0, y: 1.1641532e-10, z: 0.0019999987}
+  m_Size: 0.004
   m_FadeMode: 1
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.9626394
+  - screenRelativeHeight: 0.01
     fadeTransitionWidth: 0
-    renderers: []
+    renderers:
+    - renderer: {fileID: 1130706250541442286}
   m_Enabled: 1

@@ -62,7 +62,7 @@ public static class MeshGenerator
 
         return terrain;
     }
-    public static GameObject GenerateTerrainMesh(int mapWidth, int mapHeight, float heightMultiplier, float[,] noise, out float[,] vertexHeights, int falloffHeight, int falloffDistance, Material meshMaterial)
+    public static GameObject GenerateTerrainMesh(int mapWidth, int mapHeight, int chunkSize, float heightMultiplier, float[,] noise, out float[,] vertexHeights, int falloffHeight, int falloffDistance, Material meshMaterial)
     {
         GameObject terrain = new GameObject("Procedural Terrain");
 
@@ -81,6 +81,10 @@ public static class MeshGenerator
 
         int vertexIndex = 0;
         int triangleIndex = 0;
+
+        int chunkDimensionX = mapWidth / chunkSize;
+        int chunkDimensionY = mapHeight / chunkSize;
+        
 
         for (int y = 0; y < mapHeight; y++)
         {

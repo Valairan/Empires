@@ -1,10 +1,39 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public static class NoiseGenerator
 {
 
+    public static float calculateHeight(int x, int y, int mapWidth, int mapHeight, float perlinValue, float multiplier, int falloffDistance, int falloffHeight, bool stepped)
+    {
+        float height = 0f;
+        if (y <= falloffDistance || x <= falloffDistance || y >= mapHeight - falloffDistance || x >= mapWidth - falloffDistance)
+        {
+            height = falloffHeight;
+        }
+        else if (stepped)
+        {
+            if (perlinValue < 1f) height = 4f;
+            if (perlinValue < 0.75f) height = 2f;
+            if (perlinValue < 0.5f) height = 1f;
+            if (perlinValue < 0.25f) height = 0f;
+        }
 
-    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset)
+
+        height = height * multiplier;
+        return height;
+    }
+    public static float[,] GenerateSteppedNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, float multiplier, Vector2 offset, int falloffHeight, int falloffDistance)
+    {
+        return GenerateNoiseMap(mapWidth, mapHeight, seed, scale, octaves, persistance, lacunarity, multiplier, offset, falloffHeight, falloffDistance, true);
+    }
+
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, float multiplier, Vector2 offset, int falloffHeight, int falloffDistance)
+    {
+        return GenerateNoiseMap(mapWidth, mapHeight, seed, scale, octaves, persistance, lacunarity, multiplier, offset, falloffHeight, falloffDistance, false);
+
+    }
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, float multiplier, Vector2 offset, int falloffHeight, int falloffDistance, bool stepped)
     {
         float[,] noiseMap = new float[mapWidth, mapHeight];
 
@@ -67,6 +96,7 @@ public static class NoiseGenerator
             for (int x = 0; x < mapWidth; x++)
             {
                 noiseMap[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, y]);
+                noiseMap[x, y] = calculateHeight(x, y, mapWidth, mapHeight, noiseMap[x, y], multiplier, falloffDistance, falloffHeight, stepped);
             }
         }
 

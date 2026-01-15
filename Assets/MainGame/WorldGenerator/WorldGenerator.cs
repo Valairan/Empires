@@ -17,12 +17,11 @@ public class WorldGenerator : MonoBehaviour
     Vector3 cubeSize = new Vector3(0.2f, 0.2f, 0.2f);
     Transform mainCamera;
     bool generationComplete;
-    public static Matrix4x4[] grassMatricesTotal;
+    public GrassChunk[,] totalGrassChunks;
     RenderParams grassrenderparams;
     [SerializeField] Mesh grassMesh;
     [SerializeField] Material grassMaterial;
-    int numberOfChunksToRender = 4;
-    Matrix4x4[] toRender = new Matrix4x4[10];
+    [SerializeField] int numberOfChunksToRender;
 
     void Start()
     {
@@ -37,17 +36,10 @@ public class WorldGenerator : MonoBehaviour
 
         VegetationPlanter.ScatterDecoration(1000, 1000, 100, Vegetation, terrainNoise, 5, biomeNoise);
 
-        grassMatricesTotal = VegetationPlanter.CalculateGrassPositions(1000, 1000, terrainNoise);
-
-
+        totalGrassChunks = VegetationPlanter.scatterGrassInChunks(settings, 10, 8, terrainNoise);
 
         grassrenderparams = new RenderParams(grassMaterial);
-        for (int i = 0; i < 10; i++)
-        {
-            toRender[i] = grassMatricesTotal[i];
 
-
-        }
         generationComplete = true;
         mainCamera = Camera.main.transform;
 
@@ -56,16 +48,48 @@ public class WorldGenerator : MonoBehaviour
 
     void Update()
     {
-        //Bounds bounds = new Bounds(Vector3.zero, new Vector3(100, 100, 100));
         if (generationComplete)
         {
+            //Bounds bounds = new Bounds(Vector3.zero, new Vector3(100, 100, 100));
+            if (generationComplete)
+            {
+                int positionx = (int)Math.Clamp(mainCamera.position.x, 0, settings.mapWidth) / 10;
+                int positionz = (int)Math.Clamp(mainCamera.position.z, 0, settings.mapHeight) / 10;
 
-            Graphics.RenderMeshInstanced(grassrenderparams, grassMesh, 0, toRender);
+                Debug.Log("Camera position:" + positionx + ", " + positionz);
+
+                for (int i = -numberOfChunksToRender; i <= numberOfChunksToRender; i++)
+                {
+                    for (int j = -numberOfChunksToRender; j <= numberOfChunksToRender; j++)
+                    {
+                        int chunkX = positionx + i;
+                        int chunkZ = positionz + j;
+
+                        if (chunkX < 0 || chunkZ < 0 || chunkX >= 1000 / 32 || chunkZ >= 1000 / 32)
+                            continue;
+
+                        GrassChunk chunk = totalGrassChunks[chunkX, chunkZ];
+                        if (chunk.count == 0)
+                            continue;
+                        Graphics.RenderMeshInstanced(grassrenderparams, grassMesh, 0, chunk.matrices);
+
+
+                    }
+
+                }
+            }
         }
     }
 
-
 }
+
+
+
+
+
+
+
+
 [Serializable]
 public struct TerrainSettings
 {

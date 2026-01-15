@@ -4,57 +4,125 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+public struct GrassChunk
+{
+    public Vector2Int coord;
+    public Bounds bounds;
 
+    public Matrix4x4[] matrices;
+    public int count; // number of valid instances
+}
 public static class VegetationPlanter
 {
-    struct GrassChunk
+
+
+    public static GrassChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, float[,] availableSpots)
     {
-        public Vector2Int coord;
-        public Matrix4x4[] matrices;
-        public int writeIndex;
+        int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
+
+        int chunkCountY = Mathf.CeilToInt((float)settings.mapHeight / grassChunkSize);
+        GrassChunk[,] chunkGrid = new GrassChunk[chunkCountX, chunkCountY];
+
+        for (int cy = 0; cy < chunkCountY; cy++)
+        {
+            for (int cx = 0; cx < chunkCountX; cx++)
+            {
+                chunkGrid[cx, cy] = GenerateGrassChunk(
+                    cx,
+                    cy,
+                    settings,
+                    grassChunkSize,
+                    grassPerCell,
+                    availableSpots
+                );
+            }
+        }
+
+        return chunkGrid;
     }
 
-
-    public static Matrix4x4[] CalculateGrassPositions(int mapHeight, int mapWidth, float[,] availableSpots)
+    public static GrassChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, float[,] availableSpots)
     {
-        const int GrassPerCell = 8;
+        int chunkSize = grassChunkSize;
 
-        Matrix4x4[] grassMatrices = new Matrix4x4[mapHeight * mapWidth];
+        int maxInstances = chunkSize * chunkSize * grassPerCell;
 
-        int writeIndex = 0;
-
-        for (int x = 1; x < mapHeight - 1; x++)
+        GrassChunk chunk = new GrassChunk
         {
-            for (int y = 1; y < mapWidth - 1; y++)
+            coord = new Vector2Int(chunkX, chunkY),
+            matrices = new Matrix4x4[maxInstances],
+            count = 0
+        };
+
+        int startX = chunkX * chunkSize;
+        int startY = chunkY * chunkSize;
+
+        int endX = Mathf.Min(startX + chunkSize - 1, settings.mapWidth - 1);
+        int endY = Mathf.Min(startY + chunkSize - 1, settings.mapHeight - 1);
+
+        float minH = float.MaxValue;
+        float maxH = float.MinValue;
+
+        for (int x = startX; x <= endX; x++)
+        {
+            for (int y = startY; y <= endY; y++)
             {
+
                 float height = availableSpots[x, y];
-
-                if (availableSpots[x + 1, y + 1] == height &&
-                    availableSpots[x + 1, y - 1] == height &&
-                    availableSpots[x - 1, y + 1] == height &&
-                    availableSpots[x - 1, y - 1] == height)
+                if (x > 0 && x < settings.mapWidth - 1 && y > 0 && y < settings.mapHeight - 1)
                 {
-                    float offsetX = Random.Range(0f, 0.25f);
-                    float offsetZ = Random.Range(0f, 0.25f);
+                    if (availableSpots[x + 1, y + 1] != height ||
+                        availableSpots[x + 1, y - 1] != height ||
+                        availableSpots[x - 1, y + 1] != height ||
+                        availableSpots[x - 1, y - 1] != height)
+                        continue;
+                }
 
-                    float scale = Random.Range(0.5f, 2f);
+                // deterministic per-cell RNG
+
+                for (int i = 0; i < grassPerCell; i++)
+                {
+                    float offsetX = Random.Range(-0.5f, 0.5f);
+                    float offsetZ = Random.Range(-0.5f, 0.5f);
+
+                    float scale = Random.Range(1f, 2f);
                     float rotY = Random.Range(0f, 360f);
 
-                    grassMatrices[y * mapWidth + x] = Matrix4x4.TRS(new Vector3(x + offsetX, height, y + offsetZ),
+                    Vector3 pos = new Vector3(
+                        x + offsetX,
+                        height,
+                        y + offsetZ
+                    );
+
+                    chunk.matrices[chunk.count++] =
+                        Matrix4x4.TRS(
+                            pos,
                             Quaternion.Euler(0f, rotY, 0f),
                             Vector3.one * scale
                         );
 
+                    minH = Mathf.Min(minH, height);
+                    maxH = Mathf.Max(maxH, height);
                 }
             }
         }
 
-        // Trim unused space (optional but recommended)
+        Vector3 center = new Vector3(
+            startX + chunkSize * 0.5f,
+            (minH + maxH) * 0.5f,
+            startY + chunkSize * 0.5f
+        );
 
-        return grassMatrices;
+        Vector3 size = new Vector3(
+            chunkSize,
+            Mathf.Max(1f, maxH - minH),
+            chunkSize
+        );
+
+        chunk.bounds = new Bounds(center, size);
+
+        return chunk;
     }
-
-
     public static void ScatterDecoration(int mapHeight, int mapWidth, int chunkSize, GameObject[] vegetation, float[,] availableSpots, int skip, float[,] biome)
     {
         GameObject treeParent = new GameObject("Tree Parent");
@@ -77,7 +145,7 @@ public static class VegetationPlanter
                     if (availableSpots[x + 1, y + 1] == height && availableSpots[x + 1, y - 1] == height && availableSpots[x - 1, y + 1] == height && availableSpots[x - 1, y - 1] == height)
                     {
 
-                        bool spawn = Random.Range(0f, 1f) > 0.998f;
+                        bool spawn = Random.Range(0f, 1f) > 0.996f;
 
                         //int whatToSpawn = (int)Mathf.Clamp(biome[y / ((mapWidth - 1) / (biomeDimensionsY - 1)), x / ((mapHeight - 1) / (biomeDimensionsX - 1))] * 5, 0, availableItems - 1);
                         int whatToSpawn = Random.Range(0, availableItems - 1);

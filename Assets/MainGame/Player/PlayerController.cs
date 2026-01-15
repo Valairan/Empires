@@ -18,10 +18,7 @@ public class PlayerController : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKey(KeyCode.W))
-        {
-            playerCCMotor.Move(transform.forward);
-        }
+
     }
 
     public void LateUpdate()

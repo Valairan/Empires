@@ -1,84 +1,154 @@
-using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 using TMPro;
+using Unity.Collections;
 using Unity.Netcode;
-using Unity.Netcode.Transports.UTP;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
-using Unity.Services.Relay;
-using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LobbyController : MonoBehaviour
+
+public class LobbyController : NetworkBehaviour
 {
-    [SerializeField] GameObject lobbyParent;
-    [SerializeField] GameObject mainMenuParent;
-    [SerializeField] GameObject LoadingParent;
+    [SerializeField] TMP_Text[] playerNames;
+    [SerializeField] GameObject[] playerIcons;
+    [SerializeField] GameObject StartButton;
+    [SerializeField] GameObject ReadyButton;
 
-    [SerializeField] TMP_InputField roomcodeInput;
-    [SerializeField] TMP_Text LobbyRoomCodeDisplay;
+    private ulong[] spawnedPlayersIndex = new ulong[8];
+    private Dictionary<ulong, GameObject> spawnedPlayers = new Dictionary<ulong, GameObject>();
+    private NetworkList<PlayerNameData> spawnedPlayersNames;
+    private NetworkVariable<int> readyState;
+    private string[] names = { "Avocado", "Potato", "Tomato", "Radish", "Carrot", "Bamboo", "Bean", "Cabbage" };
+    private string[] namesPrefix = { "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel" };
 
-    public async void createRoom()
+    private string myname;
+    private void OnEnable()
     {
-        mainMenuParent.SetActive(false);
-        LoadingParent.SetActive(true);
-        string joinCode = await StartHostWithRelay(8, "dtls");
-        if (joinCode.Length > 0)
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+        spawnedPlayersNames.OnListChanged += assignNamesToScreen;
+        if (NetworkManager.Singleton.IsServer)
         {
-            LoadingParent.SetActive(false);
-            LobbyRoomCodeDisplay.text = joinCode;
-            lobbyParent.SetActive(true);
+            spawnedPlayersNames = new NetworkList<PlayerNameData>();
+            initForServer();
+        }
+        else
+            initForMe();
+    }
+
+    private void OnDisable()
+    {
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+    }
+
+    string generateName()
+    {
+        return namesPrefix[UnityEngine.Random.Range(0, 9)] + "." + names[UnityEngine.Random.Range(0, 9)];
+    }
+
+    void initForMe()
+    {
+        playerIcons[(int)(NetworkManager.Singleton.LocalClientId % 8)].SetActive(true);
+        ReadyButton.SetActive(true);
+    }
+
+    void initForServer()
+    {
+        if (!NetworkManager.Singleton.IsServer)
             return;
-        }
-
-        mainMenuParent.SetActive(true);
-        LoadingParent.SetActive(false);
+        myname = generateName();
+        spawnedPlayersNames.Add(new PlayerNameData(NetworkManager.Singleton.LocalClientId, myname));
+        playerNames[(int)(NetworkManager.Singleton.LocalClientId % 8)].text = myname;
+        playerIcons[(int)(NetworkManager.Singleton.LocalClientId % 8)].SetActive(true);
+        StartButton.SetActive(true);
 
     }
 
-    public async void joinRoom()
+    private void assignNamesToScreen(NetworkListEvent<PlayerNameData> changeEvent)
     {
-        if (roomcodeInput.text.Length > 0)
-        {
-            if (await StartClientWithRelay(roomcodeInput.text.ToString().Trim(), "dtls"))
-            {
-                LoadingParent.SetActive(false);
-                //NetworkManager.Singleton.
-                lobbyParent.SetActive(true);
-                return;
-            }
-        }
+        playerNames[(int)(changeEvent.Value.clientId % 8)].text = changeEvent.Value.name.ToString();
     }
-
-    public async Task<string> StartHostWithRelay(int maxConnections, string connectionType)
+    private void OnClientConnected(ulong clientId)
     {
-        await UnityServices.InitializeAsync();
-        if (!AuthenticationService.Instance.IsSignedIn)
-        {
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        }
-        var allocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
-        NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(AllocationUtils.ToRelayServerData(allocation, connectionType));
-        var joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-        return NetworkManager.Singleton.StartHost() ? joinCode : null;
+        if (!NetworkManager.Singleton.IsServer)
+            return;
+        spawnedPlayersNames.Add(new PlayerNameData(clientId, generateName()));
+        spawnedPlayersIndex[(int)(clientId % 8)] = clientId;
     }
-
-    public async Task<bool> StartClientWithRelay(string joinCode, string connectionType)
+    private void OnClientDisconnected(ulong clientId)
     {
-        await UnityServices.InitializeAsync();
-        if (!AuthenticationService.Instance.IsSignedIn)
+        if (spawnedPlayers.ContainsKey(clientId))
         {
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            spawnedPlayers[clientId].GetComponent<NetworkObject>().Despawn();
+            Destroy(spawnedPlayers[clientId]);
+            spawnedPlayers.Remove(clientId);
         }
-
-        var allocation = await RelayService.Instance.JoinAllocationAsync(joinCode: joinCode);
-        NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(AllocationUtils.ToRelayServerData(allocation, connectionType));
-        return !string.IsNullOrEmpty(joinCode) && NetworkManager.Singleton.StartClient();
     }
+
+    public void setReady()
+    {
+        ReadyButton.SetActive(false);
+        readyState.Value++;
+    }
+
+    public void StartGame()
+    {
+        if (!NetworkManager.Singleton.IsServer) return;
+        if (readyState.Value == NetworkManager.Singleton.ConnectedClients.Count - 1)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene("MainGame", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
+    }
+
 }
-
-
 public enum playerColors
 {
 
+}
+
+public struct PlayerReadyData : INetworkSerializable, IEquatable<PlayerNameData>
+{
+    public ulong clientId;
+    public bool ready;
+
+    public PlayerReadyData(ulong clientId, bool ready)
+    {
+        this.clientId = clientId;
+        this.ready = ready;
+    }
+    public bool Equals(PlayerNameData other)
+    {
+        return clientId == other.clientId;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer)
+        where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref clientId);
+        serializer.SerializeValue(ref ready);
+    }
+}
+
+public struct PlayerNameData : INetworkSerializable, IEquatable<PlayerNameData>
+{
+    public ulong clientId;
+    public FixedString32Bytes name;
+
+    public PlayerNameData(ulong clientId, string name)
+    {
+        this.clientId = clientId;
+        this.name = name;
+    }
+    public bool Equals(PlayerNameData other)
+    {
+        return clientId == other.clientId;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer)
+        where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref clientId);
+        serializer.SerializeValue(ref name);
+    }
 }

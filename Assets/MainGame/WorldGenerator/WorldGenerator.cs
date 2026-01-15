@@ -36,9 +36,11 @@ public class WorldGenerator : MonoBehaviour
 
         VegetationPlanter.ScatterDecoration(1000, 1000, 100, Vegetation, terrainNoise, 5, biomeNoise);
 
-        totalGrassChunks = VegetationPlanter.scatterGrassInChunks(settings, 10, 8, terrainNoise);
+        totalGrassChunks = VegetationPlanter.scatterGrassInChunks(settings, 10, 8, 4, terrainNoise);
 
         grassrenderparams = new RenderParams(grassMaterial);
+        grassrenderparams.receiveShadows = true;
+        grassrenderparams.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 
         generationComplete = true;
         mainCamera = Camera.main.transform;
@@ -55,8 +57,6 @@ public class WorldGenerator : MonoBehaviour
             {
                 int positionx = (int)Math.Clamp(mainCamera.position.x, 0, settings.mapWidth) / 10;
                 int positionz = (int)Math.Clamp(mainCamera.position.z, 0, settings.mapHeight) / 10;
-
-                Debug.Log("Camera position:" + positionx + ", " + positionz);
 
                 for (int i = -numberOfChunksToRender; i <= numberOfChunksToRender; i++)
                 {

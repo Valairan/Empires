@@ -10,13 +10,14 @@ public struct GrassChunk
     public Bounds bounds;
 
     public Matrix4x4[] matrices;
+    public int[] meshes;
     public int count; // number of valid instances
 }
 public static class VegetationPlanter
 {
 
 
-    public static GrassChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, float[,] availableSpots)
+    public static GrassChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, int numberOfMeshes, float[,] availableSpots)
     {
         int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
 
@@ -33,6 +34,7 @@ public static class VegetationPlanter
                     settings,
                     grassChunkSize,
                     grassPerCell,
+                    numberOfMeshes,
                     availableSpots
                 );
             }
@@ -41,7 +43,7 @@ public static class VegetationPlanter
         return chunkGrid;
     }
 
-    public static GrassChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, float[,] availableSpots)
+    public static GrassChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, int numberOfMeshes, float[,] availableSpots)
     {
         int chunkSize = grassChunkSize;
 
@@ -51,6 +53,7 @@ public static class VegetationPlanter
         {
             coord = new Vector2Int(chunkX, chunkY),
             matrices = new Matrix4x4[maxInstances],
+            meshes = new int[maxInstances],
             count = 0
         };
 
@@ -103,6 +106,9 @@ public static class VegetationPlanter
 
                     minH = Mathf.Min(minH, height);
                     maxH = Mathf.Max(maxH, height);
+
+                    //chunk.meshes[chunk.count] = 0;//(int)Random.Range(0, numberOfMeshes - 1);
+
                 }
             }
         }

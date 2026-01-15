@@ -1,11 +1,13 @@
 using System;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     [Header("Components")]
     [SerializeField] CharacterController playerCCMotor;
+    [SerializeField] SkinnedMeshRenderer playerClothesParent;
 
     [Header("Locomotion Settings")]
     [SerializeField] float runSpeed;
@@ -23,7 +25,7 @@ public class PlayerController : MonoBehaviour
 
     public void LateUpdate()
     {
-
+        
     }
 
 }

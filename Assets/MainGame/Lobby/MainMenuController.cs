@@ -11,11 +11,16 @@ public class MainMenuController : MonoBehaviour
 {
 
     [SerializeField] GameObject mainMenuParent;
-    [SerializeField] GameObject lobbyParent;
+    [SerializeField] GameObject LobbyParent;
     [SerializeField] GameObject LoadingParent;
+    [SerializeField] GameObject PropertiesStorage;
     [SerializeField] TMP_Text LobbyRoomCodeDisplay;
     [SerializeField] TMP_InputField roomcodeInput;
 
+    void Start()
+    {
+        Loader.Singelton.gameObject.SetActive(false);
+    }
     public async void createRoom()
     {
         mainMenuParent.SetActive(false);
@@ -26,12 +31,13 @@ public class MainMenuController : MonoBehaviour
 
             LoadingParent.SetActive(false);
             LobbyRoomCodeDisplay.text = joinCode;
-            lobbyParent.SetActive(true);
+            PropertiesStorage.SetActive(true);
+            LobbyParent.SetActive(true);
             return;
         }
 
         mainMenuParent.SetActive(true);
-        Loader.instance.gameObject.SetActive(false);
+        Loader.Singelton.gameObject.SetActive(false);
 
         //LoadingParent.SetActive(false);
 
@@ -44,9 +50,9 @@ public class MainMenuController : MonoBehaviour
             if (await StartClientWithRelay(roomcodeInput.text.ToString().Trim(), "dtls"))
             {
                 LoadingParent.SetActive(false);
-
+                PropertiesStorage.SetActive(true);
                 //NetworkManager.Singleton.
-                lobbyParent.SetActive(true);
+                LobbyParent.SetActive(true);
                 return;
             }
         }
@@ -78,6 +84,9 @@ public class MainMenuController : MonoBehaviour
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(AllocationUtils.ToRelayServerData(allocation, connectionType));
         return !string.IsNullOrEmpty(joinCode) && NetworkManager.Singleton.StartClient();
     }
+
+
+
 }
 
 

@@ -4,19 +4,18 @@ using UnityEngine.UI;
 
 public class Loader : MonoBehaviour
 {
-    public static Loader instance;
+    public static Loader Singelton;
 
     public Image progressImage;
 
-    void Start()
+    void Awake()
     {
-        if (instance == null)
-            instance = this;
+        if (Singelton == null) Singelton = this;
     }
 
     public void setProgress(float progress)
     {
-        instance.progressImage.fillAmount = progress;
+        Singelton.progressImage.fillAmount = progress;
     }
 
 

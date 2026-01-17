@@ -4,7 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
-public struct GrassChunk
+public struct VegetationChunk
 {
     public Vector2Int coord;
     public Bounds bounds;
@@ -17,12 +17,12 @@ public static class VegetationPlanter
 {
 
 
-    public static GrassChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, int numberOfMeshes, float[,] availableSpots)
+    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, int seed, float probability, float[,] availableSpots)
     {
         int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
 
         int chunkCountY = Mathf.CeilToInt((float)settings.mapHeight / grassChunkSize);
-        GrassChunk[,] chunkGrid = new GrassChunk[chunkCountX, chunkCountY];
+        VegetationChunk[,] chunkGrid = new VegetationChunk[chunkCountX, chunkCountY];
 
         for (int cy = 0; cy < chunkCountY; cy++)
         {
@@ -34,7 +34,8 @@ public static class VegetationPlanter
                     settings,
                     grassChunkSize,
                     grassPerCell,
-                    numberOfMeshes,
+                    seed,
+                    probability,
                     availableSpots
                 );
             }
@@ -43,13 +44,13 @@ public static class VegetationPlanter
         return chunkGrid;
     }
 
-    public static GrassChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, int numberOfMeshes, float[,] availableSpots)
+    public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, int seed, float probability, float[,] availableSpots)
     {
         int chunkSize = grassChunkSize;
 
         int maxInstances = chunkSize * chunkSize * grassPerCell;
 
-        GrassChunk chunk = new GrassChunk
+        VegetationChunk chunk = new VegetationChunk
         {
             coord = new Vector2Int(chunkX, chunkY),
             matrices = new Matrix4x4[maxInstances],
@@ -66,12 +67,16 @@ public static class VegetationPlanter
         float minH = float.MaxValue;
         float maxH = float.MinValue;
 
+        DeterministicRng rng = new DeterministicRng(seed);
+
         for (int x = startX; x <= endX; x++)
         {
             for (int y = startY; y <= endY; y++)
             {
 
                 float height = availableSpots[x, y];
+                if (height < 4) continue;
+                if (!(rng.NextFloat() > 1 - probability)) continue;
                 if (x > 0 && x < settings.mapWidth - 1 && y > 0 && y < settings.mapHeight - 1)
                 {
                     if (availableSpots[x + 1, y + 1] != height ||
@@ -129,7 +134,7 @@ public static class VegetationPlanter
 
         return chunk;
     }
-    public static void ScatterDecoration(int mapHeight, int mapWidth, int chunkSize, GameObject[] vegetation, float[,] availableSpots, int skip, float[,] biome)
+    public static void ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, float[,] availableSpots, int skip, float[,] biome)
     {
         GameObject treeParent = new GameObject("Tree Parent");
 
@@ -137,30 +142,30 @@ public static class VegetationPlanter
         int biomeDimensionsY = biome.GetLength(1);
         int availableItems = vegetation.Length;
         int treeCount = 0;
-
-
+        DeterministicRng rng = new DeterministicRng(seed);
+        DeterministicRng rng1 = new DeterministicRng(seed + 1);
+        DeterministicRng rng2 = new DeterministicRng(seed + 2);
         for (int x = 0; x < mapHeight; x++)
         {
             for (int y = 0; y < mapWidth; y++)
             {
                 float height = availableSpots[x, y];
-                if (height <= 1f || height > 30f)
-                    continue;
+                if (height < 10) continue;
                 if (x > 0 && x < mapHeight - 1 && y > 0 && y < mapWidth - 1)
 
                     if (availableSpots[x + 1, y + 1] == height && availableSpots[x + 1, y - 1] == height && availableSpots[x - 1, y + 1] == height && availableSpots[x - 1, y - 1] == height)
                     {
 
-                        bool spawn = Random.Range(0f, 1f) > 0.996f;
+                        bool spawn = PickIndexFromXY(x, y, 100, seed) >= 98;
 
                         //int whatToSpawn = (int)Mathf.Clamp(biome[y / ((mapWidth - 1) / (biomeDimensionsY - 1)), x / ((mapHeight - 1) / (biomeDimensionsX - 1))] * 5, 0, availableItems - 1);
-                        int whatToSpawn = Random.Range(0, availableItems - 1);
+                        int whatToSpawn = PickIndexFromXY(x, y, availableItems, seed);
 
                         if (!((availableSpots[x, y] <= 1) && (availableSpots[x, y] > 30)))
                         {
                             if (spawn)
                             {
-                                GameObject.Instantiate(vegetation[whatToSpawn], new Vector3(x, availableSpots[x, y], y), Quaternion.Euler(new Vector3(0f, Random.Range(0, 360), 0f)), treeParent.transform).isStatic = true;
+                                GameObject.Instantiate(vegetation[whatToSpawn], new Vector3(x + rng.NextFloat(), availableSpots[x, y], y + rng1.NextFloat()), Quaternion.Euler(new Vector3(0f, rng.NextInt(0, 360), 0f)), treeParent.transform).isStatic = true;
                                 treeCount++;
                             }
 
@@ -176,4 +181,23 @@ public static class VegetationPlanter
         //StaticBatchingUtility.Combine(grassParentSub);
         //StaticBatchingUtility.Combine(treeParentSub);
     }
+    public static int PickIndexFromXY(int x, int y, int arrayLength, int seed)
+    {
+        unchecked
+        {
+            uint h = (uint)seed;
+
+            h ^= (uint)x * 0x27d4eb2d;
+            h ^= (uint)y * 0x85ebca6b;
+
+            h ^= h >> 15;
+            h *= 0x2c1b3c6d;
+            h ^= h >> 12;
+
+            return (int)(h % (uint)arrayLength);
+        }
+    }
+
 }
+
+

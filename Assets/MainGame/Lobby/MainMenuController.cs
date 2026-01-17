@@ -17,6 +17,10 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] TMP_Text LobbyRoomCodeDisplay;
     [SerializeField] TMP_InputField roomcodeInput;
 
+    void Awake()
+    {
+        
+    }
     void Start()
     {
         Loader.Singelton.gameObject.SetActive(false);
@@ -28,7 +32,6 @@ public class MainMenuController : MonoBehaviour
         string joinCode = await StartHostWithRelay(8, "dtls");
         if (joinCode.Length > 0)
         {
-
             LoadingParent.SetActive(false);
             LobbyRoomCodeDisplay.text = joinCode;
             PropertiesStorage.SetActive(true);

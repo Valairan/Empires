@@ -15,21 +15,20 @@ public class LobbyController : NetworkBehaviour
     [SerializeField] GameObject StartButton;
     [SerializeField] GameObject ReadyButton;
 
-    private void OnEnable()
+    public void OnEnable()
     {
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
-        NetworkGamePropertiesStorage.Singleton.spawnedPlayersNames.OnListChanged += assignNamesToScreen;
+        NetworkGamePropertiesStorage.Singleton.connectedPlayerData.OnListChanged += assignNamesToScreen;
         if (NetworkManager.Singleton.IsServer)
         {
-            NetworkGamePropertiesStorage.Singleton.spawnedPlayersNames = new NetworkList<PlayerData>();
             initForServer();
         }
         else
             initForMe();
     }
 
-    private void OnDisable()
+    public void OnDisable()
     {
         NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
@@ -48,7 +47,7 @@ public class LobbyController : NetworkBehaviour
         if (!NetworkManager.Singleton.IsServer)
             return;
         NetworkGamePropertiesStorage.Singleton.myname = NetworkGamePropertiesStorage.Singleton.generateName();
-        NetworkGamePropertiesStorage.Singleton.spawnedPlayersNames.Add(new PlayerData(NetworkManager.Singleton.LocalClientId, NetworkGamePropertiesStorage.Singleton.myname, 0, 0, 0));
+        NetworkGamePropertiesStorage.Singleton.connectedPlayerData.Add(new PlayerData(NetworkManager.Singleton.LocalClientId, NetworkGamePropertiesStorage.Singleton.myname, 0, 0, 0));
         playerNames[(int)(NetworkManager.Singleton.LocalClientId % 8)].text = NetworkGamePropertiesStorage.Singleton.myname;
         playerIcons[(int)(NetworkManager.Singleton.LocalClientId % 8)].SetActive(true);
         StartButton.SetActive(true);
@@ -63,7 +62,7 @@ public class LobbyController : NetworkBehaviour
     {
         if (!NetworkManager.Singleton.IsServer)
             return;
-        NetworkGamePropertiesStorage.Singleton.spawnedPlayersNames.Add(new PlayerData(clientId, NetworkGamePropertiesStorage.Singleton.generateName(), 0, 0, 0));
+        NetworkGamePropertiesStorage.Singleton.connectedPlayerData.Add(new PlayerData(clientId, NetworkGamePropertiesStorage.Singleton.generateName(), 0, 0, 0));
         NetworkGamePropertiesStorage.Singleton.spawnedPlayersIndex[(int)(clientId % 8)] = clientId;
     }
     private void OnClientDisconnected(ulong clientId)

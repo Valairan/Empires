@@ -1,3 +1,4 @@
+using System;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -5,68 +6,16 @@ using UnityEngine;
 public static class MeshGenerator
 {
 
-    public static GameObject GenerateSquareMesh(int mapWidth, int mapHeight, float height, Material meshMaterial)
+    public static void GenerateSquareMesh(int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int layer)
     {
-        GameObject terrain = new GameObject("Procedural Terrain");
 
-        MeshFilter meshFilter = terrain.AddComponent<MeshFilter>();
-        MeshRenderer meshRenderer = terrain.AddComponent<MeshRenderer>();
-        MeshCollider meshCollider = terrain.AddComponent<MeshCollider>();
-        meshRenderer.material = meshMaterial;
-        Mesh mesh = new Mesh();
-        mesh.name = "Terrain Mesh";
-
-        Vector3[] vertices = new Vector3[mapWidth * mapHeight];
-        Vector2[] uvs = new Vector2[mapWidth * mapHeight];
-        int[] triangles = new int[(mapWidth - 1) * (mapHeight - 1) * 6];
-
-        int vertexIndex = 0;
-        int triangleIndex = 0;
-
-        for (int y = 0; y < mapHeight; y++)
-        {
-            for (int x = 0; x < mapWidth; x++)
-            {
-
-                vertices[vertexIndex] = new Vector3(x, height, y);
-                uvs[vertexIndex] = new Vector2(
-                    (float)x / mapWidth,
-                    (float)y / mapHeight
-                );
-
-                if (x < mapWidth - 1 && y < mapHeight - 1)
-                {
-                    triangles[triangleIndex + 0] = vertexIndex;
-                    triangles[triangleIndex + 1] = vertexIndex + mapWidth;
-                    triangles[triangleIndex + 2] = vertexIndex + mapWidth + 1;
-
-                    triangles[triangleIndex + 3] = vertexIndex;
-                    triangles[triangleIndex + 4] = vertexIndex + mapWidth + 1;
-                    triangles[triangleIndex + 5] = vertexIndex + 1;
-
-                    triangleIndex += 6;
-                }
-
-                vertexIndex++;
-            }
-        }
-
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.uv = uvs;
-
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-
-        meshFilter.mesh = mesh;
-        meshCollider.sharedMesh = mesh;
-
-        return terrain;
+        GenerateTerrainMesh(mapWidth, mapHeight, chunkSize, meshMaterial, layer);
     }
 
 
-    public static void GenerateTerrainMesh(int mapWidth, int mapHeight, int chunkSize, float[,] noise, Material meshMaterial)
+    public static void GenerateTerrainMesh(int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int layer, float[,] noise = null)
     {
+
         GameObject parent = new GameObject("Procedural Terrain");
 
         for (int i = 0; i <= mapHeight; i += chunkSize)
@@ -75,14 +24,19 @@ public static class MeshGenerator
             {
                 GameObject currentTerrainChunk = new GameObject("Terrain(" + i + "," + j + ")");
                 currentTerrainChunk.transform.SetParent(parent.transform);
+                currentTerrainChunk.gameObject.layer = layer;
 
-                GameObject lod2 = calculateLOD(i, j, currentTerrainChunk, mapWidth, mapHeight, chunkSize, noise, meshMaterial, 2);
-                GameObject lod1 = calculateLOD(i, j, currentTerrainChunk, mapWidth, mapHeight, chunkSize, noise, meshMaterial, 1);
-                GameObject lod0 = calculateLOD(i, j, currentTerrainChunk, mapWidth, mapHeight, chunkSize, noise, meshMaterial, 0);
+                GameObject lod2 = calculateLOD(i, j, currentTerrainChunk, mapWidth, mapHeight, chunkSize, meshMaterial, 2, noise);
+                GameObject lod1 = calculateLOD(i, j, currentTerrainChunk, mapWidth, mapHeight, chunkSize, meshMaterial, 1, noise);
+                GameObject lod0 = calculateLOD(i, j, currentTerrainChunk, mapWidth, mapHeight, chunkSize, meshMaterial, 0, noise);
 
                 lod0.transform.SetParent(currentTerrainChunk.transform);
                 lod1.transform.SetParent(currentTerrainChunk.transform);
                 lod2.transform.SetParent(currentTerrainChunk.transform);
+
+                lod0.gameObject.layer = layer;
+                lod1.gameObject.layer = layer;
+                lod2.gameObject.layer = layer;
 
                 LODGroup lodGroup = currentTerrainChunk.AddComponent<LODGroup>();
 
@@ -100,7 +54,7 @@ public static class MeshGenerator
     }
 
 
-    public static GameObject calculateLOD(int i, int j, GameObject parent, int mapWidth, int mapHeight, int chunkSize, float[,] noise, Material meshMaterial, int lodLevel)
+    public static GameObject calculateLOD(int i, int j, GameObject parent, int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int lodLevel, float[,] noise = null)
     {
 
         GameObject terrain = new GameObject($"LOD{lodLevel}");
@@ -137,8 +91,10 @@ public static class MeshGenerator
                 worldY = Mathf.Min(worldY, mapHeight - 1);
 
                 int v = y * vertsPerSide + x;
+                float height = 4.5f;
+                if (noise != null)
+                    height = noise[worldX, worldY];
 
-                float height = noise[worldX, worldY];
                 vertices[v] = new Vector3(x * skip, height, y * skip);
                 uvs[v] = new Vector2(
                     (float)worldX / mapWidth,
@@ -169,7 +125,8 @@ public static class MeshGenerator
         mesh.RecalculateBounds();
 
         meshFilter.mesh = mesh;
-        meshCollider.sharedMesh = mesh;
+        if (lodLevel == 0)
+            meshCollider.sharedMesh = mesh;
 
         return terrain;
     }

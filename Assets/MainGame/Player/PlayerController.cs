@@ -1,15 +1,18 @@
 using System;
 using TMPro;
+using Unity.Burst.Intrinsics;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerController : NetworkBehaviour
+public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 {
     [Header("Components")]
     [SerializeField] CharacterController playerCCMotor;
     [SerializeField] Animator playerAnimator;
     [SerializeField] SkinnedMeshRenderer playerClothesParent;
     [SerializeField] InputHandler playerInputHandler;
+    [SerializeField] Health health;
+    [SerializeField] Armor armor;
 
     [Header("Locomotion Settings")]
     bool Grounded;
@@ -20,21 +23,44 @@ public class PlayerController : NetworkBehaviour
     Vector3 MoveDirection;
 
     [Header("Camera Settings")]
+    [SerializeField] float sensitivity = 150f;
+    [SerializeField] float minPitch = -80f;
+    [SerializeField] float maxPitch = 80f;
+    float yaw;
+    float pitch;
     [SerializeField] Camera playerCamera;
     [SerializeField] Transform playerCameraParent;
     [SerializeField] Transform playerCameraOrbit;
 
+    public Item primary;
+    public Item sidearm;
+    public Item melee;
+    public Action<float> onHealthChanged;
+    public Action<float> onArmorChanged;
+    public Action<Item> onLookingAtChanged;
+    public Item currentlyLookingAt;
     ulong clientID;
+
+    public void setClientId(ulong clientID)
+    {
+        this.clientID = clientID;
+    }
+
+    public void wearItem(Wearable item)
+    {
+
+    }
     public override void OnNetworkSpawn()
     {
-        //if (!IsLocalPlayer) return;
-        //playerCamera.gameObject.SetActive(true);
-        //clientID = NetworkManager.Singleton.LocalClientId;
+        if (!IsLocalPlayer) return;
+        onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
+        onLookingAtChanged += UiController.Singleton != null ? UiController.Singleton.setCurerntlyLookingAt : null;
+        playerCamera = Camera.main;
     }
     public void Update()
     {
         if (!IsLocalPlayer) return;
-        MoveDirection = new Vector3(playerInputHandler.MoveInput.x * (playerInputHandler.Sneak ? walkSpeed : runSpeed), 0, playerInputHandler.MoveInput.y * (playerInputHandler.Sneak ? walkSpeed : runSpeed));
+        MoveDirection = new Vector3(playerInputHandler.MoveInput.normalized.x * (playerInputHandler.Sneak ? walkSpeed : runSpeed), 0, playerInputHandler.MoveInput.normalized.y * (playerInputHandler.Sneak ? walkSpeed : runSpeed));
         playerCCMotor.Move(MoveDirection * Time.deltaTime);
         Collider[] groundColliders = Physics.OverlapSphere(GroundCheck.position, .2f, WhatIsGround);
         if (groundColliders.Length > 0)
@@ -42,14 +68,21 @@ public class PlayerController : NetworkBehaviour
         else
             Grounded = false;
 
-
+        checkForRaycasts();
         updateAnimationParams(playerInputHandler.MoveInput, false, false, false, false);
     }
 
     public void LateUpdate()
     {
         if (!IsLocalPlayer) return;
+        playerCamera.transform.position = playerCameraParent.position;
+        playerCamera.transform.rotation = playerCameraParent.rotation;
+        yaw += playerInputHandler.LookInput.x * sensitivity * Time.deltaTime;
+        pitch -= playerInputHandler.LookInput.y * sensitivity * Time.deltaTime; // inverted Y
 
+        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
+
+        playerCameraOrbit.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 
     public void updateAnimationParams(Vector2 movement, bool grounded, bool sideArm, bool rifle, bool melee)
@@ -58,4 +91,34 @@ public class PlayerController : NetworkBehaviour
         playerAnimator.SetFloat("Vertical", movement.y);
     }
 
+    public void checkForRaycasts()
+    {
+        if (Physics.SphereCast(playerCamera.transform.position, 0.5f, playerCamera.transform.forward, out RaycastHit hit, 25f))
+        {
+            if (hit.transform.TryGetComponent(out IRaycastResponder responder))
+            {
+                Item item = responder.respondToRaycast();
+                if (item != currentlyLookingAt)
+                {
+                    currentlyLookingAt = item;
+                    onLookingAtChanged?.Invoke(item);
+                }
+            }
+        }
+    }
+
+    public Item respondToRaycast()
+    {
+        return baseitem;
+    }
+
+    public void takeDamage(float damage)
+    {
+        armor.amount -= damage;
+        health.amount = armor.amount < 0 ? health.amount + armor.amount : health.amount;
+        armor.amount = armor.amount < 0 ? 0 : armor.amount;
+        onArmorChanged.Invoke(armor.amount);
+        onHealthChanged.Invoke(health.amount);
+
+    }
 }

@@ -11,26 +11,25 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -3785292135658874822}
-    m_Position: {x: 120, y: 250, z: 0}
+    m_Position: {x: 270, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -481055953053868907}
-    m_Position: {x: 230, y: 300, z: 0}
+    m_Position: {x: 280, y: 140, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4570411856420616119}
-    m_Position: {x: 390, y: 350, z: 0}
+    m_Position: {x: 280, y: 240, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -282381192091539333}
-    m_Position: {x: 30, y: 200, z: 0}
+    m_Position: {x: 30, y: 170, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -847446934995005097}
   - {fileID: 8421731582627009857}
   - {fileID: -1397483207451514997}
-  - {fileID: 1253484449079648964}
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 240, y: 120, z: 0}
+  m_AnyStatePosition: {x: 530, y: 140, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
@@ -363,37 +362,6 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!1101 &1253484449079648964
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 2
-    m_ConditionEvent: SideArm
-    m_EventTreshold: 0
-  - m_ConditionMode: 2
-    m_ConditionEvent: Rifle
-    m_EventTreshold: 0
-  - m_ConditionMode: 2
-    m_ConditionEvent: Melee
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -282381192091539333}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.25
-  m_TransitionOffset: 0
-  m_ExitTime: 0.75
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!206 &6845130267269264834
 BlendTree:
   m_ObjectHideFlags: 1

@@ -10,8 +10,9 @@ public class NetworkGamePropertiesStorage : NetworkBehaviour
     public GameObject playerPrefab;
     public ulong[] spawnedPlayersIndex = new ulong[8];
     public Dictionary<ulong, GameObject> spawnedPlayers = new Dictionary<ulong, GameObject>();
-    public NetworkList<PlayerData> spawnedPlayersNames;
+    public NetworkList<PlayerData> connectedPlayerData;
     public NetworkVariable<int> readyState;
+    public NetworkVariable<int> WorldGenerationSeed;
     public string myname;
 
     private string[] names = { "Avocado", "Potato", "Tomato", "Radish", "Carrot", "Bamboo", "Bean", "Cabbage" };
@@ -20,8 +21,11 @@ public class NetworkGamePropertiesStorage : NetworkBehaviour
     {
         if (Singleton == null) Singleton = this;
         DontDestroyOnLoad(gameObject);
-        spawnedPlayersNames = new NetworkList<PlayerData>();
+        connectedPlayerData = new NetworkList<PlayerData>();
     }
+
+
+
     public string generateName()
     {
         return namesPrefix[UnityEngine.Random.Range(0, 8)] + "." + names[UnityEngine.Random.Range(0, 8)];

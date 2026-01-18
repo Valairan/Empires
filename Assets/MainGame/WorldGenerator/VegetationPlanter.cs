@@ -17,7 +17,7 @@ public static class VegetationPlanter
 {
 
 
-    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, int seed, float probability, float[,] availableSpots)
+    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[,] availableSpots)
     {
         int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
 
@@ -35,6 +35,8 @@ public static class VegetationPlanter
                     grassChunkSize,
                     grassPerCell,
                     seed,
+                    scaleRangeMin,
+                    scaleRangeMax,
                     probability,
                     availableSpots
                 );
@@ -44,7 +46,7 @@ public static class VegetationPlanter
         return chunkGrid;
     }
 
-    public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, int seed, float probability, float[,] availableSpots)
+    public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[,] availableSpots)
     {
         int chunkSize = grassChunkSize;
 
@@ -93,7 +95,7 @@ public static class VegetationPlanter
                     float offsetX = Random.Range(-0.5f, 0.5f);
                     float offsetZ = Random.Range(-0.5f, 0.5f);
 
-                    float scale = Random.Range(1f, 2f);
+                    float scale = Random.Range(scaleRangeMin, scaleRangeMax);
                     float rotY = Random.Range(0f, 360f);
 
                     Vector3 pos = new Vector3(
@@ -138,39 +140,37 @@ public static class VegetationPlanter
     {
         GameObject treeParent = new GameObject("Tree Parent");
 
-        int biomeDimensionsX = biome.GetLength(0);
-        int biomeDimensionsY = biome.GetLength(1);
-        int availableItems = vegetation.Length;
         int treeCount = 0;
         DeterministicRng rng = new DeterministicRng(seed);
         DeterministicRng rng1 = new DeterministicRng(seed + 1);
-        DeterministicRng rng2 = new DeterministicRng(seed + 2);
         for (int x = 0; x < mapHeight; x++)
         {
             for (int y = 0; y < mapWidth; y++)
             {
                 float height = availableSpots[x, y];
-                if (height < 10) continue;
+                if (height < 4) continue;
                 if (x > 0 && x < mapHeight - 1 && y > 0 && y < mapWidth - 1)
 
                     if (availableSpots[x + 1, y + 1] == height && availableSpots[x + 1, y - 1] == height && availableSpots[x - 1, y + 1] == height && availableSpots[x - 1, y - 1] == height)
                     {
 
-                        bool spawn = PickIndexFromXY(x, y, 100, seed) >= 98;
+                        bool spawn = rng.NextFloat() >= 0.98f;
 
                         //int whatToSpawn = (int)Mathf.Clamp(biome[y / ((mapWidth - 1) / (biomeDimensionsY - 1)), x / ((mapHeight - 1) / (biomeDimensionsX - 1))] * 5, 0, availableItems - 1);
-                        int whatToSpawn = PickIndexFromXY(x, y, availableItems, seed);
 
                         if (!((availableSpots[x, y] <= 1) && (availableSpots[x, y] > 30)))
                         {
                             if (spawn)
                             {
+                                int whatToSpawn = rng.NextInt(0, vegetation.Length);
                                 GameObject.Instantiate(vegetation[whatToSpawn], new Vector3(x + rng.NextFloat(), availableSpots[x, y], y + rng1.NextFloat()), Quaternion.Euler(new Vector3(0f, rng.NextInt(0, 360), 0f)), treeParent.transform).isStatic = true;
                                 treeCount++;
                             }
 
 
+
                         }
+
 
                         //Loader.instance.setProgress(x / mapHeight);
                     }
@@ -181,22 +181,7 @@ public static class VegetationPlanter
         //StaticBatchingUtility.Combine(grassParentSub);
         //StaticBatchingUtility.Combine(treeParentSub);
     }
-    public static int PickIndexFromXY(int x, int y, int arrayLength, int seed)
-    {
-        unchecked
-        {
-            uint h = (uint)seed;
 
-            h ^= (uint)x * 0x27d4eb2d;
-            h ^= (uint)y * 0x85ebca6b;
-
-            h ^= h >> 15;
-            h *= 0x2c1b3c6d;
-            h ^= h >> 12;
-
-            return (int)(h % (uint)arrayLength);
-        }
-    }
 
 }
 

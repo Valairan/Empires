@@ -167,6 +167,8 @@ Material:
     - _DisplacementLockObjectScale: 1
     - _DisplacementLockTilingScale: 1
     - _DisplacementMode: 0
+    - _DitherEnd: 2
+    - _DitherStart: 5
     - _DoubleSidedEnable: 1
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 1
@@ -255,6 +257,7 @@ Material:
     - _UVEmissive: 0
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
+    - _WindPatches: 0
     - _WindSpeed: 1
     - _WindStrength: 0.2
     - _WindTurbulence: 1

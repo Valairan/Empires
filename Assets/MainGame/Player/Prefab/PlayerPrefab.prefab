@@ -116,7 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1520680668
+  GlobalObjectIdHash: 618126814
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -201,19 +201,23 @@ MonoBehaviour:
   playerClothesParent: {fileID: 7717872397111983927}
   playerInputHandler: {fileID: 531750188607022820}
   health: {fileID: 5430121383282861059}
-  runSpeed: 8
-  walkSpeed: 3
+  armor: {fileID: 0}
+  runSpeed: 4
+  walkSpeed: 1.5
   GroundCheck: {fileID: 8549256906201458926}
   WhatIsGround:
     serializedVersion: 2
     m_Bits: 80
-  cameraOrbit: {fileID: 0}
   sensitivity: 150
   minPitch: -80
   maxPitch: 80
   playerCamera: {fileID: 0}
   playerCameraParent: {fileID: 1795218282399508059}
   playerCameraOrbit: {fileID: 5022791218057121337}
+  primary: {fileID: 0}
+  sidearm: {fileID: 0}
+  melee: {fileID: 0}
+  currentlyLookingAt: {fileID: 0}
 --- !u!95 &8691281464466454400
 Animator:
   serializedVersion: 7
@@ -257,7 +261,7 @@ CharacterController:
   m_Height: 1.5
   m_Radius: 0.25
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0.5
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.8, z: 0}
@@ -425,7 +429,7 @@ Transform:
   m_GameObject: {fileID: 6392717263452255731}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.4, y: 1.2, z: -2}
+  m_LocalPosition: {x: 0.4, y: 1.2, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

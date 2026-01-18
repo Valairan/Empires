@@ -12,17 +12,18 @@ public class MainMenuController : MonoBehaviour
 
     [SerializeField] GameObject mainMenuParent;
     [SerializeField] GameObject LobbyParent;
+    [SerializeField] GameObject InvalidRoomCode;
     [SerializeField] GameObject LoadingParent;
-    [SerializeField] GameObject PropertiesStorage;
     [SerializeField] TMP_Text LobbyRoomCodeDisplay;
     [SerializeField] TMP_InputField roomcodeInput;
 
     void Awake()
     {
-        
+
     }
     void Start()
     {
+        mainMenuParent.SetActive(true);
         Loader.Singelton.gameObject.SetActive(false);
     }
     public async void createRoom()
@@ -34,7 +35,6 @@ public class MainMenuController : MonoBehaviour
         {
             LoadingParent.SetActive(false);
             LobbyRoomCodeDisplay.text = joinCode;
-            PropertiesStorage.SetActive(true);
             LobbyParent.SetActive(true);
             return;
         }
@@ -53,10 +53,15 @@ public class MainMenuController : MonoBehaviour
             if (await StartClientWithRelay(roomcodeInput.text.ToString().Trim(), "dtls"))
             {
                 LoadingParent.SetActive(false);
-                PropertiesStorage.SetActive(true);
                 //NetworkManager.Singleton.
                 LobbyParent.SetActive(true);
                 return;
+            }
+            else
+            {
+                InvalidRoomCode.SetActive(true);
+                LoadingParent.SetActive(false);
+
             }
         }
     }

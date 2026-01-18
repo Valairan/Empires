@@ -35,7 +35,7 @@ Material:
   - _DOUBLESIDED_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: 2450
   stringTagMap:
@@ -146,6 +146,8 @@ Material:
     - _DepthOffsetEnable: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _DitherEnd: 15
+    - _DitherStart: 5
     - _DoubleSidedEnable: 1
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 2
@@ -203,8 +205,8 @@ Material:
     - _TransparentZWrite: 0
     - _UseShadowThreshold: 0
     - _WindSpeed: 5
-    - _WindStrength: 0.3
-    - _WindTurbulence: 0.2
+    - _WindStrength: 2
+    - _WindTurbulence: 0.1
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZTestDepthEqualForOpaque: 3

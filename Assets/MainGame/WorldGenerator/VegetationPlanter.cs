@@ -78,7 +78,7 @@ public static class VegetationPlanter
 
                 float height = availableSpots[x, y];
                 if (height < 4) continue;
-                if (!(rng.NextFloat() > 1 - probability)) continue;
+                if (!(rng.NextFloat() < probability)) continue;
                 if (x > 0 && x < settings.mapWidth - 1 && y > 0 && y < settings.mapHeight - 1)
                 {
                     if (availableSpots[x + 1, y + 1] != height ||
@@ -136,10 +136,10 @@ public static class VegetationPlanter
 
         return chunk;
     }
-    public static void ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, float[,] availableSpots, int skip, float[,] biome)
+    public static BaseResource[,] ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, float[,] availableSpots, int skip, float[,] biome)
     {
         GameObject treeParent = new GameObject("Tree Parent");
-
+        BaseResource[,] placedTrees = new BaseResource[mapHeight, mapWidth];
         int treeCount = 0;
         DeterministicRng rng = new DeterministicRng(seed);
         DeterministicRng rng1 = new DeterministicRng(seed + 1);
@@ -154,7 +154,7 @@ public static class VegetationPlanter
                     if (availableSpots[x + 1, y + 1] == height && availableSpots[x + 1, y - 1] == height && availableSpots[x - 1, y + 1] == height && availableSpots[x - 1, y - 1] == height)
                     {
 
-                        bool spawn = rng.NextFloat() >= 0.98f;
+                        bool spawn = rng.NextFloat() > 0.98f;
 
                         //int whatToSpawn = (int)Mathf.Clamp(biome[y / ((mapWidth - 1) / (biomeDimensionsY - 1)), x / ((mapHeight - 1) / (biomeDimensionsX - 1))] * 5, 0, availableItems - 1);
 
@@ -163,7 +163,11 @@ public static class VegetationPlanter
                             if (spawn)
                             {
                                 int whatToSpawn = rng.NextInt(0, vegetation.Length);
-                                GameObject.Instantiate(vegetation[whatToSpawn], new Vector3(x + rng.NextFloat(), availableSpots[x, y], y + rng1.NextFloat()), Quaternion.Euler(new Vector3(0f, rng.NextInt(0, 360), 0f)), treeParent.transform).isStatic = true;
+                                GameObject resource = GameObject.Instantiate(vegetation[whatToSpawn], new Vector3(x + rng.NextFloat(), availableSpots[x, y], y + rng1.NextFloat()), Quaternion.Euler(new Vector3(0f, rng.NextInt(0, 360), 0f)), treeParent.transform);
+                                resource.isStatic = true;
+                                placedTrees[x, y] = resource.GetComponent<BaseResource>();
+                                placedTrees[x, y].xCoordinate = x;
+                                placedTrees[x, y].yCoordinate = y;
                                 treeCount++;
                             }
 
@@ -178,6 +182,7 @@ public static class VegetationPlanter
 
         }
 
+        return placedTrees;
         //StaticBatchingUtility.Combine(grassParentSub);
         //StaticBatchingUtility.Combine(treeParentSub);
     }

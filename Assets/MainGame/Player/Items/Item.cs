@@ -8,3 +8,16 @@ public class Item : ScriptableObject
     public String ItemDescription;
     public bool stack;
 }
+
+[Serializable]
+public struct Stats
+{
+    public int shieldTotal;
+    public int healthOnGround;
+}
+
+[Serializable]
+public struct Loot
+{
+    public GameObject[] loot;
+}

@@ -8,6 +8,7 @@ public class UiController : MonoBehaviour
     [Header("Properties Display")]
     [SerializeField] public Image Health;
     [SerializeField] public Image Armor;
+    [SerializeField] public Image InteractionProgress;
 
     public void Awake()
     {
@@ -21,5 +22,13 @@ public class UiController : MonoBehaviour
     public void setHealth(float health)
     {
         Health.fillAmount = health / 100f;
+    }
+    public void setInteractionProgress(float health)
+    {
+        InteractionProgress.fillAmount = health / 100f;
+    }
+    public void displayInteractIcon(bool display)
+    {
+        InteractionProgress.gameObject.SetActive(display);
     }
 }

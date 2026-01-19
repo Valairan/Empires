@@ -32,11 +32,15 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     [SerializeField] Transform playerCameraParent;
     [SerializeField] Transform playerCameraOrbit;
 
+    public Item current;
     public Item primary;
     public Item sidearm;
     public Item melee;
+    public GameObject meleeGO;
     public Action<float> onHealthChanged;
     public Action<float> onArmorChanged;
+    public Action<float> onInteractionProgressChanged;
+    public Action<bool> onInteractableInView;
     public Action<Item> onLookingAtChanged;
     public Item currentlyLookingAt;
     ulong clientID;
@@ -55,6 +59,8 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         if (!IsLocalPlayer) return;
         onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
         onLookingAtChanged += UiController.Singleton != null ? UiController.Singleton.setCurerntlyLookingAt : null;
+        onInteractionProgressChanged += UiController.Singleton != null ? UiController.Singleton.setInteractionProgress : null;
+        onInteractableInView += UiController.Singleton != null ? UiController.Singleton.displayInteractIcon : null;
         playerCamera = Camera.main;
     }
     public void Update()
@@ -103,7 +109,12 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
                     currentlyLookingAt = item;
                     onLookingAtChanged?.Invoke(item);
                 }
+                if (hit.transform.TryGetComponent(out IInteractable interactable))
+                    onInteractableInView.Invoke(true);
+                else
+                    onInteractableInView.Invoke(false);
             }
+
         }
     }
 
@@ -119,6 +130,19 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         armor.amount = armor.amount < 0 ? 0 : armor.amount;
         onArmorChanged.Invoke(armor.amount);
         onHealthChanged.Invoke(health.amount);
+
+    }
+    void attemptToDamage()
+    {
+
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, 25f))
+        {
+
+        }
+    }
+    [ServerRpc]
+    void attemptToDamage_ServerRpc()
+    {
 
     }
 }

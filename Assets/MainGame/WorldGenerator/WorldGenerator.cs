@@ -10,7 +10,8 @@ public class WorldGenerator : MonoBehaviour
     float[,] weatherNoise;
     [SerializeField] Material terrainMaterial;
     [SerializeField] Material oceanMaterial;
-    [SerializeField] GameObject[] Trees;
+    [SerializeField] GameObject[] TreesToPlace;
+    public BaseResource[] placedResources;
     Vector3 cubeSize = new Vector3(0.2f, 0.2f, 0.2f);
     Transform mainCamera;
     bool generationComplete;
@@ -37,11 +38,10 @@ public class WorldGenerator : MonoBehaviour
         MeshGenerator.GenerateTerrainMesh(settings.mapWidth, settings.mapHeight, 100, terrainMaterial, 6, terrainNoise);
         MeshGenerator.GenerateSquareMesh(settings.mapWidth, settings.mapHeight, 25, oceanMaterial, 4);
 
-        VegetationPlanter.ScatterDecoration(settings.mapWidth, settings.mapHeight, 100, Trees, terrainNoise, 5, biomeNoise);
+        VegetationPlanter.ScatterDecoration(settings.mapWidth, settings.mapHeight, 100, TreesToPlace, terrainNoise, 5, biomeNoise);
         for (int i = 0; i < vegetation.Length; i++)
         {
             totaleVegetationChunks[i] = VegetationPlanter.scatterGrassInChunks(settings, 10, vegetation[i].density, vegetation[i].seed, vegetation[i].probability, vegetation[i].scaleRangeMin, vegetation[i].scaleRangeMax, terrainNoise);
-
         }
 
         renderParams = new RenderParams(grassMaterial);
@@ -105,6 +105,7 @@ public struct VegetationType
     public Mesh mesh;
     public Material material;
     public int submesh;
+    [Range(0, 1)]
     public float probability;
 }
 

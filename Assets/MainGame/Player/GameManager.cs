@@ -1,4 +1,5 @@
 using System.Linq;
+using Mono.Cecil;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -7,6 +8,8 @@ public class GameManager : NetworkBehaviour
 {
     [SerializeField] WorldGenerator worldGenerator;
     [SerializeField] Transform[] playerSpawnPositions;
+
+    public BaseResource[,] resources;
     float loaderProgress = 0;
     public void Start()
     {
@@ -28,7 +31,11 @@ public class GameManager : NetworkBehaviour
             loaderProgress = count / NetworkManager.Singleton.ConnectedClients.Count;
             SetLoader_ClientRpc();
         }
-        StartGame_ClientRpc();
+        //StartGame_ClientRpc();
+    }
+    [ClientRpc]
+    public void DamageResource_ClientRpc(int x, int y)
+    {
     }
 
     [ClientRpc]

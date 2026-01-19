@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Mono.Cecil;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class NetworkGamePropertiesStorage : NetworkBehaviour
     public NetworkList<PlayerData> connectedPlayerData;
     public NetworkVariable<int> readyState;
     public NetworkVariable<int> WorldGenerationSeed;
+    public BaseResource[,] resourcesInGame;
     public string myname;
 
     private string[] names = { "Avocado", "Potato", "Tomato", "Radish", "Carrot", "Bamboo", "Bean", "Cabbage" };

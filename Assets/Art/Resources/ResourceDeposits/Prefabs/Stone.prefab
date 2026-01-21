@@ -74,6 +74,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dd5ff88359b278b4397988c026985b45, type: 3}
       insertIndex: -1
       addedObject: {fileID: 523126284682480101}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dd5ff88359b278b4397988c026985b45, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4545873926014292778}
   m_SourcePrefab: {fileID: 100100000, guid: dd5ff88359b278b4397988c026985b45, type: 3}
 --- !u!1 &7198086814514051492 stripped
 GameObject:
@@ -120,6 +123,23 @@ LODGroup:
     renderers:
     - renderer: {fileID: 8711159744073029745}
   m_Enabled: 1
+--- !u!114 &4545873926014292778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7198086814514051492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9a9b6a8e52c24640b7ebe75451b60c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OreResourceBehaviour
+  ShowTopMostFoldoutHeaderGroup: 1
+  baseitem: {fileID: 0}
+  xCoordinate: 0
+  yCoordinate: 0
+  health: {fileID: 0}
 --- !u!23 &8711159744073029745 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: dd5ff88359b278b4397988c026985b45, type: 3}

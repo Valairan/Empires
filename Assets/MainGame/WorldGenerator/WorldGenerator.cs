@@ -18,13 +18,28 @@ public class WorldGenerator : MonoBehaviour
     public VegetationType[] vegetation;
     public VegetationChunk[][,] totaleVegetationChunks;
     RenderParams renderParams;
-    [SerializeField] Mesh grassMesh;
     [SerializeField] Material grassMaterial;
     [SerializeField] int numberOfChunksToRender;
 
     int mapWidth = 0;
     int mapHeight = 0;
 
+    public void Start()
+    {
+        TerrainSettings settings = new TerrainSettings();
+        settings.mapWidth = 1000;
+        settings.mapHeight = 1000;
+        settings.seed = 10;
+        settings.scale = 32;
+        settings.octaves = 4;
+        settings.persistance = 4;
+        settings.lacunarity = 0;
+        settings.multiplier = 5;
+        settings.offset = Vector2.zero;
+        settings.falloffHeight = 20;
+        settings.falloffDistance = 5;
+        GenerateTerrain(settings);
+    }
 
     public void GenerateTerrain(TerrainSettings settings)
     {
@@ -41,7 +56,7 @@ public class WorldGenerator : MonoBehaviour
         VegetationPlanter.ScatterDecoration(settings.mapWidth, settings.mapHeight, 100, TreesToPlace, terrainNoise, 5, biomeNoise);
         for (int i = 0; i < vegetation.Length; i++)
         {
-            totaleVegetationChunks[i] = VegetationPlanter.scatterGrassInChunks(settings, 10, vegetation[i].density, vegetation[i].seed, vegetation[i].probability, vegetation[i].scaleRangeMin, vegetation[i].scaleRangeMax, terrainNoise);
+            totaleVegetationChunks[i] = VegetationPlanter.scatterGrassInChunks(settings, 10, vegetation[i].density, vegetation[i].isWaterPlant, vegetation[i].seed, vegetation[i].scaleRangeMin, vegetation[i].scaleRangeMax, vegetation[i].probability, terrainNoise);
         }
 
         renderParams = new RenderParams(grassMaterial);
@@ -98,15 +113,15 @@ public class WorldGenerator : MonoBehaviour
 [Serializable]
 public struct VegetationType
 {
+    public bool isWaterPlant;
     public int seed;
     public int density;
     public float scaleRangeMin;
     public float scaleRangeMax;
     public Mesh mesh;
-    public Material material;
     public int submesh;
-    [Range(0, 1)]
-    public float probability;
+    [Range(0, 10)]
+    public int probability;
 }
 
 

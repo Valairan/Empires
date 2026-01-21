@@ -214,9 +214,18 @@ MonoBehaviour:
   playerCamera: {fileID: 0}
   playerCameraParent: {fileID: 1795218282399508059}
   playerCameraOrbit: {fileID: 5022791218057121337}
+  current: {fileID: 0}
   primary: {fileID: 0}
   sidearm: {fileID: 0}
   melee: {fileID: 0}
+  currentGO: {fileID: 0}
+  primaryGO: {fileID: 0}
+  sidearamGO: {fileID: 0}
+  meleeGO: {fileID: 0}
+  meleeStorage: {fileID: 0}
+  primaryStorage: {fileID: 0}
+  sideArmStorage: {fileID: 0}
+  equipped: {fileID: 0}
   currentlyLookingAt: {fileID: 0}
 --- !u!95 &8691281464466454400
 Animator:
@@ -619,6 +628,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 6745654242648996082, guid: 2dfe9137c5d046444a42f0edfcb5f56e, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 756aa82552b68274786a4db1b01da35b, type: 2}
     - target: {fileID: 6994040301362838405, guid: 2dfe9137c5d046444a42f0edfcb5f56e, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -635,7 +648,8 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 2dfe9137c5d046444a42f0edfcb5f56e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 4300045009065480499, guid: 2dfe9137c5d046444a42f0edfcb5f56e, type: 3}

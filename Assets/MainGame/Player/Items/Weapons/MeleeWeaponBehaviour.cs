@@ -6,12 +6,10 @@ public class MeleeWeaponBehaviour : WeaponBehaviour, IRaycastResponder, IInterac
 
     public Item interact(GameObject interactor)
     {
+        if (!IsLocalPlayer) return null;
         if (interactor.TryGetComponent(out PlayerController interactingPlayer))
         {
-            interactingPlayer.melee = baseitem;
-            interactingPlayer.meleeGO = this.gameObject;
-            this.gameObject.transform.SetParent(interactingPlayer.transform);
-            this.gameObject.SetActive(false);
+            //  interactingPlayer.PickUpItem(this.gameObject);
         }
         return baseitem;
     }
@@ -21,4 +19,11 @@ public class MeleeWeaponBehaviour : WeaponBehaviour, IRaycastResponder, IInterac
         return baseitem;
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.TryGetComponent(out IDamageable damageable))
+        {
+            damageable.takeDamage((MeleeWeapon)baseitem);
+        }
+    }
 }

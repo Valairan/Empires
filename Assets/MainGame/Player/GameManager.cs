@@ -31,7 +31,7 @@ public class GameManager : NetworkBehaviour
             loaderProgress = count / NetworkManager.Singleton.ConnectedClients.Count;
             SetLoader_ClientRpc();
         }
-        //StartGame_ClientRpc();
+        StartGame_ClientRpc();
     }
     [ClientRpc]
     public void DamageResource_ClientRpc(int x, int y)

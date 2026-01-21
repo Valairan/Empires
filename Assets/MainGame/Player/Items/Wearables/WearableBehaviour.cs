@@ -7,7 +7,9 @@ public class WearableBehaviour : ItemBehaviour, IRaycastResponder, IDamageable
         return baseitem;
     }
 
-    public void takeDamage(float damage)
+
+
+    public void takeDamage(Weapon damager)
     {
         throw new System.NotImplementedException();
     }

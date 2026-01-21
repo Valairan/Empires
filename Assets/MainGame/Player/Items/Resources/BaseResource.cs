@@ -1,26 +1,7 @@
 using UnityEngine;
 
-public class BaseResource : ItemBehaviour, IDamageable, IRaycastResponder
+[CreateAssetMenu(fileName = "BaseResource", menuName = "Items/New Base Resource")]
+public class BaseResource : Item
 {
-    public int xCoordinate;
-    public int yCoordinate;
-
-    public virtual Item respondToRaycast()
-    {
-        return baseitem;
-    }
-
-    public virtual void takeDamage(float damage)
-    {
-
-    }
-
-    public virtual void dropItems()
-    {
-
-    }
-    public virtual void deactivateSelf()
-    {
-
-    }
+    
 }

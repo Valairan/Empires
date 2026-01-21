@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -17,7 +18,7 @@ public static class VegetationPlanter
 {
 
 
-    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[,] availableSpots)
+    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, int probability, float[,] availableSpots)
     {
         int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
 
@@ -34,6 +35,7 @@ public static class VegetationPlanter
                     settings,
                     grassChunkSize,
                     grassPerCell,
+                    isWaterPlant,
                     seed,
                     scaleRangeMin,
                     scaleRangeMax,
@@ -45,8 +47,40 @@ public static class VegetationPlanter
 
         return chunkGrid;
     }
+    private static bool isEdge(int x, int y, float height, float[,] availableSpots)
+    {
 
-    public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[,] availableSpots)
+        if (availableSpots[x, y - 1] != height ||
+            availableSpots[x, y + 1] != height ||
+            availableSpots[x - 1, y] != height ||
+            availableSpots[x + 1, y] != height ||
+            availableSpots[x + 1, y + 1] != height ||
+            availableSpots[x + 1, y - 1] != height ||
+            availableSpots[x - 1, y + 1] != height ||
+            availableSpots[x - 1, y - 1] != height)
+        {
+            return true;
+        }
+        return false;
+    }
+    private static bool isWaterEdge(int x, int y, float height, float[,] availableSpots)
+    {
+
+        if (availableSpots[x, y - 1] < height ||
+            availableSpots[x, y + 1] < height ||
+            availableSpots[x - 1, y] < height ||
+            availableSpots[x + 1, y] < height ||
+            availableSpots[x + 1, y + 1] < height ||
+            availableSpots[x + 1, y - 1] < height ||
+            availableSpots[x - 1, y + 1] < height ||
+            availableSpots[x - 1, y - 1] < height)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, int probability, float[,] availableSpots)
     {
         int chunkSize = grassChunkSize;
 
@@ -76,45 +110,56 @@ public static class VegetationPlanter
             for (int y = startY; y <= endY; y++)
             {
 
+                if (rng.NextInt(0, 11) >= probability) continue;
                 float height = availableSpots[x, y];
                 if (height < 4) continue;
-                if (!(rng.NextFloat() < probability)) continue;
                 if (x > 0 && x < settings.mapWidth - 1 && y > 0 && y < settings.mapHeight - 1)
                 {
-                    if (availableSpots[x + 1, y + 1] != height ||
-                        availableSpots[x + 1, y - 1] != height ||
-                        availableSpots[x - 1, y + 1] != height ||
-                        availableSpots[x - 1, y - 1] != height)
-                        continue;
-                }
+                    if (height < 6)
+                    {
+                        if (isWaterPlant)
+                        {
+                            if (!isWaterEdge(x, y, height, availableSpots)) continue;
+                        }
+                    }
+                    else
+                    {
+                        if (isWaterPlant) continue;
+                    }
 
-                // deterministic per-cell RNG
+                    if (!isWaterPlant)
+                        if (isEdge(x, y, height, availableSpots)) continue;
 
-                for (int i = 0; i < grassPerCell; i++)
-                {
-                    float offsetX = Random.Range(-0.5f, 0.5f);
-                    float offsetZ = Random.Range(-0.5f, 0.5f);
 
-                    float scale = Random.Range(scaleRangeMin, scaleRangeMax);
-                    float rotY = Random.Range(0f, 360f);
+                    // deterministic per-cell RNG
 
-                    Vector3 pos = new Vector3(
-                        x + offsetX,
-                        height,
-                        y + offsetZ
-                    );
+                    for (int i = 0; i < grassPerCell; i++)
+                    {
+                        float offsetX = isWaterPlant ? 0f : Random.Range(-0.5f, 0.5f);
+                        float offsetZ = isWaterPlant ? 0f : Random.Range(-0.5f, 0.5f);
 
-                    chunk.matrices[chunk.count++] =
-                        Matrix4x4.TRS(
-                            pos,
-                            Quaternion.Euler(0f, rotY, 0f),
-                            Vector3.one * scale
+                        float scale = isWaterPlant ? 1f : Random.Range(scaleRangeMin, scaleRangeMax);
+                        float rotY = Random.Range(0f, 360f);
+
+                        Vector3 pos = new Vector3(
+                            x + offsetX,
+                            height,
+                            y + offsetZ
                         );
 
-                    minH = Mathf.Min(minH, height);
-                    maxH = Mathf.Max(maxH, height);
+                        chunk.matrices[chunk.count++] =
+                            Matrix4x4.TRS(
+                                pos,
+                                Quaternion.Euler(0f, rotY, 0f),
+                                Vector3.one * scale
+                            );
 
-                    //chunk.meshes[chunk.count] = 0;//(int)Random.Range(0, numberOfMeshes - 1);
+                        minH = Mathf.Min(minH, height);
+                        maxH = Mathf.Max(maxH, height);
+
+                        //chunk.meshes[chunk.count] = 0;//(int)Random.Range(0, numberOfMeshes - 1);
+
+                    }
 
                 }
             }
@@ -136,10 +181,10 @@ public static class VegetationPlanter
 
         return chunk;
     }
-    public static BaseResource[,] ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, float[,] availableSpots, int skip, float[,] biome)
+    public static BaseResourceBehaviour[,] ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, float[,] availableSpots, int skip, float[,] biome)
     {
         GameObject treeParent = new GameObject("Tree Parent");
-        BaseResource[,] placedTrees = new BaseResource[mapHeight, mapWidth];
+        BaseResourceBehaviour[,] placedTrees = new BaseResourceBehaviour[mapHeight, mapWidth];
         int treeCount = 0;
         DeterministicRng rng = new DeterministicRng(seed);
         DeterministicRng rng1 = new DeterministicRng(seed + 1);
@@ -165,7 +210,7 @@ public static class VegetationPlanter
                                 int whatToSpawn = rng.NextInt(0, vegetation.Length);
                                 GameObject resource = GameObject.Instantiate(vegetation[whatToSpawn], new Vector3(x + rng.NextFloat(), availableSpots[x, y], y + rng1.NextFloat()), Quaternion.Euler(new Vector3(0f, rng.NextInt(0, 360), 0f)), treeParent.transform);
                                 resource.isStatic = true;
-                                placedTrees[x, y] = resource.GetComponent<BaseResource>();
+                                placedTrees[x, y] = resource.GetComponent<BaseResourceBehaviour>();
                                 placedTrees[x, y].xCoordinate = x;
                                 placedTrees[x, y].yCoordinate = y;
                                 treeCount++;

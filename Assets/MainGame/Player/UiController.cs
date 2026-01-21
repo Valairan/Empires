@@ -27,8 +27,9 @@ public class UiController : MonoBehaviour
     {
         InteractionProgress.fillAmount = health / 100f;
     }
-    public void displayInteractIcon(bool display)
+    public void displayInteractIcon(bool display, Vector3 worldPosition)
     {
+        InteractionProgress.rectTransform.position = Camera.main.WorldToScreenPoint(worldPosition);
         InteractionProgress.gameObject.SetActive(display);
     }
 }

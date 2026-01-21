@@ -3,6 +3,7 @@ using TMPro;
 using Unity.Burst.Intrinsics;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 {
@@ -36,11 +37,20 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     public Item primary;
     public Item sidearm;
     public Item melee;
+
+    public GameObject currentGO;
+    public GameObject primaryGO;
+    public GameObject sidearamGO;
     public GameObject meleeGO;
+    [SerializeField] Transform meleeStorage;
+    [SerializeField] Transform primaryStorage;
+    [SerializeField] Transform sideArmStorage;
+    [SerializeField] Transform equipped;
+
     public Action<float> onHealthChanged;
     public Action<float> onArmorChanged;
     public Action<float> onInteractionProgressChanged;
-    public Action<bool> onInteractableInView;
+    public Action<bool, Vector3> onInteractableInView;
     public Action<Item> onLookingAtChanged;
     public Item currentlyLookingAt;
     ulong clientID;
@@ -99,7 +109,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 
     public void checkForRaycasts()
     {
-        if (Physics.SphereCast(playerCamera.transform.position, 0.5f, playerCamera.transform.forward, out RaycastHit hit, 25f))
+        if (Physics.SphereCast(playerCamera.transform.position, 0.2f, playerCamera.transform.forward, out RaycastHit hit, 25f))
         {
             if (hit.transform.TryGetComponent(out IRaycastResponder responder))
             {
@@ -110,9 +120,17 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
                     onLookingAtChanged?.Invoke(item);
                 }
                 if (hit.transform.TryGetComponent(out IInteractable interactable))
-                    onInteractableInView.Invoke(true);
+                {
+                    onInteractableInView.Invoke(true, hit.point);
+                    if (playerInputHandler.Interact)
+                    {
+                        interactable.interact(this.gameObject);
+                    }
+                }
                 else
-                    onInteractableInView.Invoke(false);
+                {
+                    onInteractableInView.Invoke(false, hit.point);
+                }
             }
 
         }
@@ -123,25 +141,45 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         return baseitem;
     }
 
-    public void takeDamage(float damage)
+    public void takeDamage(Weapon damager)
     {
-        armor.amount -= damage;
-        health.amount = armor.amount < 0 ? health.amount + armor.amount : health.amount;
-        armor.amount = armor.amount < 0 ? 0 : armor.amount;
+
+        //armor.amount -= damage;
+        //health.amount = armor.amount < 0 ? health.amount + armor.amount : health.amount;
+        ///armor.amount = armor.amount < 0 ? 0 : armor.amount;
         onArmorChanged.Invoke(armor.amount);
         onHealthChanged.Invoke(health.amount);
-
     }
     void attemptToDamage()
     {
-
-        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, 25f))
-        {
-
-        }
+        if (!IsLocalPlayer) return;
+        attemptToDamage_ServerRpc();
     }
     [ServerRpc]
     void attemptToDamage_ServerRpc()
+    {
+
+    }
+
+    public void EquipItem(Item item)
+    {
+        if (!IsLocalPlayer) return;
+        //EquipItem_ServerRpc(item);
+    }
+
+    [ServerRpc]
+    public void EquipItem_ServerRpc()
+    {
+
+
+    }
+    public void PickUpItem()
+    {
+        if (!IsLocalPlayer) return;
+    }
+
+    [ServerRpc]
+    public void PickUpItem_ServerRpc()
     {
 
     }

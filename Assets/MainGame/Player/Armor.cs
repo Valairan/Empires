@@ -1,7 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class Armor : NetworkBehaviour
+public class Armor : RangeStat
 {
-    public float amount;
 }

@@ -7,6 +7,8 @@ public class Item : ScriptableObject
     public String ItemName;
     public String ItemDescription;
     public bool stack;
+    public ItemType Type;
+
 }
 
 [Serializable]
@@ -20,4 +22,12 @@ public struct Stats
 public struct Loot
 {
     public GameObject[] loot;
+}
+
+public enum ItemType
+{
+    resource,
+    melee,
+    primary,
+    sidearm,
 }

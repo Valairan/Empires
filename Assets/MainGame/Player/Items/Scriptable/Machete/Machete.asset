@@ -15,7 +15,10 @@ MonoBehaviour:
   ItemName: Machete
   ItemDescription: Melee weapon
   stack: 0
-  ingameWeapon: {fileID: 6795005854820407695, guid: 59f9206230a826d46b3df294056e3167, type: 3}
-  equippedWeapon: {fileID: 6795005854820407695, guid: c8281dd187bcbf146ac5d57e41787563, type: 3}
+  Type: 1
+  treeDamage: 0
+  oreDamage: 0
+  playerDamage: 0
+  weaponPrefab: {fileID: 0}
   firerate: 1
   magazine: 0

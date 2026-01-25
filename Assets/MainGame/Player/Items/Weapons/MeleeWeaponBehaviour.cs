@@ -1,15 +1,17 @@
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class MeleeWeaponBehaviour : WeaponBehaviour, IRaycastResponder, IInteractable
 {
+    public float InteractionDuration => 1f;
 
-    public Item interact(GameObject interactor)
+    public Item Interact(GameObject interactor)
     {
-        if (!IsLocalPlayer) return null;
+
         if (interactor.TryGetComponent(out PlayerController interactingPlayer))
         {
-            //  interactingPlayer.PickUpItem(this.gameObject);
+            attemptToInteract_ServerRpc(interactingPlayer.clientID);
         }
         return baseitem;
     }
@@ -25,5 +27,37 @@ public class MeleeWeaponBehaviour : WeaponBehaviour, IRaycastResponder, IInterac
         {
             damageable.takeDamage((MeleeWeapon)baseitem);
         }
+    }
+
+    [ServerRpc]
+    void attemptToInteract_ServerRpc(ulong interactingPlayerId)
+    {
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(interactingPlayerId, out var client))
+            return;
+
+        var playerObject = client.PlayerObject;
+        if (playerObject == null)
+            return;
+
+        if (!playerObject.TryGetComponent(out PlayerController player))
+            return;
+
+        if (baseitem == null)
+            return;
+
+        float distance = Vector3.Distance(
+            player.transform.position,
+            transform.position
+        );
+
+        if (distance > 2.5f) // interaction range
+            return;
+
+
+        if (!player.PickUpItem(this))
+            return;
+
+        Debug.Log("The item has been picked up");
+
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Items/Weapons/New Weapon")]
+[CreateAssetMenu(fileName = "Base Weapon", menuName = "Items/Weapons/New Weapon")]
 public class Weapon : Item
 {
     public float treeDamage;

@@ -48,12 +48,14 @@ public class MainMenuController : MonoBehaviour
 
     public async void joinRoom()
     {
+        mainMenuParent.SetActive(false);
+        LoadingParent.SetActive(true);
         if (roomcodeInput.text.Length > 0)
         {
             if (await StartClientWithRelay(roomcodeInput.text.ToString().Trim(), "dtls"))
             {
                 LoadingParent.SetActive(false);
-                //NetworkManager.Singleton.
+                LobbyRoomCodeDisplay.text = roomcodeInput.text;
                 LobbyParent.SetActive(true);
                 return;
             }

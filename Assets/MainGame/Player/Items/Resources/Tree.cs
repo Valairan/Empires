@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Tree", menuName = "Items/New Tree")]
-public class Tree : BaseResource
+[CreateAssetMenu(fileName = "TreeItem", menuName = "Items/New TreeItem")]
+public class TreeItem : BaseResource
 {
 
 }

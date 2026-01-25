@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class WorldGenerator : MonoBehaviour
 {
-
     float[,] terrainNoise;
     float[,] biomeNoise;
     float[,] weatherNoise;
     [SerializeField] Material terrainMaterial;
     [SerializeField] Material oceanMaterial;
     [SerializeField] GameObject[] TreesToPlace;
-    public BaseResource[] placedResources;
-    Vector3 cubeSize = new Vector3(0.2f, 0.2f, 0.2f);
     Transform mainCamera;
     bool generationComplete;
     public VegetationType[] vegetation;
@@ -24,7 +21,7 @@ public class WorldGenerator : MonoBehaviour
     int mapWidth = 0;
     int mapHeight = 0;
 
-    public void Start()
+    public void StartGameLocal()
     {
         TerrainSettings settings = new TerrainSettings();
         settings.mapWidth = 1000;
@@ -39,6 +36,11 @@ public class WorldGenerator : MonoBehaviour
         settings.falloffHeight = 20;
         settings.falloffDistance = 5;
         GenerateTerrain(settings);
+    }
+
+    void Start()
+    {
+        //StartGameLocal();
     }
 
     public void GenerateTerrain(TerrainSettings settings)
@@ -56,7 +58,7 @@ public class WorldGenerator : MonoBehaviour
         VegetationPlanter.ScatterDecoration(settings.mapWidth, settings.mapHeight, 100, TreesToPlace, terrainNoise, 5, biomeNoise);
         for (int i = 0; i < vegetation.Length; i++)
         {
-            totaleVegetationChunks[i] = VegetationPlanter.scatterGrassInChunks(settings, 10, vegetation[i].density, vegetation[i].isWaterPlant, vegetation[i].seed, vegetation[i].scaleRangeMin, vegetation[i].scaleRangeMax, vegetation[i].probability, terrainNoise);
+            totaleVegetationChunks[i] = VegetationPlanter.scatterGrassInChunks(settings, 5, vegetation[i].density, vegetation[i].isWaterPlant, vegetation[i].seed, vegetation[i].scaleRangeMin, vegetation[i].scaleRangeMax, vegetation[i].probability, terrainNoise);
         }
 
         renderParams = new RenderParams(grassMaterial);
@@ -76,8 +78,8 @@ public class WorldGenerator : MonoBehaviour
             //Bounds bounds = new Bounds(Vector3.zero, new Vector3(100, 100, 100));
             if (generationComplete)
             {
-                int positionx = (int)Math.Clamp(mainCamera.position.x, 0, mapWidth) / 10;
-                int positionz = (int)Math.Clamp(mainCamera.position.z, 0, mapHeight) / 10;
+                int positionx = (int)Math.Clamp(mainCamera.position.x, 0, mapWidth) / 5;
+                int positionz = (int)Math.Clamp(mainCamera.position.z, 0, mapHeight) / 5;
 
                 for (int i = -numberOfChunksToRender; i <= numberOfChunksToRender; i++)
                 {
@@ -87,7 +89,7 @@ public class WorldGenerator : MonoBehaviour
                         int chunkZ = positionz + j;
 
 
-                        if (chunkX < 0 || chunkZ < 0 || chunkX >= 1000 / 10 || chunkZ >= 1000 / 10)
+                        if (chunkX < 0 || chunkZ < 0 || chunkX >= 1000 / 5 || chunkZ >= 1000 / 5)
                             continue;
                         for (int k = 0; k < vegetation.Length; k++)
                         {

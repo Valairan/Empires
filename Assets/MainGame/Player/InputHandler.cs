@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -6,50 +7,51 @@ using UnityEngine.InputSystem;
 public class InputHandler : NetworkBehaviour
 {
     private InGame ingameInputActions;
-    public Vector2 MoveInput { get; private set; }
-    public Vector2 LookInput { get; private set; }
-    public bool Attack { get; private set; }
-    public bool Interact { get; private set; }
-    public bool Jump { get; private set; }
-    public bool Sneak { get; private set; }
-    public bool Previous { get; private set; }
-    public bool Next { get; private set; }
 
-    public void Start()
+
+    public Action<Vector2> Move;
+    public Action<Vector2> Look;
+    public Action Attack;
+    public Action<bool> Interact;
+    public Action<bool> Jump;
+    public Action<bool> Sneak;
+    public Action Build;
+    public Action Previous;
+    public Action Next;
+
+    public override void OnNetworkSpawn()
     {
         if (!IsOwner) return;
         ingameInputActions = new InGame();
-        ingameInputActions.Player.Move.performed += OnMove;
-        ingameInputActions.Player.Move.canceled += OnMove;
-        ingameInputActions.Player.Look.performed += OnLook;
-        ingameInputActions.Player.Look.canceled += OnLook;
-        ingameInputActions.Player.Attack.performed += (ctx) => Attack = true;
-        ingameInputActions.Player.Attack.canceled += (ctx) => Attack = false;
-        ingameInputActions.Player.Interact.performed += (ctx) => Interact = true;
-        ingameInputActions.Player.Interact.canceled += (ctx) => Interact = false;
-        ingameInputActions.Player.Jump.performed += (ctx) => Jump = true;
-        ingameInputActions.Player.Jump.canceled += (ctx) => Jump = false;
-        ingameInputActions.Player.Sneak.performed += (ctx) => Sneak = true;
-        ingameInputActions.Player.Sneak.canceled += (ctx) => Sneak = false;
-        ingameInputActions.Player.Previous.started += (ctx) => Previous = true;
-        ingameInputActions.Player.Previous.canceled += (ctx) => Previous = false;
-        ingameInputActions.Player.Next.started += (ctx) => Next = true;
-        ingameInputActions.Player.Next.canceled += (ctx) => Next = false;
+        ingameInputActions.Player.Move.performed += ctx => Move?.Invoke(ctx.ReadValue<Vector2>());
+        ingameInputActions.Player.Move.canceled += _ => Move?.Invoke(Vector2.zero);
+        ingameInputActions.Player.Look.performed += ctx => Look?.Invoke(ctx.ReadValue<Vector2>()); ;
+        ingameInputActions.Player.Look.canceled += _ => Look?.Invoke(Vector2.zero); ;
+        ingameInputActions.Player.Attack.performed += ctx => Attack?.Invoke();
+
+        ingameInputActions.Player.Interact.performed += ctx => Interact?.Invoke(true);
+        ingameInputActions.Player.Interact.canceled += ctx => Interact?.Invoke(false);
+
+        ingameInputActions.Player.Jump.performed += ctx => Jump?.Invoke(true);
+        ingameInputActions.Player.Jump.canceled += ctx => Jump?.Invoke(false);
+
+        ingameInputActions.Player.Sneak.performed += ctx => Sneak?.Invoke(true);
+        ingameInputActions.Player.Sneak.canceled += ctx => Sneak?.Invoke(false);
+        ingameInputActions.Player.Previous.started += ctx => Previous?.Invoke();
+        ingameInputActions.Player.Next.started += ctx => Next?.Invoke();
+
+        ingameInputActions.Player.Build.performed += _ => Build.Invoke();
+
+    }
+    public void enableInputs()
+    {
         ingameInputActions.Enable();
     }
-    public void OnDisable()
+    public void disableInputs()
     {
         ingameInputActions.Disable();
     }
 
-    private void OnMove(InputAction.CallbackContext context)
-    {
-        MoveInput = context.ReadValue<Vector2>();
-    }
-    private void OnLook(InputAction.CallbackContext context)
-    {
-        LookInput = context.ReadValue<Vector2>();
-    }
 
 
 }

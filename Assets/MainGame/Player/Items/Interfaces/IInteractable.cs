@@ -2,7 +2,8 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    public Item interact(GameObject interactor);
+    public Item Interact(GameObject interactor);
+    public float InteractionDuration { get; }
 
 
 }

@@ -1,9 +1,5 @@
-using System.Linq;
-using Mono.Cecil;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-
 public class GameManager : NetworkBehaviour
 {
     [SerializeField] WorldGenerator worldGenerator;
@@ -20,9 +16,8 @@ public class GameManager : NetworkBehaviour
         int count = 0;
         foreach (PlayerData client in NetworkGamePropertiesStorage.Singleton.connectedPlayerData)
         {
-            GameObject player = Instantiate(NetworkGamePropertiesStorage.Singleton.playerPrefab);
+            GameObject player = Instantiate(NetworkGamePropertiesStorage.Singleton.playerPrefab, playerSpawnPositions[count].position, Quaternion.identity);
             NetworkGamePropertiesStorage.Singleton.spawnedPlayers.Add(client.clientId, player);
-            player.transform.position = playerSpawnPositions[(int)(client.clientId % 8)].position;
             PlayerController temp = player.transform.GetComponent<PlayerController>();
             //temp.setClientId(client.clientId);
             //temp.wearItem(retrieveFromAssetDatabase(playerData.head, body, shoe))
@@ -30,6 +25,7 @@ public class GameManager : NetworkBehaviour
             count++;
             loaderProgress = count / NetworkManager.Singleton.ConnectedClients.Count;
             SetLoader_ClientRpc();
+            DisableLoader_ClientRpc();
         }
         StartGame_ClientRpc();
     }
@@ -59,6 +55,11 @@ public class GameManager : NetworkBehaviour
         settings.falloffHeight = 20;
         settings.falloffDistance = 5;
         worldGenerator.GenerateTerrain(settings);
+    }
+
+    [ClientRpc]
+    public void DisableLoader_ClientRpc()
+    {
         Loader.Singelton.gameObject.SetActive(false);
     }
 }

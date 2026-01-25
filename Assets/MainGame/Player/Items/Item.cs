@@ -4,10 +4,17 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Items/New Item")]
 public class Item : ScriptableObject
 {
+    public Sprite ItemIcon;
     public String ItemName;
     public String ItemDescription;
     public bool stack;
     public ItemType Type;
+    [Header("Manufacturing cost")]
+    public ManufacturingCost cost;
+    [Header("While attached to player")]
+    public Vector3 position;
+    public Vector3 rotation;
+    public Vector3 scale;
 
 }
 
@@ -18,11 +25,6 @@ public struct Stats
     public int healthOnGround;
 }
 
-[Serializable]
-public struct Loot
-{
-    public GameObject[] loot;
-}
 
 public enum ItemType
 {
@@ -30,4 +32,11 @@ public enum ItemType
     melee,
     primary,
     sidearm,
+}
+
+[Serializable]
+public struct ManufacturingCost
+{
+    public BaseResource[] itemsNeededToManufacture;
+    public int[] howManyItemsNeededToManufacture;
 }

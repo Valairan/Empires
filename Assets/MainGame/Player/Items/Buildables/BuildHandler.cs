@@ -4,35 +4,41 @@ using UnityEngine.UI;
 public class BuildHandler : MonoBehaviour
 {
 
-    public GameObject buildMenuUI;
 
     public Machine[] allAvailableMachines;
-    public Machine testItem;
     private Machine toBuild;
     private GameObject toBuildGO;
     private Buildable toBuildBuildable;
 
     bool inPreview = false;
 
-    public void toggleBuildMenu()
-    {
-        buildMenuUI.SetActive(!buildMenuUI.activeSelf);
-    }
-
     void Update()
     {
         if (inPreview)
         {
-            toBuildGO.transform.position = transform.position + transform.forward;
+            toBuildGO.transform.position = transform.position + (transform.forward * 2);
         }
+    }
+    public void toggleBuildMenu()
+    {
+        UiController.Singleton.toggleBuildMenu();
+    }
+
+    public void startPreview()
+    {
+
     }
     public void buildButtonPressed()
     {
-        //if (toBuild == null && !inPreview)
-        //    toggleBuildMenu();
+        if (toBuild == null && !inPreview)
+        {
+            toggleBuildMenu();
+            return;
+        }
+
         if (!inPreview)
         {
-            toBuildGO = Instantiate(testItem.machinePrefab);
+            toBuildGO = Instantiate(toBuild.machinePrefab);
             toBuildBuildable = toBuildGO.GetComponent<Buildable>();
             inPreview = true;
             return;
@@ -51,7 +57,14 @@ public class BuildHandler : MonoBehaviour
             }
         }
 
+        toBuild = null;
+        toBuildGO = null;
         toBuildBuildable = null;
         inPreview = false;
+    }
+
+    public void setCurrentBuildable(Machine machine)
+    {
+        toBuild = machine;
     }
 }

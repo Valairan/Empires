@@ -70,11 +70,62 @@ public class WorldGenerator : MonoBehaviour
 
     }
 
+    Matrix4x4[] visibleMatrices = new Matrix4x4[1023]; // max batch size
+    int maxInstances = 1023;
 
     void Update()
     {
-        if (generationComplete)
+        if (!generationComplete) return;
+
+        int positionX = (int)Math.Clamp(mainCamera.position.x, 0, mapWidth) / 5;
+        int positionZ = (int)Math.Clamp(mainCamera.position.z, 0, mapHeight) / 5;
+
+        for (int k = 0; k < vegetation.Length; k++)
         {
+            int count = 0; // How many instances in this batch
+
+            // Loop over visible chunks
+            for (int i = -numberOfChunksToRender; i <= numberOfChunksToRender; i++)
+            {
+                for (int j = -numberOfChunksToRender; j <= numberOfChunksToRender; j++)
+                {
+                    int chunkX = positionX + i;
+                    int chunkZ = positionZ + j;
+
+                    if (chunkX < 0 || chunkZ < 0 || chunkX >= mapWidth / 5 || chunkZ >= mapHeight / 5)
+                        continue;
+
+                    VegetationChunk chunk = totaleVegetationChunks[k][chunkX, chunkZ];
+                    if (chunk.count == 0) continue;
+
+                    // Copy chunk matrices into the preallocated array in batches of 1023
+                    for (int m = 0; m < chunk.count; m++)
+                    {
+                        visibleMatrices[count] = chunk.matrices[m];
+                        count++;
+
+                        if (count == maxInstances)
+                        {
+                            // Render current batch
+                            Graphics.RenderMeshInstanced(renderParams, vegetation[k].mesh, 0, visibleMatrices);
+                            count = 0; // reset counter for next batch
+                        }
+                    }
+                }
+            }
+
+            // Render any leftover instances
+            if (count > 0)
+            {
+                Matrix4x4[] leftover = new Matrix4x4[count];
+                Array.Copy(visibleMatrices, leftover, count);
+                Graphics.RenderMeshInstanced(renderParams, vegetation[k].mesh, 0, leftover);
+            }
+        }
+
+        void UpdateOutdated()
+        {
+
             //Bounds bounds = new Bounds(Vector3.zero, new Vector3(100, 100, 100));
             if (generationComplete)
             {
@@ -108,8 +159,8 @@ public class WorldGenerator : MonoBehaviour
             }
         }
     }
-
 }
+
 
 
 [Serializable]

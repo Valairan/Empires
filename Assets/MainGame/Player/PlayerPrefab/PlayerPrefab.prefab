@@ -118,13 +118,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
   GlobalObjectIdHash: 618126814
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 618126814
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
@@ -262,7 +262,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildHandler
   buildMenuUI: {fileID: 0}
   allAvailableMachines: []
-  testItem: {fileID: 11400000, guid: 98362b8aaf7b1954fa50a947b294c01c, type: 2}
 --- !u!114 &4720122550096299429
 MonoBehaviour:
   m_ObjectHideFlags: 0

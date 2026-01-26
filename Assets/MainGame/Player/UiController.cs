@@ -3,12 +3,15 @@ using System.Reflection;
 using TMPro;
 using TreeEditor;
 using Unity.VisualScripting;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.UI;
 public class UiController : MonoBehaviour
 {
     public static UiController Singleton;
 
+    [Header("Current Player")]
+    public BuildHandler currentPlayerBuildHandler;
     [Header("Properties Display")]
     [SerializeField] Image Health;
     [SerializeField] Image Armor;
@@ -16,8 +19,10 @@ public class UiController : MonoBehaviour
     [SerializeField] Image InteractionPrompt;
     [SerializeField] GameObject currentlyLookingAtParent;
     [SerializeField] TMP_Text currentlyLookingAtLabel;
-    [Header("Build Menu Settings")]
-    [SerializeField] Button[] selectBuildingFromList;
+    [Header("Build Menu Display")]
+    [SerializeField] GameObject buildMenu;
+    [SerializeField] TMP_Text buildableName;
+    [SerializeField] TMP_Text buildableDescription;
 
 
     public void Awake()
@@ -52,5 +57,26 @@ public class UiController : MonoBehaviour
     {
         InteractionPrompt.gameObject.SetActive(display);
         InteractionPrompt.rectTransform.position = Camera.main.WorldToScreenPoint(worldPosition);
+    }
+
+    public void displayHoveringBuildableInformation(Item item)
+    {
+        buildableName.text = item.name;
+        buildableDescription.text = item.ItemDescription;
+    }
+    public void toggleBuildMenu()
+    {
+        buildMenu.SetActive(!buildMenu.activeSelf);
+    }
+    public void setCurrentBuildable(Machine machine)
+    {
+        currentPlayerBuildHandler.setCurrentBuildable(machine);
+        toggleBuildMenu();
+        currentPlayerBuildHandler.startPreview();
+    }
+
+    public void canBuildSomethingButtonToggle()
+    {
+
     }
 }

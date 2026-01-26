@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Buildable : NetworkBehaviour
 {
@@ -91,4 +92,6 @@ public class Buildable : NetworkBehaviour
         if (!NetworkObject.IsSpawned)
             GetComponent<NetworkObject>().Spawn();
     }
+
+
 }

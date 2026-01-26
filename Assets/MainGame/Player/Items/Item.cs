@@ -16,6 +16,15 @@ public class Item : ScriptableObject
     public Vector3 rotation;
     public Vector3 scale;
 
+    private void OnValidate()
+    {
+        // if (!cost.IsValid)
+        // {
+        //     Debug.LogError(
+        //         $"{name}: ManufacturingCost arrays must be non-null and the same length"
+        //     );
+        // }
+    }
 }
 
 [Serializable]
@@ -29,6 +38,7 @@ public struct Stats
 public enum ItemType
 {
     resource,
+    machine,
     melee,
     primary,
     sidearm,
@@ -39,4 +49,6 @@ public struct ManufacturingCost
 {
     public BaseResource[] itemsNeededToManufacture;
     public int[] howManyItemsNeededToManufacture;
+    public bool IsValid =>
+    itemsNeededToManufacture.Length == howManyItemsNeededToManufacture.Length;
 }

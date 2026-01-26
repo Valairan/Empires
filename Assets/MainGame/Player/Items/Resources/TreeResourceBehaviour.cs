@@ -9,6 +9,10 @@ public class TreeResourceBehaviour : BaseResourceBehaviour
 
     }
 
+    public override Item respondToRaycast()
+    {
+        return baseitem;
+    }
     public override void takeDamage(Weapon damager)
     {
         health.amount -= damager.treeDamage;

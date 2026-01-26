@@ -48,6 +48,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4495179518835506847, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5df295bb069748343ab137caea2d3c23, type: 2}
     - target: {fileID: -3719948848978554356, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -64,6 +68,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 8c6fc4b776a878147a54d851eff7a622, type: 2}
+    - target: {fileID: 4204216502161930316, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5df295bb069748343ab137caea2d3c23, type: 2}
     - target: {fileID: 4742473837712756890, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
       propertyPath: m_Size
       value: 6
@@ -100,9 +108,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4746055012376876125}
-    - targetCorrespondingSourceObject: {fileID: 6223583338262851607, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8777155965927815781}
   m_SourcePrefab: {fileID: 100100000, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
 --- !u!1 &3548012934083070747 stripped
 GameObject:
@@ -121,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3509536891
+  GlobalObjectIdHash: 4225982704
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -188,29 +193,3 @@ MonoBehaviour:
   IsPlaced: 0
   IsValidPlacement: 0
   ValidRotation: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &7756015721992947293 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6223583338262851607, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
-  m_PrefabInstance: {fileID: 4466580336914888266}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &8777155965927815781
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7756015721992947293}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 6, y: 4, z: 0.5999999}
-  m_Center: {x: 0, y: 2, z: -0.09999999}

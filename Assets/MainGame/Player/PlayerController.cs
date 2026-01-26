@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -82,10 +83,23 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     {
         if (!IsLocalPlayer) return;
         playerCamera = Camera.main;
+        BindUI();
+        BindInputs();
+
+    }
+
+    public void BindUI()
+    {
         onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
         onLookingAtChanged += UiController.Singleton != null ? UiController.Singleton.setCurerntlyLookingAt : null;
         onInteractionProgressChanged += UiController.Singleton != null ? UiController.Singleton.setInteractionProgress : null;
         onInteractableInView += UiController.Singleton != null ? UiController.Singleton.displayInteractIcon : null;
+        
+        UiController.Singleton.currentPlayerBuildHandler = playerBuildHandler;
+    }
+
+    public void BindInputs()
+    {
 
         playerInputHandler.Move += ctx => MoveInput = ctx;
         playerInputHandler.Look += ctx => LookInput = ctx;
@@ -98,7 +112,6 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerInputHandler.Interact += OnInteract;
 
         playerInputHandler.Build += buildButtonPressed;
-
 
         playerInputHandler.enableInputs();
     }

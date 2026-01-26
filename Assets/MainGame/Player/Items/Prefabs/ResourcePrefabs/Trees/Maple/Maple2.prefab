@@ -106,6 +106,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 22549da9f597b4e4c92386792cb52ab5, type: 3}
       insertIndex: -1
       addedObject: {fileID: -6882117965196182127}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 22549da9f597b4e4c92386792cb52ab5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6917760515564863431}
     - targetCorrespondingSourceObject: {fileID: 4801276892912680341, guid: 22549da9f597b4e4c92386792cb52ab5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7744162435185360282}
@@ -179,6 +182,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TreeResourceBehaviour
   ShowTopMostFoldoutHeaderGroup: 1
-  baseitem: {fileID: 0}
+  baseitem: {fileID: 11400000, guid: c0b44acd213d97d4ea86fd1b85d77917, type: 2}
   xCoordinate: 0
   yCoordinate: 0
+  health: {fileID: 6917760515564863431}
+--- !u!114 &6917760515564863431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464185219406325303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1f2923c4114cbf459685dec58ef6516, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  ShowTopMostFoldoutHeaderGroup: 1
+  amount: 100

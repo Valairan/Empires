@@ -4,6 +4,7 @@ public class GameManager : NetworkBehaviour
 {
     [SerializeField] WorldGenerator worldGenerator;
     [SerializeField] Transform[] playerSpawnPositions;
+    [SerializeField] Transform playerCanvas;
 
     public BaseResource[,] resources;
     float loaderProgress = 0;

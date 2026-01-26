@@ -12,10 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b4aa48abfe11b246be91599f35380ce, type: 3}
   m_Name: PineTree
   m_EditorClassIdentifier: Assembly-CSharp::Tree
+  ItemIcon: {fileID: 0}
   ItemName: Pine Tree
   ItemDescription: Hard to cut down but worth the effort
   stack: 0
   Type: 0
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
   position: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0}
   scale: {x: 0, y: 0, z: 0}
+  drops:
+  - {fileID: 11400000, guid: 8db93d683f0963049852e8c786d4f06c, type: 2}
+  dropsHowMany: e8030000

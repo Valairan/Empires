@@ -6,6 +6,17 @@ public class MeleeWeaponBehaviour : WeaponBehaviour, IRaycastResponder, IInterac
 {
     public float InteractionDuration => 1f;
 
+    bool canAttack = true;
+
+    public override void OnAttackAnimationFinished()
+    {
+        canAttack = true;
+    }
+    public override void OnAttackAnimationStarted()
+    {
+        canAttack = false;
+    }
+
     public Item Interact(GameObject interactor)
     {
 

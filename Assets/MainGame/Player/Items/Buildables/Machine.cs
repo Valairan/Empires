@@ -5,7 +5,8 @@ using UnityEngine;
 public class Machine : Item
 {
     public GameObject machinePrefab;
-    public Buildable buildable;
+    public GameObject preview;
     public Item[] canManufacture;
-
+    public LayerMask buildableLayers;
+    public LayerMask blockingLayers;
 }

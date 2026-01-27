@@ -11,6 +11,7 @@ public class TreeResourceBehaviour : BaseResourceBehaviour
 
     public override Item respondToRaycast()
     {
+        base.respondToRaycast();
         return baseitem;
     }
     public override void takeDamage(Weapon damager)

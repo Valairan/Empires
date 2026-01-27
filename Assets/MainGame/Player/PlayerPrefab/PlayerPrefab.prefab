@@ -80,6 +80,7 @@ GameObject:
   - component: {fileID: 8691281464466454400}
   - component: {fileID: 4958308001194817482}
   - component: {fileID: 5430121383282861059}
+  - component: {fileID: 3213553562105768937}
   m_Layer: 3
   m_Name: PlayerPrefab
   m_TagString: Untagged
@@ -260,7 +261,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 887688adba11edb4aa9cc19292b048a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildHandler
-  buildMenuUI: {fileID: 0}
   allAvailableMachines: []
 --- !u!114 &4720122550096299429
 MonoBehaviour:
@@ -281,6 +281,7 @@ MonoBehaviour:
   playerClothesParent: {fileID: 7717872397111983927}
   playerInputHandler: {fileID: 531750188607022820}
   playerBuildHandler: {fileID: 2240988776460454622}
+  playerInteractionHandler: {fileID: 3213553562105768937}
   health: {fileID: 5430121383282861059}
   armor: {fileID: 0}
   runSpeed: 4
@@ -311,12 +312,14 @@ MonoBehaviour:
   primaryStorage: {fileID: 3707887474630634655}
   sideArmStorage: {fileID: 287592152759958123}
   equipped: {fileID: 0}
-  currentlyLookingAt: {fileID: 0}
   clientID: 0
   MoveInput: {x: 0, y: 0}
   LookInput: {x: 0, y: 0}
   sneaking: 0
   interacting: 0
+  cameraBlockers:
+    serializedVersion: 2
+    m_Bits: 208
 --- !u!95 &8691281464466454400
 Animator:
   serializedVersion: 7
@@ -378,6 +381,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   ShowTopMostFoldoutHeaderGroup: 1
   amount: 100
+--- !u!114 &3213553562105768937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3549461418572006148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b620766b9eb81041b1b752a6bfe5486, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  currentlyLookingAt: {fileID: 0}
+  interactTimer: 0
+  interacting: 0
 --- !u!1 &4036254819634911458
 GameObject:
   m_ObjectHideFlags: 0

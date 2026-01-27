@@ -20,9 +20,14 @@ public class UiController : MonoBehaviour
     [SerializeField] GameObject currentlyLookingAtParent;
     [SerializeField] TMP_Text currentlyLookingAtLabel;
     [Header("Build Menu Display")]
+    [SerializeField] GameObject buildablePlacementValid;
     [SerializeField] GameObject buildMenu;
     [SerializeField] TMP_Text buildableName;
     [SerializeField] TMP_Text buildableDescription;
+    [Header("Weapons Menu Display")]
+    [SerializeField] GameObject weaponsMenu;
+    [SerializeField] TMP_Text weaponName;
+    [SerializeField] TMP_Text weaponDescription;
 
 
     public void Awake()
@@ -55,6 +60,7 @@ public class UiController : MonoBehaviour
     }
     public void displayInteractIcon(bool display, Vector3 worldPosition)
     {
+        
         InteractionPrompt.gameObject.SetActive(display);
         InteractionPrompt.rectTransform.position = Camera.main.WorldToScreenPoint(worldPosition);
     }
@@ -70,13 +76,25 @@ public class UiController : MonoBehaviour
     }
     public void setCurrentBuildable(Machine machine)
     {
-        currentPlayerBuildHandler.setCurrentBuildable(machine);
+        currentPlayerBuildHandler.setCurrentMachine(machine);
         toggleBuildMenu();
         currentPlayerBuildHandler.startPreview();
     }
 
     public void canBuildSomethingButtonToggle()
     {
+
+    }
+
+    public void toggleWeaponSelector()
+    {
+
+    }
+
+    public void buildableLocationValid(bool valid)
+    {
+        buildablePlacementValid.SetActive(!valid);
+
 
     }
 }

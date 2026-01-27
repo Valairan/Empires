@@ -16,6 +16,8 @@ public class InputHandler : NetworkBehaviour
     public Action<bool> Jump;
     public Action<bool> Sneak;
     public Action Build;
+    public Action Rotate;
+    public Action Cancel;
     public Action Previous;
     public Action Next;
 
@@ -41,6 +43,8 @@ public class InputHandler : NetworkBehaviour
         ingameInputActions.Player.Next.started += ctx => Next?.Invoke();
 
         ingameInputActions.Player.Build.performed += _ => Build.Invoke();
+        ingameInputActions.Player.RotateBuild.performed += _ => Rotate.Invoke();
+        ingameInputActions.Player.CancelBuild.performed += _ => Cancel.Invoke();
 
     }
     public void enableInputs()

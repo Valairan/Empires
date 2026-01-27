@@ -24,5 +24,11 @@ MonoBehaviour:
   rotation: {x: 0, y: 0, z: 0}
   scale: {x: 0, y: 0, z: 0}
   machinePrefab: {fileID: 5427025111592353190, guid: 3f58b98c61e0be0449fb6e6deea540e3, type: 3}
-  buildable: {fileID: 529069849960077263, guid: 3f58b98c61e0be0449fb6e6deea540e3, type: 3}
+  preview: {fileID: 5516832999227762447, guid: 910b228b6dab9aa44a4ee6538d4a3eeb, type: 3}
   canManufacture: []
+  buildableLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  blockingLayers:
+    serializedVersion: 2
+    m_Bits: 0

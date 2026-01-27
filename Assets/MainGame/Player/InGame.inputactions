@@ -86,6 +86,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "RotateBuild",
+                    "type": "Button",
+                    "id": "db270dd0-d6a5-4a25-94cc-9510fb6500fc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CancelBuild",
+                    "type": "Button",
+                    "id": "b122b11a-c151-4168-b39b-5e3bdd812aaa",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -394,6 +412,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Build",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b0a75345-0ffb-4704-ad67-612e6473a906",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "RotateBuild",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b0d61e44-b249-4645-9757-edba75a6bdc3",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CancelBuild",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

@@ -13,6 +13,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     [SerializeField] SkinnedMeshRenderer playerClothesParent;
     [SerializeField] InputHandler playerInputHandler;
     [SerializeField] BuildHandler playerBuildHandler;
+    [SerializeField] InteractionHandler playerInteractionHandler;
     [SerializeField] Health health;
     [SerializeField] Armor armor;
 
@@ -33,36 +34,39 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 
 
     [Header("Camera Settings")]
+    [SerializeField] LayerMask cameraBlockers;
+    Vector3 cameraPosition;
     [SerializeField] float sensitivity = 150f;
     [SerializeField] float minPitch = -80f;
     [SerializeField] float maxPitch = 80f;
+    [SerializeField] float cameraForwardOffset = 0.2f;
     float yaw;
     float pitch;
     [SerializeField] Camera playerCamera;
     [SerializeField] Transform playerCameraParent;
     [SerializeField] Transform playerCameraOrbit;
+    [Header("Weapons Settings")]
 
     public Item current;
     public Item primary;
     public Item sidearm;
     public Item melee;
-    Machine currentlyBuilding;
-    IInteractable currentInteractable;
-    [HideInInspector] public GameObject currentGO;
-    [HideInInspector] public GameObject primaryGO;
-    [HideInInspector] public GameObject sidearamGO;
-    public GameObject meleeGO;
+    public WeaponBehaviour currentBehaviour;
+    public WeaponBehaviour primaryBehaviour;
+    public WeaponBehaviour sidearmBehaviour;
+    public WeaponBehaviour meleeBehaviour;
+    [SerializeField] public Transform equipped;
     [SerializeField] public Transform meleeStorage;
     [SerializeField] public Transform primaryStorage;
     [SerializeField] public Transform sideArmStorage;
-    [SerializeField] public Transform equipped;
+    [HideInInspector] public GameObject currentGO;
+    [HideInInspector] public GameObject primaryGO;
+    [HideInInspector] public GameObject sidearamGO;
+    [HideInInspector] public GameObject meleeGO;
 
     public Action<float> onHealthChanged;
     public Action<float> onArmorChanged;
-    public Action<float> onInteractionProgressChanged;
-    public Action<bool, Vector3> onInteractableInView;
-    public Action<Item, Vector3> onLookingAtChanged;
-    public Item currentlyLookingAt;
+
     public ulong clientID;
 
     public Vector2 MoveInput;
@@ -91,15 +95,15 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     public void BindUI()
     {
         onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
-        onLookingAtChanged += UiController.Singleton != null ? UiController.Singleton.setCurerntlyLookingAt : null;
-        onInteractionProgressChanged += UiController.Singleton != null ? UiController.Singleton.setInteractionProgress : null;
-        onInteractableInView += UiController.Singleton != null ? UiController.Singleton.displayInteractIcon : null;
-        
+
+
         UiController.Singleton.currentPlayerBuildHandler = playerBuildHandler;
     }
 
     public void BindInputs()
     {
+
+        playerInteractionHandler.Init();
 
         playerInputHandler.Move += ctx => MoveInput = ctx;
         playerInputHandler.Look += ctx => LookInput = ctx;
@@ -112,6 +116,8 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerInputHandler.Interact += OnInteract;
 
         playerInputHandler.Build += buildButtonPressed;
+        playerInputHandler.Rotate += playerBuildHandler.rotateButtonPressed;
+        playerInputHandler.Cancel += playerBuildHandler.CancelButtonPressed;
 
         playerInputHandler.enableInputs();
     }
@@ -130,12 +136,14 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 
         Grounded = Physics.OverlapSphere(GroundCheck.transform.position, 0.1f).Length > 0;
 
+        playerBuildHandler.previewBuild(playerCamera.transform.position, playerCamera.transform.forward);
+
+
         if (Grounded && velocity.y < 0f)
         {
             velocity.y = -2f;
         }
 
-        // -------- Horizontal movement --------
         if (Grounded)
         {
             Vector3 input = new Vector3(MoveInput.x, 0f, MoveInput.y);
@@ -199,48 +207,42 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
             Vector3.up * velocity.y;
 
         playerCCMotor.Move(finalMove * Time.deltaTime);
-        checkForRaycasts();
-        HandleTimedInteraction();
+        playerInteractionHandler.checkForRaycasts(playerCamera.transform);
+        playerInteractionHandler.HandleTimedInteraction();
+        playerInteractionHandler.interacting = interacting;
         updateAnimationParams(MoveInput, Grounded, false, false, false, Submerged);
 
     }
 
-    float interactTimer = 0f;
-    void HandleTimedInteraction()
-    {
-        if (!interacting || currentInteractable == null)
-        {
-            interactTimer = 0f;
-            return;
-        }
-
-        interactTimer += Time.deltaTime;
-
-        float duration = currentInteractable.InteractionDuration;
-        float progress = Mathf.Clamp01(interactTimer / duration);
-
-        onInteractionProgressChanged?.Invoke(progress);
-
-        if (interactTimer >= duration)
-        {
-            currentInteractable.Interact(gameObject);
-            interactTimer = 0f;
-            interacting = false; // require release to interact again
-        }
-    }
     public void LateUpdate()
     {
         if (!IsLocalPlayer) return;
-        playerCamera.transform.position = playerCameraParent.position;
+        Vector3 origin = transform.position + (transform.up * 2);
+        if (Physics.Raycast(origin, playerCameraParent.transform.position - origin, out RaycastHit hit, Vector3.Distance(origin, playerCameraParent.position), cameraBlockers))
+        {
+            cameraPosition = hit.point + (playerCamera.transform.forward * cameraForwardOffset);
+        }
+        else
+            cameraPosition = playerCameraParent.position;
+        playerCamera.transform.position = cameraPosition;
         playerCamera.transform.rotation = playerCameraParent.rotation;
+
         yaw += LookInput.x * sensitivity * Time.deltaTime;
         pitch -= LookInput.y * sensitivity * Time.deltaTime; // inverted Y
 
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
-
         playerCameraOrbit.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
+    void OnInteract(bool pressed)
+    {
+        interacting = pressed;
 
+        if (!pressed)
+        {
+            playerInteractionHandler.interactTimer = 0f;
+            playerInteractionHandler.onInteractionProgressChanged?.Invoke(0f);
+        }
+    }
     public void updateAnimationParams(Vector2 movement, bool grounded, bool sideArm, bool rifle, bool melee, bool inwater)
     {
         if (inwater && (movement.magnitude != 0))
@@ -254,49 +256,8 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerAnimator.SetBool("Grounded", grounded);
 
     }
-    void OnInteract(bool pressed)
-    {
-        interacting = pressed;
 
-        if (!pressed)
-        {
-            interactTimer = 0f;
-            onInteractionProgressChanged?.Invoke(0f);
-        }
-    }
-    public void checkForRaycasts()
-    {
-        if (Physics.SphereCast(playerCamera.transform.position, 0.2f, playerCamera.transform.forward, out RaycastHit hit, 25f))
-        {
-            if (hit.transform.TryGetComponent(out IRaycastResponder responder))
-            {
-                Item item = responder.respondToRaycast();
-                if (item != currentlyLookingAt)
-                {
-                    currentlyLookingAt = item;
-                    onLookingAtChanged?.Invoke(item, hit.point);
-                }
-                if (hit.transform.TryGetComponent(out IInteractable interactable))
-                {
-                    currentInteractable = interactable;
-                    onInteractableInView.Invoke(true, hit.point);
-                }
-                else
-                {
-                    currentInteractable = null;
-                    onInteractableInView.Invoke(item, Vector3.zero);
-                }
-            }
-            else
-            {
-                currentlyLookingAt = null;
-                onLookingAtChanged?.Invoke(null, Vector3.zero);
 
-            }
-
-        }
-
-    }
 
 
     public void buildButtonPressed()

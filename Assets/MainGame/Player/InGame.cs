@@ -172,6 +172,24 @@ public partial class @InGame: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateBuild"",
+                    ""type"": ""Button"",
+                    ""id"": ""db270dd0-d6a5-4a25-94cc-9510fb6500fc"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CancelBuild"",
+                    ""type"": ""Button"",
+                    ""id"": ""b122b11a-c151-4168-b39b-5e3bdd812aaa"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -480,6 +498,28 @@ public partial class @InGame: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Build"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b0a75345-0ffb-4704-ad67-612e6473a906"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""RotateBuild"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b0d61e44-b249-4645-9757-edba75a6bdc3"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""CancelBuild"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1164,6 +1204,8 @@ public partial class @InGame: IInputActionCollection2, IDisposable
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_Sneak = m_Player.FindAction("Sneak", throwIfNotFound: true);
         m_Player_Build = m_Player.FindAction("Build", throwIfNotFound: true);
+        m_Player_RotateBuild = m_Player.FindAction("RotateBuild", throwIfNotFound: true);
+        m_Player_CancelBuild = m_Player.FindAction("CancelBuild", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1266,6 +1308,8 @@ public partial class @InGame: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_Sneak;
     private readonly InputAction m_Player_Build;
+    private readonly InputAction m_Player_RotateBuild;
+    private readonly InputAction m_Player_CancelBuild;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1313,6 +1357,14 @@ public partial class @InGame: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Build".
         /// </summary>
         public InputAction @Build => m_Wrapper.m_Player_Build;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/RotateBuild".
+        /// </summary>
+        public InputAction @RotateBuild => m_Wrapper.m_Player_RotateBuild;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/CancelBuild".
+        /// </summary>
+        public InputAction @CancelBuild => m_Wrapper.m_Player_CancelBuild;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1366,6 +1418,12 @@ public partial class @InGame: IInputActionCollection2, IDisposable
             @Build.started += instance.OnBuild;
             @Build.performed += instance.OnBuild;
             @Build.canceled += instance.OnBuild;
+            @RotateBuild.started += instance.OnRotateBuild;
+            @RotateBuild.performed += instance.OnRotateBuild;
+            @RotateBuild.canceled += instance.OnRotateBuild;
+            @CancelBuild.started += instance.OnCancelBuild;
+            @CancelBuild.performed += instance.OnCancelBuild;
+            @CancelBuild.canceled += instance.OnCancelBuild;
         }
 
         /// <summary>
@@ -1404,6 +1462,12 @@ public partial class @InGame: IInputActionCollection2, IDisposable
             @Build.started -= instance.OnBuild;
             @Build.performed -= instance.OnBuild;
             @Build.canceled -= instance.OnBuild;
+            @RotateBuild.started -= instance.OnRotateBuild;
+            @RotateBuild.performed -= instance.OnRotateBuild;
+            @RotateBuild.canceled -= instance.OnRotateBuild;
+            @CancelBuild.started -= instance.OnCancelBuild;
+            @CancelBuild.performed -= instance.OnCancelBuild;
+            @CancelBuild.canceled -= instance.OnCancelBuild;
         }
 
         /// <summary>
@@ -1767,6 +1831,20 @@ public partial class @InGame: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnBuild(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "RotateBuild" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRotateBuild(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "CancelBuild" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCancelBuild(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

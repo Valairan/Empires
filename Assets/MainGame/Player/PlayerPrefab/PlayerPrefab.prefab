@@ -294,9 +294,13 @@ MonoBehaviour:
   WhatIsGround:
     serializedVersion: 2
     m_Bits: 80
+  cameraBlockers:
+    serializedVersion: 2
+    m_Bits: 208
   sensitivity: 150
   minPitch: -80
   maxPitch: 80
+  cameraForwardOffset: 0.2
   playerCamera: {fileID: 0}
   playerCameraParent: {fileID: 1795218282399508059}
   playerCameraOrbit: {fileID: 5022791218057121337}
@@ -304,22 +308,23 @@ MonoBehaviour:
   primary: {fileID: 0}
   sidearm: {fileID: 0}
   melee: {fileID: 0}
+  currentBehaviour: {fileID: 0}
+  primaryBehaviour: {fileID: 0}
+  sidearmBehaviour: {fileID: 0}
+  meleeBehaviour: {fileID: 0}
+  equipped: {fileID: 0}
+  meleeStorage: {fileID: 133756481192374717}
+  primaryStorage: {fileID: 3707887474630634655}
+  sideArmStorage: {fileID: 287592152759958123}
   currentGO: {fileID: 0}
   primaryGO: {fileID: 0}
   sidearamGO: {fileID: 0}
   meleeGO: {fileID: 0}
-  meleeStorage: {fileID: 133756481192374717}
-  primaryStorage: {fileID: 3707887474630634655}
-  sideArmStorage: {fileID: 287592152759958123}
-  equipped: {fileID: 0}
   clientID: 0
   MoveInput: {x: 0, y: 0}
   LookInput: {x: 0, y: 0}
   sneaking: 0
   interacting: 0
-  cameraBlockers:
-    serializedVersion: 2
-    m_Bits: 208
 --- !u!95 &8691281464466454400
 Animator:
   serializedVersion: 7
@@ -396,6 +401,9 @@ MonoBehaviour:
   currentlyLookingAt: {fileID: 0}
   interactTimer: 0
   interacting: 0
+  whatToInclude:
+    serializedVersion: 2
+    m_Bits: 392
 --- !u!1 &4036254819634911458
 GameObject:
   m_ObjectHideFlags: 0

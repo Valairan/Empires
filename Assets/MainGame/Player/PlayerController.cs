@@ -137,7 +137,9 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         Grounded = Physics.OverlapSphere(GroundCheck.transform.position, 0.1f).Length > 0;
 
         playerBuildHandler.previewBuild(playerCamera.transform.position, playerCamera.transform.forward);
-
+        playerInteractionHandler.checkForRaycasts(playerCamera.transform);
+        playerInteractionHandler.HandleTimedInteraction();
+        playerInteractionHandler.interacting = interacting;
 
         if (Grounded && velocity.y < 0f)
         {
@@ -207,9 +209,6 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
             Vector3.up * velocity.y;
 
         playerCCMotor.Move(finalMove * Time.deltaTime);
-        playerInteractionHandler.checkForRaycasts(playerCamera.transform);
-        playerInteractionHandler.HandleTimedInteraction();
-        playerInteractionHandler.interacting = interacting;
         updateAnimationParams(MoveInput, Grounded, false, false, false, Submerged);
 
     }

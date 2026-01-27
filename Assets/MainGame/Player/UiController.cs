@@ -19,6 +19,7 @@ public class UiController : MonoBehaviour
     [SerializeField] Image InteractionPrompt;
     [SerializeField] GameObject currentlyLookingAtParent;
     [SerializeField] TMP_Text currentlyLookingAtLabel;
+    [SerializeField] TMP_Text currentlyLookingAtDescription;
     [Header("Build Menu Display")]
     [SerializeField] GameObject buildablePlacementValid;
     [SerializeField] GameObject buildMenu;
@@ -40,13 +41,15 @@ public class UiController : MonoBehaviour
         if (item != null)
         {
             currentlyLookingAtParent.SetActive(true);
-            currentlyLookingAtLabel.text = item.name + "\n" + item.ItemDescription;
+            currentlyLookingAtLabel.text = item.name;
+            currentlyLookingAtDescription.text = item.ItemDescription;
             InteractionPrompt.rectTransform.position = Camera.main.WorldToScreenPoint(itemPosition);
         }
         else
         {
             currentlyLookingAtParent.SetActive(false);
             currentlyLookingAtLabel.text = "";
+            currentlyLookingAtDescription.text = "";
             InteractionPrompt.rectTransform.position = Camera.main.WorldToScreenPoint(itemPosition);
         }
     }
@@ -60,7 +63,7 @@ public class UiController : MonoBehaviour
     }
     public void displayInteractIcon(bool display, Vector3 worldPosition)
     {
-        
+
         InteractionPrompt.gameObject.SetActive(display);
         InteractionPrompt.rectTransform.position = Camera.main.WorldToScreenPoint(worldPosition);
     }

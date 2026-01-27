@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -4572764567528485021}
   - component: {fileID: 6087497073641986860}
   - component: {fileID: -5973286415673192473}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: IronOre
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,6 +177,10 @@ PrefabInstance:
       value: IronOre_LOD0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4931c57f96638804fa6582d96350cad1, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4931c57f96638804fa6582d96350cad1, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
@@ -283,6 +287,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 5545dc5914bedff42bafdd75a411ffba, type: 3}
       propertyPath: m_Name
       value: LowPoly_LOD1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5545dc5914bedff42bafdd75a411ffba, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5545dc5914bedff42bafdd75a411ffba, type: 3}
       propertyPath: m_StaticEditorFlags

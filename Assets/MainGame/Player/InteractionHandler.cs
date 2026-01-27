@@ -10,6 +10,7 @@ public class InteractionHandler : MonoBehaviour
     public Action<bool, Vector3> onInteractableInView;
     public Action<float> onInteractionProgressChanged;
     public Action<Item, Vector3> onLookingAtChanged;
+    public LayerMask whatToInclude;
 
     public void Init()
     {
@@ -43,7 +44,7 @@ public class InteractionHandler : MonoBehaviour
 
     public void checkForRaycasts(Transform startPosition)
     {
-        if (Physics.SphereCast(startPosition.position, 0.2f, startPosition.forward, out RaycastHit hit, 25f))
+        if (Physics.SphereCast(startPosition.position, 1f, startPosition.forward, out RaycastHit hit, 50f, whatToInclude))
         {
             if (hit.transform.TryGetComponent(out IRaycastResponder responder))
             {
@@ -68,9 +69,7 @@ public class InteractionHandler : MonoBehaviour
             {
                 currentlyLookingAt = null;
                 onLookingAtChanged?.Invoke(null, Vector3.zero);
-
             }
-
         }
 
     }

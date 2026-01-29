@@ -26,7 +26,6 @@ public class GameManager : NetworkBehaviour
             count++;
             loaderProgress = count / NetworkManager.Singleton.ConnectedClients.Count;
             SetLoader_ClientRpc();
-            DisableLoader_ClientRpc();
         }
         StartGame_ClientRpc();
     }
@@ -56,6 +55,8 @@ public class GameManager : NetworkBehaviour
         settings.falloffHeight = 20;
         settings.falloffDistance = 5;
         worldGenerator.GenerateTerrain(settings);
+        DisableLoader_ClientRpc();
+
     }
 
     [ClientRpc]

@@ -1,4 +1,5 @@
 using System;
+using KinematicCharacterController;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
@@ -8,12 +9,14 @@ using UnityEngine.AI;
 public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 {
     [Header("Components")]
-    [SerializeField] CharacterController playerCCMotor;
+    [SerializeField] LocomotionController playerCCMotor;
+    [SerializeField] CameraController playerCamerasMotor;
     [SerializeField] Animator playerAnimator;
     [SerializeField] SkinnedMeshRenderer playerClothesParent;
     [SerializeField] InputHandler playerInputHandler;
     [SerializeField] BuildHandler playerBuildHandler;
     [SerializeField] InteractionHandler playerInteractionHandler;
+    [SerializeField] Camera playerCamera;
     [SerializeField] Health health;
     [SerializeField] Armor armor;
 
@@ -32,21 +35,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     [SerializeField] LayerMask WhatIsGround;
     Vector3 velocity;
 
-
-    [Header("Camera Settings")]
-    [SerializeField] LayerMask cameraBlockers;
-    Vector3 cameraPosition;
-    [SerializeField] float sensitivity = 150f;
-    [SerializeField] float minPitch = -80f;
-    [SerializeField] float maxPitch = 80f;
-    [SerializeField] float cameraForwardOffset = 0.2f;
-    float yaw;
-    float pitch;
-    [SerializeField] Camera playerCamera;
-    [SerializeField] Transform playerCameraParent;
-    [SerializeField] Transform playerCameraOrbit;
     [Header("Weapons Settings")]
-
     public Item current;
     public Item primary;
     public Item sidearm;
@@ -71,6 +60,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 
     public Vector2 MoveInput;
     public Vector2 LookInput;
+    public bool aiming;
     public bool sneaking;
     public bool interacting;
 
@@ -89,6 +79,8 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerCamera = Camera.main;
         BindUI();
         BindInputs();
+        playerCamerasMotor.setFollowTransform(playerCamerasMotor.cameraFollowTarget);
+        playerCCMotor.init();
 
     }
 
@@ -112,8 +104,9 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerInputHandler.Previous += equipPreviousItem;
         playerInputHandler.Next += equipNextItem;
         playerInputHandler.Jump += jump;
-
         playerInputHandler.Interact += OnInteract;
+        playerInputHandler.Aim += OnAim;
+
 
         playerInputHandler.Build += buildButtonPressed;
         playerInputHandler.Rotate += playerBuildHandler.rotateButtonPressed;
@@ -134,81 +127,17 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     {
         if (!IsLocalPlayer) return;
 
-        Grounded = Physics.OverlapSphere(GroundCheck.transform.position, 0.1f).Length > 0;
-
         playerBuildHandler.previewBuild(playerCamera.transform.position, playerCamera.transform.forward);
         playerInteractionHandler.checkForRaycasts(playerCamera.transform);
         playerInteractionHandler.HandleTimedInteraction();
         playerInteractionHandler.interacting = interacting;
-
-        if (Grounded && velocity.y < 0f)
-        {
-            velocity.y = -2f;
-        }
-
-        if (Grounded)
-        {
-            Vector3 input = new Vector3(MoveInput.x, 0f, MoveInput.y);
-
-            if (input.sqrMagnitude > 0.01f)
-            {
-                // Camera-relative strafing
-                Vector3 camForward = playerCamera.transform.forward;
-                Vector3 camRight = playerCamera.transform.right;
-
-                camForward.y = 0f;
-                camRight.y = 0f;
-
-                camForward.Normalize();
-                camRight.Normalize();
-
-                Vector3 moveDir = camForward * input.z + camRight * input.x;
-
-                // Rotate toward movement direction
-                float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
-                float angle = Mathf.SmoothDampAngle(
-                    transform.eulerAngles.y,
-                    targetAngle,
-                    ref turnSmoothVelocity,
-                    turnSmoothTime
-                );
-
-                transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-                horizontalVelocity =
-                    moveDir.normalized *
-                    (sneaking ? walkSpeed : runSpeed);
-            }
-            else
-            {
-                horizontalVelocity = Vector3.zero;
-            }
-        }
-        else
-        {
-            // -------- Air drag (no air control) --------
-            horizontalVelocity = Vector3.MoveTowards(
-                horizontalVelocity,
-                Vector3.zero,
-                3f * Time.deltaTime
-            );
-        }
-
-        // -------- Jump --------
-        if (jumpInput && Grounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
-
-        // -------- Gravity --------
-        velocity.y += gravity * Time.deltaTime;
-
-        // -------- Final Move --------
-        Vector3 finalMove =
-            horizontalVelocity +
-            Vector3.up * velocity.y;
-
-        playerCCMotor.Move(finalMove * Time.deltaTime);
+        PlayerInputs inputs = new PlayerInputs();
+        inputs.Horizontal = MoveInput.x;
+        inputs.Vertical = MoveInput.y;
+        inputs.transformRotation = playerCamera.transform.rotation;
+        playerCCMotor.setInputs(ref inputs);
+        Grounded = playerCCMotor.motor.GroundingStatus.IsStableOnGround;
+        //playerCCMotor.Move(finalMove * Time.deltaTime);
         updateAnimationParams(MoveInput, Grounded, false, false, false, Submerged);
 
     }
@@ -216,21 +145,16 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     public void LateUpdate()
     {
         if (!IsLocalPlayer) return;
-        Vector3 origin = transform.position + (transform.up * 2);
-        if (Physics.Raycast(origin, playerCameraParent.transform.position - origin, out RaycastHit hit, Vector3.Distance(origin, playerCameraParent.position), cameraBlockers))
-        {
-            cameraPosition = hit.point + (playerCamera.transform.forward * cameraForwardOffset);
-        }
-        else
-            cameraPosition = playerCameraParent.position;
-        playerCamera.transform.position = cameraPosition;
-        playerCamera.transform.rotation = playerCameraParent.rotation;
 
-        yaw += LookInput.x * sensitivity * Time.deltaTime;
-        pitch -= LookInput.y * sensitivity * Time.deltaTime; // inverted Y
+        playerCamera.transform.rotation = playerCamerasMotor.HandleRotation(playerCamera.transform.rotation, Time.deltaTime, LookInput);
+        playerCamera.transform.position = playerCamerasMotor.HandlePosition(Time.deltaTime, aiming, playerCamera.transform.rotation);
 
-        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
-        playerCameraOrbit.rotation = Quaternion.Euler(pitch, yaw, 0f);
+    }
+    void OnAim(bool pressed)
+    {
+        aiming = pressed;
+
+
     }
     void OnInteract(bool pressed)
     {
@@ -242,6 +166,11 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
             playerInteractionHandler.onInteractionProgressChanged?.Invoke(0f);
         }
     }
+    public void jump(bool input)
+    {
+        if (input)
+            playerCCMotor.jump();
+    }
     public void updateAnimationParams(Vector2 movement, bool grounded, bool sideArm, bool rifle, bool melee, bool inwater)
     {
         if (inwater && (movement.magnitude != 0))
@@ -250,8 +179,8 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
             playerAnimator.SetFloat("Horizontal", 1);
             return;
         }
-        playerAnimator.SetFloat("Horizontal", movement.x != 0 ? 1 : 0);
-        playerAnimator.SetFloat("Vertical", movement.y != 0 ? 1 : 0);
+        playerAnimator.SetFloat("Horizontal", Mathf.Round(movement.x));
+        playerAnimator.SetFloat("Vertical", Mathf.Round(movement.y));
         playerAnimator.SetBool("Grounded", grounded);
 
     }
@@ -281,11 +210,6 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     public void Attack()
     {
 
-    }
-    bool jumpInput;
-    public void jump(bool started)
-    {
-        jumpInput = started;
     }
 
 
@@ -372,4 +296,5 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     {
 
     }
+
 }

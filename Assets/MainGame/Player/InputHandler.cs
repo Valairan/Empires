@@ -11,6 +11,7 @@ public class InputHandler : NetworkBehaviour
 
     public Action<Vector2> Move;
     public Action<Vector2> Look;
+    public Action<bool> Aim;
     public Action Attack;
     public Action<bool> Interact;
     public Action<bool> Jump;
@@ -28,13 +29,17 @@ public class InputHandler : NetworkBehaviour
         ingameInputActions.Player.Move.performed += ctx => Move?.Invoke(ctx.ReadValue<Vector2>());
         ingameInputActions.Player.Move.canceled += _ => Move?.Invoke(Vector2.zero);
         ingameInputActions.Player.Look.performed += ctx => Look?.Invoke(ctx.ReadValue<Vector2>()); ;
-        ingameInputActions.Player.Look.canceled += _ => Look?.Invoke(Vector2.zero); ;
+        ingameInputActions.Player.Look.canceled += _ => Look?.Invoke(Vector2.zero);
+        ingameInputActions.Player.Aim.performed += _ctx => Aim.Invoke(true);
+        ingameInputActions.Player.Aim.canceled += _ctx => Aim.Invoke(false);
+
+
         ingameInputActions.Player.Attack.performed += ctx => Attack?.Invoke();
 
         ingameInputActions.Player.Interact.performed += ctx => Interact?.Invoke(true);
         ingameInputActions.Player.Interact.canceled += ctx => Interact?.Invoke(false);
 
-        ingameInputActions.Player.Jump.performed += ctx => Jump?.Invoke(true);
+        ingameInputActions.Player.Jump.started += ctx => Jump?.Invoke(true);
         ingameInputActions.Player.Jump.canceled += ctx => Jump?.Invoke(false);
 
         ingameInputActions.Player.Sneak.performed += ctx => Sneak?.Invoke(true);

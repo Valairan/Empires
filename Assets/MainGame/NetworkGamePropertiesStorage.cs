@@ -11,7 +11,7 @@ public class NetworkGamePropertiesStorage : NetworkBehaviour
     public ulong[] spawnedPlayersIndex = new ulong[8];
     public Dictionary<ulong, GameObject> spawnedPlayers = new Dictionary<ulong, GameObject>();
     public NetworkList<PlayerData> connectedPlayerData;
-    public NetworkVariable<int> readyState;
+    public int readyState;
     public NetworkVariable<int> WorldGenerationSeed;
     public BaseResource[,] resourcesInGame;
     public string myname;

@@ -1,9 +1,4 @@
-using System;
-using System.Reflection;
 using TMPro;
-using TreeEditor;
-using Unity.VisualScripting;
-using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.UI;
 public class UiController : MonoBehaviour
@@ -12,6 +7,7 @@ public class UiController : MonoBehaviour
 
     [Header("Current Player")]
     public BuildHandler currentPlayerBuildHandler;
+    public InventoryHandler currentPlayerInventoryHandler;
     [Header("Properties Display")]
     [SerializeField] Image Health;
     [SerializeField] Image Armor;
@@ -83,6 +79,11 @@ public class UiController : MonoBehaviour
         toggleBuildMenu();
         currentPlayerBuildHandler.startPreview();
     }
+    public void purchaseWeapon(Weapon weapon)
+    {
+        currentPlayerInventoryHandler.EquipItem(weapon);
+        toggleWeaponSelector();
+    }
 
     public void canBuildSomethingButtonToggle()
     {
@@ -91,6 +92,7 @@ public class UiController : MonoBehaviour
 
     public void toggleWeaponSelector()
     {
+        weaponsMenu.SetActive(!weaponsMenu.activeSelf);
 
     }
 

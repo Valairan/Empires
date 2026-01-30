@@ -1,16 +1,10 @@
 using Unity.Netcode;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class WeaponBehaviour : ItemBehaviour
 {
-    public virtual void OnAttackAnimationFinished()
-    {
 
-    }
-    public virtual void OnAttackAnimationStarted()
-    {
-
-    }
 
     public Item Interact(GameObject interactor)
     {
@@ -63,7 +57,10 @@ public class WeaponBehaviour : ItemBehaviour
         if (!player.PickUpItem(this))
             return;
 
+        
+
         Debug.Log("The item has been picked up");
 
     }
+
 }

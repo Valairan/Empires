@@ -12,10 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05f416e9ba242a048aaf8af342f46ff9, type: 3}
   m_Name: Axe
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeapon
-  ItemName: 
+  ItemIcon: {fileID: 21300000, guid: 53b67c09673a52d46bcc8f9a4951e9ff, type: 3}
+  ItemName: Axe
   ItemDescription: 
   stack: 0
-  ingameWeapon: {fileID: 0}
-  equippedWeapon: {fileID: 0}
+  Type: 0
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: {x: 0, y: 0, z: 0}
+  treeDamage: 0
+  oreDamage: 0
+  playerDamage: 0
+  weaponPrefab: {fileID: 0}
   firerate: 0
   magazine: 0

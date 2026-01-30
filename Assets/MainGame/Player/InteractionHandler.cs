@@ -59,17 +59,15 @@ public class InteractionHandler : MonoBehaviour
                     currentInteractable = interactable;
                     onInteractableInView.Invoke(true, hit.point);
                 }
-                else
-                {
-                    currentInteractable = null;
-                    onInteractableInView.Invoke(false, Vector3.zero);
-                }
             }
-            else
-            {
-                currentlyLookingAt = null;
-                onLookingAtChanged?.Invoke(null, Vector3.zero);
-            }
+
+        }
+        else
+        {
+            currentlyLookingAt = null;
+            onLookingAtChanged?.Invoke(null, Vector3.zero);
+            currentInteractable = null;
+            onInteractableInView.Invoke(false, Vector3.zero);
         }
 
     }

@@ -5,9 +5,6 @@ using UnityEngine;
 public class TreeItem : BaseResource
 {
 
-    public DamageLookup[] damageLookup;
-    public ResourceDrop[] drops;
-    public int[] dropsHowMany;
 }
 
 [Serializable]

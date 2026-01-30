@@ -62,7 +62,7 @@ public class LocomotionController : MonoBehaviour, ICharacterController
 
     public void BeforeCharacterUpdate(float deltaTime)
     {
-
+        Debug.Log("tHIS IS A POTATO");
     }
 
     public bool IsColliderValidForCollisions(Collider coll)

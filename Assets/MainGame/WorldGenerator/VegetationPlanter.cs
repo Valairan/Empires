@@ -215,9 +215,6 @@ public static class VegetationPlanter
                                 placedTrees[x, y].yCoordinate = y;
                                 treeCount++;
                             }
-
-
-
                         }
 
 

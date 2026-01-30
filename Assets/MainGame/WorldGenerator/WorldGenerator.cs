@@ -10,6 +10,7 @@ public class WorldGenerator : MonoBehaviour
     [SerializeField] Material terrainMaterial;
     [SerializeField] Material oceanMaterial;
     [SerializeField] GameObject[] TreesToPlace;
+    [SerializeField] public BaseResourceBehaviour[,] placedTrees;
     Transform mainCamera;
     bool generationComplete;
     public VegetationType[] vegetation;
@@ -55,7 +56,7 @@ public class WorldGenerator : MonoBehaviour
         MeshGenerator.GenerateTerrainMesh(settings.mapWidth, settings.mapHeight, 100, terrainMaterial, 6, terrainNoise);
         MeshGenerator.GenerateSquareMesh(settings.mapWidth, settings.mapHeight, 25, oceanMaterial, 4);
 
-        VegetationPlanter.ScatterDecoration(settings.mapWidth, settings.mapHeight, 100, TreesToPlace, terrainNoise, 5, biomeNoise);
+        placedTrees = VegetationPlanter.ScatterDecoration(settings.mapWidth, settings.mapHeight, 100, TreesToPlace, terrainNoise, 5, biomeNoise);
         for (int i = 0; i < vegetation.Length; i++)
         {
             totaleVegetationChunks[i] = VegetationPlanter.scatterGrassInChunks(settings, 5, vegetation[i].density, vegetation[i].isWaterPlant, vegetation[i].seed, vegetation[i].scaleRangeMin, vegetation[i].scaleRangeMax, vegetation[i].probability, terrainNoise);
@@ -123,41 +124,6 @@ public class WorldGenerator : MonoBehaviour
             }
         }
 
-        void UpdateOutdated()
-        {
-
-            //Bounds bounds = new Bounds(Vector3.zero, new Vector3(100, 100, 100));
-            if (generationComplete)
-            {
-                int positionx = (int)Math.Clamp(mainCamera.position.x, 0, mapWidth) / 5;
-                int positionz = (int)Math.Clamp(mainCamera.position.z, 0, mapHeight) / 5;
-
-                for (int i = -numberOfChunksToRender; i <= numberOfChunksToRender; i++)
-                {
-                    for (int j = -numberOfChunksToRender; j <= numberOfChunksToRender; j++)
-                    {
-                        int chunkX = positionx + i;
-                        int chunkZ = positionz + j;
-
-
-                        if (chunkX < 0 || chunkZ < 0 || chunkX >= 1000 / 5 || chunkZ >= 1000 / 5)
-                            continue;
-                        for (int k = 0; k < vegetation.Length; k++)
-                        {
-
-                            VegetationChunk chunk = totaleVegetationChunks[k][chunkX, chunkZ];
-                            if (chunk.count == 0)
-                                continue;
-                            Graphics.RenderMeshInstanced(renderParams, vegetation[k].mesh, 0, chunk.matrices);
-
-                        }
-
-
-                    }
-
-                }
-            }
-        }
     }
 }
 

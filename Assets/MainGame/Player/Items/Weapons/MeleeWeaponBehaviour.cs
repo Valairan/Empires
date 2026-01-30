@@ -6,16 +6,11 @@ public class MeleeWeaponBehaviour : WeaponBehaviour, IRaycastResponder, IInterac
 {
     public float InteractionDuration => 1f;
 
-    bool canAttack = true;
-
-    public override void OnAttackAnimationFinished()
+    void OnTriggerEnter(Collider collision)
     {
-        canAttack = true;
-    }
-    public override void OnAttackAnimationStarted()
-    {
-        canAttack = false;
+        IDamageable damageable = collision.gameObject.GetComponentInParent<IDamageable>();
+        if (damageable != null)
+            damageable.takeDamage((Weapon)baseitem);
     }
 
-    
 }

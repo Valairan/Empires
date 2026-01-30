@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class CombatController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public bool isAttacking;
 
-    // Update is called once per frame
-    void Update()
+    public virtual void OnAttackAnimationFinished()
     {
-        
+        isAttacking = false;
+    }
+    public virtual void OnAttackAnimationStarted()
+    {
+        isAttacking = true;
+    }
+    public void Attack()
+    {
+
     }
 }

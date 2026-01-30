@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TreeResourceBehaviour : BaseResourceBehaviour
@@ -11,13 +12,9 @@ public class TreeResourceBehaviour : BaseResourceBehaviour
 
     public override void takeDamage(Weapon damager)
     {
-        health.amount -= damager.treeDamage;
-    }
-
-    [ServerRpc]
-    public void DamageTree_ServerRpc()
-    {
-
+        float damage = damager.treeDamage;
+        Debug.Log("The collision is being registered by " + damager.name);
+        GameManager.Singleton.DamageTree_ServerRpc(damage, xCoordinate, yCoordinate);
     }
 
 

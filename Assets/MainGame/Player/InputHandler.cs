@@ -12,7 +12,7 @@ public class InputHandler : NetworkBehaviour
     public Action<Vector2> Move;
     public Action<Vector2> Look;
     public Action<bool> Aim;
-    public Action Attack;
+    public Action<bool> Attack;
     public Action<bool> Interact;
     public Action<bool> Jump;
     public Action<bool> Sneak;
@@ -34,7 +34,8 @@ public class InputHandler : NetworkBehaviour
         ingameInputActions.Player.Aim.canceled += _ctx => Aim.Invoke(false);
 
 
-        ingameInputActions.Player.Attack.performed += ctx => Attack?.Invoke();
+        ingameInputActions.Player.Attack.performed += ctx => Attack?.Invoke(true);
+        ingameInputActions.Player.Attack.canceled += ctx => Attack?.Invoke(false);
 
         ingameInputActions.Player.Interact.performed += ctx => Interact?.Invoke(true);
         ingameInputActions.Player.Interact.canceled += ctx => Interact?.Invoke(false);

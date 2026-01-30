@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class MeleeEventHandler : StateMachineBehaviour
 {
-    WeaponBehaviour weapon;
+    CombatController controller;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        weapon = animator.GetComponent<PlayerController>().currentBehaviour;
-        weapon.OnAttackAnimationStarted();
+        controller = animator.GetComponent<CombatController>();
+        controller.OnAttackAnimationStarted();
 
     }
     public override void OnStateExit(
@@ -16,9 +16,9 @@ public class MeleeEventHandler : StateMachineBehaviour
         int layerIndex
     )
     {
-        if (weapon != null)
+        if (controller != null)
         {
-            weapon.OnAttackAnimationFinished();
+            controller.OnAttackAnimationFinished();
         }
     }
 }

@@ -12,16 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05f416e9ba242a048aaf8af342f46ff9, type: 3}
   m_Name: Machete
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeapon
+  ItemIcon: {fileID: 21300000, guid: 84cfa67d488278340a8fb0a7b69ced71, type: 3}
   ItemName: Machete
   ItemDescription: Melee weapon
   stack: 0
-  Type: 1
-  position: {x: 0, y: 0.001, z: 0}
-  rotation: {x: 60, y: -90, z: 0}
-  scale: {x: 0.001, y: 0.001, z: 0.001}
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  position: {x: -0.0807, y: 0.0548, z: 0.0487}
+  rotation: {x: 271.5876, y: 325.30002, z: 136.02899}
+  scale: {x: 1, y: 1, z: 1}
   treeDamage: 15
   oreDamage: 1
   playerDamage: 20
-  weaponPrefab: {fileID: 688688030190433228, guid: 27874a655b8bd1c45a379fe732112d44, type: 3}
+  weaponPrefab_rb: {fileID: 6751512441510544877, guid: 163a8d21a6102b64e8ed3cdba1f9e62c, type: 3}
+  weaponPrefab_onplayer: {fileID: 6751512441510544877, guid: a52169ed7e61bf642b6f9f6f2303d5de, type: 3}
   firerate: 1
   magazine: 0

@@ -80,13 +80,14 @@ public class LobbyController : NetworkBehaviour
     [ServerRpc]
     public void setReady_ServerRpc()
     {
-        NetworkGamePropertiesStorage.Singleton.readyState.Value++;
+        if (!IsServer) return;
+        NetworkGamePropertiesStorage.Singleton.readyState += 1;
     }
 
     public void StartGame()
     {
         if (!NetworkManager.Singleton.IsServer) return;
-        if (NetworkGamePropertiesStorage.Singleton.readyState.Value == NetworkManager.Singleton.ConnectedClients.Count - 1)
+        if (NetworkGamePropertiesStorage.Singleton.readyState == NetworkManager.Singleton.ConnectedClients.Count - 1)
         {
             Loader.Singelton.gameObject.SetActive(true);
             NetworkManager.Singleton.SceneManager.LoadScene("MainGameScene", LoadSceneMode.Single);

@@ -1,6 +1,4 @@
 using Unity.Netcode;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class ResourceDropBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
@@ -34,5 +32,9 @@ public class ResourceDropBehaviour : ItemBehaviour, IRaycastResponder, IInteract
         return baseitem;
     }
 
+    public void OnCollisionEnter()
+    {
+
+    }
 
 }

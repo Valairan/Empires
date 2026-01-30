@@ -5,12 +5,15 @@ using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 {
     [Header("Components")]
     [SerializeField] LocomotionController playerCCMotor;
     [SerializeField] CameraController playerCamerasMotor;
+    [SerializeField] CombatController playerCombatController;
+    [SerializeField] InventoryHandler playerInventoryController;
     [SerializeField] Animator playerAnimator;
     [SerializeField] SkinnedMeshRenderer playerClothesParent;
     [SerializeField] InputHandler playerInputHandler;
@@ -35,23 +38,6 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     [SerializeField] LayerMask WhatIsGround;
     Vector3 velocity;
 
-    [Header("Weapons Settings")]
-    public Item current;
-    public Item primary;
-    public Item sidearm;
-    public Item melee;
-    public WeaponBehaviour currentBehaviour;
-    public WeaponBehaviour primaryBehaviour;
-    public WeaponBehaviour sidearmBehaviour;
-    public WeaponBehaviour meleeBehaviour;
-    [SerializeField] public Transform equipped;
-    [SerializeField] public Transform meleeStorage;
-    [SerializeField] public Transform primaryStorage;
-    [SerializeField] public Transform sideArmStorage;
-    [HideInInspector] public GameObject currentGO;
-    [HideInInspector] public GameObject primaryGO;
-    [HideInInspector] public GameObject sidearamGO;
-    [HideInInspector] public GameObject meleeGO;
 
     public Action<float> onHealthChanged;
     public Action<float> onArmorChanged;
@@ -81,6 +67,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         BindInputs();
         playerCamerasMotor.setFollowTransform(playerCamerasMotor.cameraFollowTarget);
         playerCCMotor.init();
+        playerInventoryController.init();
 
     }
 
@@ -106,7 +93,6 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerInputHandler.Jump += jump;
         playerInputHandler.Interact += OnInteract;
         playerInputHandler.Aim += OnAim;
-
 
         playerInputHandler.Build += buildButtonPressed;
         playerInputHandler.Rotate += playerBuildHandler.rotateButtonPressed;
@@ -185,9 +171,6 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 
     }
 
-
-
-
     public void buildButtonPressed()
     {
         playerBuildHandler.buildButtonPressed();
@@ -207,11 +190,15 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 
     }
 
-    public void Attack()
+    public void Attack(bool input)
     {
+        if (input)
+        {
+            playerCombatController.Attack();
+            playerAnimator.SetTrigger("Attack");
+        }
 
     }
-
 
     public void takeDamage(Weapon damager)
     {
@@ -219,7 +206,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         //armor.amount -= damage;
         //health.amount = armor.amount < 0 ? health.amount + armor.amount : health.amount;
         ///armor.amount = armor.amount < 0 ? 0 : armor.amount;
-        onArmorChanged.Invoke(armor.amount);
+        //onArmorChanged.Invoke(armor.amount);
         onHealthChanged.Invoke(health.amount);
     }
     void attemptToDamage()
@@ -233,68 +220,12 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 
     }
 
-    public void EquipItem(Item item)
+
+    public bool PickUpItem(ItemBehaviour itemGOS)
     {
-        if (!IsLocalPlayer) return;
-        //EquipItem_ServerRpc(item);
-    }
-
-    [ServerRpc]
-    public void EquipItem_ServerRpc()
-    {
-
-
-    }
-    public bool PickUpItem(ItemBehaviour itemGO)
-    {
-        Item item = itemGO.baseitem;
-
-        if (!IsLocalPlayer) return false;
-        switch (item.Type)
-        {
-            case ItemType.melee:
-                melee = item;
-                itemGO.NetworkObject.ChangeOwnership(clientID);
-                if (itemGO.NetworkObject.TrySetParent(meleeStorage.transform, false))
-                {
-                    Debug.Log("melee pickup");
-                    return false;
-                }
-                break;
-            case ItemType.primary:
-                primary = item;
-                itemGO.NetworkObject.ChangeOwnership(clientID);
-                if (itemGO.NetworkObject.TrySetParent(primaryStorage.transform, false))
-                {
-                    return false;
-                }
-                break;
-            case ItemType.sidearm:
-                sidearm = item;
-                itemGO.NetworkObject.ChangeOwnership(clientID);
-                if (!itemGO.NetworkObject.TrySetParent(sideArmStorage.transform, false))
-                {
-                    return false;
-                }
-                break;
-            case ItemType.resource:
-                break;
-            default:
-                break;
-        }
-
-        itemGO.transform.localPosition = item.position;
-        itemGO.transform.localEulerAngles = item.rotation;
-        itemGO.transform.localScale = item.scale;
-        current = item;
-
+        playerInventoryController.PickUpItem_ServerRpc(itemGOS.NetworkObjectId, clientID);
         return true;
     }
 
-    [ServerRpc]
-    public void PickUpItem_ServerRpc()
-    {
-
-    }
 
 }

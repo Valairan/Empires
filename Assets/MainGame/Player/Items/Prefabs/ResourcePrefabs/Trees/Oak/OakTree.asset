@@ -24,5 +24,5 @@ MonoBehaviour:
   rotation: {x: 0, y: 0, z: 0}
   scale: {x: 0, y: 0, z: 0}
   drops:
-  - {fileID: 11400000, guid: 54daaca41a5097240b979195267addbd, type: 2}
+  - {fileID: 6562819602572507190, guid: 807bb6cc1257c4040801a02141bc3644, type: 3}
   dropsHowMany: 19000000

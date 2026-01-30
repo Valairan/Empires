@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class WeaponsFactory : MachineBehaviour, IInteractable
 {
-    public float InteractionDuration => 2f;
+    public float InteractionDuration => 1f;
 
     public bool placed = false;
     public override void OnNetworkSpawn()
     {
         placed = true;
+        BindUI();
     }
 
     public void BindUI()
@@ -17,13 +18,10 @@ public class WeaponsFactory : MachineBehaviour, IInteractable
 
     }
 
-
-
     public Item Interact(GameObject interactor)
     {
-        if (!IsLocalPlayer) return null;
-        UiController.Singleton.toggleBuildMenu();
-
+        if (!placed) return null;
+        UiController.Singleton.toggleWeaponSelector();
         return baseitem;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 public class InteractionHandler : MonoBehaviour
@@ -19,7 +20,7 @@ public class InteractionHandler : MonoBehaviour
         onInteractableInView += UiController.Singleton != null ? UiController.Singleton.displayInteractIcon : null;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public void HandleTimedInteraction()
+    public void HandleTimedInteraction(ulong interactor)
     {
         if (!interacting || currentInteractable == null)
         {
@@ -36,7 +37,7 @@ public class InteractionHandler : MonoBehaviour
 
         if (interactTimer >= duration)
         {
-            currentInteractable.Interact(gameObject);
+            currentInteractable.Interact(interactor);
             interactTimer = 0f;
             interacting = false; // require release to interact again
         }

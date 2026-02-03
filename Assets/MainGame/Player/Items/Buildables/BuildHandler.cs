@@ -31,19 +31,35 @@ public class BuildHandler : MonoBehaviour
             {
                 Vector3 temp = startPosition + (forwardVec * 10);
                 temp.y = transform.position.y;
+                temp.x = Mathf.RoundToInt(temp.x);
+                temp.y = Mathf.RoundToInt(temp.y);
+                temp.z = Mathf.RoundToInt(temp.z);
                 return temp;
             }
         }
         return Vector3.zero;
     }
-    public bool checkPlacements(Transform[] placementPoints)
+    public bool CheckPlacements(Transform[] placementPoints)
     {
-        if (!(placementPoints.Length > 0)) return false;
-        foreach (Transform placementpoint in placementPoints)
+        if (placementPoints == null || placementPoints.Length == 0)
+            return false;
+
+        bool hasBuildableHit = false;
+
+        foreach (Transform point in placementPoints)
         {
-            if (Physics.OverlapSphere(placementpoint.position, .5f, currentMachine.blockingLayers).Length > 0)
+            Vector3 pos = point.position;
+
+            if (Physics.OverlapSphere(pos, 0.5f, currentMachine.blockingLayers).Length > 0)
                 return false;
+
+            if (Physics.OverlapSphere(pos, 0.5f, currentMachine.buildableLayers).Length > 0)
+                hasBuildableHit = true;
         }
+
+        if (!hasBuildableHit)
+            return false;
+
         ValidRotation = transform.rotation;
         return true;
     }
@@ -58,7 +74,7 @@ public class BuildHandler : MonoBehaviour
             return;
         if (!inPreview) return;
 
-        bool valid = checkPlacements(placementPoints);
+        bool valid = CheckPlacements(placementPoints);
 
         if (valid != IsValidPlacement)
         {
@@ -109,8 +125,12 @@ public class BuildHandler : MonoBehaviour
         TryPlaceBuilding();
     }
 
-    public void startPreview()
+    public bool startPreview()
     {
+        TryGetComponent(out InventoryHandler handler);
+        if (!currentMachine.cost.CanBeCrafted(handler.coins, handler.timber, handler.iron, handler.stone))
+            return false;
+
         previewGO = Instantiate(currentMachine.preview.gameObject);
         placementPoints = new Transform[previewGO.transform.childCount];
         int i = 0;
@@ -120,6 +140,7 @@ public class BuildHandler : MonoBehaviour
             i++;
         }
         inPreview = true;
+        return true;
     }
 
     void TryPlaceBuilding()
@@ -154,6 +175,11 @@ public class BuildHandler : MonoBehaviour
     bool Place_ServerRpc(Vector3 pos, Quaternion rot)
     {
         if (!IsValidPlacement) return false;
+        TryGetComponent(out InventoryHandler handler);
+        if (!currentMachine.cost.CanBeCrafted(handler.coins, handler.timber, handler.iron, handler.stone))
+            return false;
+        currentMachine.cost.SubtractFromInventory(ref handler.coins, ref handler.timber, ref handler.iron, ref handler.stone);
+
         GameObject placedBuildableGO = Instantiate(currentMachine.machinePrefab.gameObject);
         placedBuildableGO.transform.SetPositionAndRotation(new Vector3Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), rot);
 

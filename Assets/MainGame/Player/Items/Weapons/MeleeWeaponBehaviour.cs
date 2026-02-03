@@ -2,12 +2,12 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class MeleeWeaponBehaviour : WeaponBehaviour, IRaycastResponder, IInteractable
+public class MeleeWeaponBehaviour : WeaponBehaviour
 {
-    public float InteractionDuration => 1f;
 
     void OnTriggerEnter(Collider collision)
     {
+        if (!isAttacking) return;
         IDamageable damageable = collision.gameObject.GetComponentInParent<IDamageable>();
         if (damageable != null)
             damageable.takeDamage((Weapon)baseitem);

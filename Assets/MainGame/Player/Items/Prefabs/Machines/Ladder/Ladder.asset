@@ -20,13 +20,9 @@ MonoBehaviour:
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  position: {x: 0, y: 0, z: 0}
-  rotation: {x: 0, y: 0, z: 0}
-  scale: {x: 0, y: 0, z: 0}
   machinePrefab: {fileID: 4853250429765697466, guid: 2da9495615ea1a54c92de61a4d22dfb1, type: 3}
   preview: {fileID: 7464898346791989989, guid: 159f349f4157dd445b470bcf18c820c8, type: 3}
   canManufacture: []
-  placementPoints: []
   buildableLayers:
     serializedVersion: 2
     m_Bits: 64

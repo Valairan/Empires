@@ -1,27 +1,23 @@
 using System;
-using KinematicCharacterController;
 using Unity.Netcode;
-using Unity.Services.Lobbies.Models;
+using Unity.Netcode.Components;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.UIElements;
-
 public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 {
     [Header("Components")]
-    [SerializeField] LocomotionController playerCCMotor;
-    [SerializeField] CameraController playerCamerasMotor;
-    [SerializeField] CombatController playerCombatController;
-    [SerializeField] InventoryHandler playerInventoryController;
-    [SerializeField] Animator playerAnimator;
-    [SerializeField] SkinnedMeshRenderer playerClothesParent;
-    [SerializeField] InputHandler playerInputHandler;
-    [SerializeField] BuildHandler playerBuildHandler;
-    [SerializeField] InteractionHandler playerInteractionHandler;
-    [SerializeField] Camera playerCamera;
-    [SerializeField] Health health;
-    [SerializeField] Armor armor;
+    [SerializeField] public LocomotionController playerCCMotor;
+    [SerializeField] public CameraController playerCamerasMotor;
+    [SerializeField] public CombatController playerCombatController;
+    [SerializeField] public InventoryHandler playerInventoryController;
+    [SerializeField] public Animator playerAnimator;
+    [SerializeField] public SkinnedMeshRenderer playerClothesParent;
+    [SerializeField] public InputHandler playerInputHandler;
+    [SerializeField] public BuildHandler playerBuildHandler;
+    [SerializeField] public InteractionHandler playerInteractionHandler;
+    [SerializeField] public Camera playerCamera;
+    [SerializeField] public Health health;
+    [SerializeField] public Armor armor;
 
     [Header("Locomotion Settings")]
     bool Grounded = true;
@@ -36,13 +32,14 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     public float turnSmoothTime = 0.1f;
     [SerializeField] Transform GroundCheck;
     [SerializeField] LayerMask WhatIsGround;
+    [SerializeField] LayerMask WhatIsWater;
     Vector3 velocity;
 
 
     public Action<float> onHealthChanged;
     public Action<float> onArmorChanged;
+    public Action<Weapon> onWeaponChanged;
 
-    public ulong clientID;
 
     public Vector2 MoveInput;
     public Vector2 LookInput;
@@ -50,33 +47,58 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     public bool sneaking;
     public bool interacting;
 
-    public void setClientId(ulong clientID)
-    {
-        this.clientID = clientID;
-    }
 
-    public void wearItem(Wearable item)
-    {
 
-    }
     public override void OnNetworkSpawn()
     {
-        if (!IsLocalPlayer) return;
+        playerCCMotor.motor.SetPosition(GameManager.Singleton.GetSpawnPointForClient(NetworkManager.LocalClientId));
+        if (!IsLocalPlayer)
+        {
+            disableComponents();
+            return;
+        }
+
+        enableComponents();
+        UiController.Singleton.toggleInGameUI();
+
         playerCamera = Camera.main;
         BindUI();
         BindInputs();
         playerCamerasMotor.setFollowTransform(playerCamerasMotor.cameraFollowTarget);
         playerCCMotor.init();
         playerInventoryController.init();
+        onWeaponChanged += setCurrentAnimatorWeapon;
+        onWeaponChanged += playerCombatController.setCurrentWeapon;
+        base.OnNetworkDespawn();
+    }
 
+    public void disableComponents()
+    {
+        playerCCMotor.motor.enabled = false;
+        playerCCMotor.enabled = false;
+        playerInteractionHandler.enabled = false;
+        playerInventoryController.enabled = false;
+        playerCombatController.enabled = false;
+        playerBuildHandler.enabled = false;
+        playerCamerasMotor.enabled = false;
+    }
+
+    public void enableComponents()
+    {
+        playerCCMotor.motor.enabled = true;
+        playerCCMotor.enabled = true;
+        playerInteractionHandler.enabled = true;
+        playerInventoryController.enabled = true;
+        playerCombatController.enabled = true;
+        playerBuildHandler.enabled = true;
+        playerCamerasMotor.enabled = true;
     }
 
     public void BindUI()
     {
-        onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
-
-
         UiController.Singleton.currentPlayerBuildHandler = playerBuildHandler;
+        onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
+        onWeaponChanged += UiController.Singleton.weaponChanged;
     }
 
     public void BindInputs()
@@ -104,6 +126,8 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     Vector3 groundPoint;
     public override void OnNetworkDespawn()
     {
+        if (!IsLocalPlayer) return;
+
         playerInputHandler.disableInputs();
     }
     Vector3 horizontalVelocity;
@@ -112,10 +136,10 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     public void Update()
     {
         if (!IsLocalPlayer) return;
-
+        Submerged = checkIfInWater();
         playerBuildHandler.previewBuild(playerCamera.transform.position, playerCamera.transform.forward);
         playerInteractionHandler.checkForRaycasts(playerCamera.transform);
-        playerInteractionHandler.HandleTimedInteraction();
+        playerInteractionHandler.HandleTimedInteraction(NetworkManager.Singleton.LocalClientId);
         playerInteractionHandler.interacting = interacting;
         PlayerInputs inputs = new PlayerInputs();
         inputs.Horizontal = MoveInput.x;
@@ -124,10 +148,35 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerCCMotor.setInputs(ref inputs);
         Grounded = playerCCMotor.motor.GroundingStatus.IsStableOnGround;
         //playerCCMotor.Move(finalMove * Time.deltaTime);
-        updateAnimationParams(MoveInput, Grounded, false, false, false, Submerged);
+        updateAnimationParams(MoveInput, Grounded, sidearmAnimation, rifleAnimation, meleeAnimation, Submerged);
 
     }
+    public bool sidearmAnimation = false;
+    public bool rifleAnimation = false;
+    public bool meleeAnimation = false;
 
+    public void setCurrentAnimatorWeapon(Weapon weapon)
+    {
+        if (weapon)
+            switch (weapon.WeaponType)
+            {
+                case WeaponType.melee:
+                    meleeAnimation = true;
+                    sidearmAnimation = false;
+                    rifleAnimation = false;
+                    break;
+                case WeaponType.sidearm:
+                    meleeAnimation = false;
+                    sidearmAnimation = true;
+                    rifleAnimation = false;
+                    break;
+                case WeaponType.rifle:
+                    meleeAnimation = false;
+                    sidearmAnimation = false;
+                    rifleAnimation = true;
+                    break;
+            }
+    }
     public void LateUpdate()
     {
         if (!IsLocalPlayer) return;
@@ -138,12 +187,14 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     }
     void OnAim(bool pressed)
     {
+        if (!IsLocalPlayer) return;
         aiming = pressed;
 
 
     }
     void OnInteract(bool pressed)
     {
+        if (!IsLocalPlayer) return;
         interacting = pressed;
 
         if (!pressed)
@@ -154,25 +205,32 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     }
     public void jump(bool input)
     {
-        if (input)
+        if (!IsLocalPlayer) return;
+        if (input && !Submerged)
             playerCCMotor.jump();
     }
     public void updateAnimationParams(Vector2 movement, bool grounded, bool sideArm, bool rifle, bool melee, bool inwater)
     {
-        if (inwater && (movement.magnitude != 0))
+        if (!IsLocalPlayer) return;
+        playerAnimator.SetBool("Grounded", grounded);
+        playerAnimator.SetBool("Submerged", inwater);
+        if (inwater)
         {
-            playerAnimator.SetBool("Submerged", inwater);
-            playerAnimator.SetFloat("Horizontal", 1);
+            playerAnimator.SetFloat("Horizontal", movement.sqrMagnitude);
             return;
         }
         playerAnimator.SetFloat("Horizontal", Mathf.Round(movement.x));
         playerAnimator.SetFloat("Vertical", Mathf.Round(movement.y));
-        playerAnimator.SetBool("Grounded", grounded);
+        playerAnimator.SetBool("SideArm", sideArm);
+        playerAnimator.SetBool("Rifle", rifle);
+        playerAnimator.SetBool("Melee", melee);
+
 
     }
 
     public void buildButtonPressed()
     {
+        if (!IsLocalPlayer) return;
         playerBuildHandler.buildButtonPressed();
     }
 
@@ -192,7 +250,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 
     public void Attack(bool input)
     {
-        if (input)
+        if (input && !Submerged)
         {
             playerCombatController.Attack();
             playerAnimator.SetTrigger("Attack");
@@ -221,10 +279,12 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     }
 
 
-    public bool PickUpItem(ItemBehaviour itemGOS)
+
+    public bool checkIfInWater()
     {
-        playerInventoryController.PickUpItem_ServerRpc(itemGOS.NetworkObjectId, clientID);
-        return true;
+        Collider[] cols = Physics.OverlapSphere(GroundCheck.position, 0.02f, WhatIsWater);
+        if (cols.Length > 0) return true;
+        return false;
     }
 
 

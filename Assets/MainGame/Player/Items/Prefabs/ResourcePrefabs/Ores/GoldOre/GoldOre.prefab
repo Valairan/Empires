@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -8796168128788080442}
   - component: {fileID: -545407645291612950}
   - component: {fileID: 2127972652361934297}
-  - component: {fileID: 3004743014255040839}
+  - component: {fileID: 3843213263981336255}
   m_Layer: 8
   m_Name: GoldOre
   m_TagString: Untagged
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OreResourceBehaviour
   ShowTopMostFoldoutHeaderGroup: 1
-  baseitem: {fileID: 0}
+  baseitem: {fileID: 11400000, guid: 1ae129e3d5ed2024eb3ec872d980890c, type: 2}
   xCoordinate: 0
   yCoordinate: 0
   health: {fileID: 2127972652361934297}
@@ -117,8 +117,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Health
   ShowTopMostFoldoutHeaderGroup: 1
   amount: 1000
---- !u!64 &3004743014255040839
-MeshCollider:
+--- !u!65 &3843213263981336255
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -135,10 +135,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  serializedVersion: 3
+  m_Size: {x: 1, y: 4, z: 1}
+  m_Center: {x: 0, y: 2, z: 0}
 --- !u!1001 &4209678733377708702
 PrefabInstance:
   m_ObjectHideFlags: 0

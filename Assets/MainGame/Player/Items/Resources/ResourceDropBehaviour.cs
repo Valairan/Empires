@@ -1,4 +1,3 @@
-using Unity.Netcode;
 using UnityEngine;
 
 public class ResourceDropBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
@@ -6,24 +5,16 @@ public class ResourceDropBehaviour : ItemBehaviour, IRaycastResponder, IInteract
 
     float IInteractable.InteractionDuration => 0f;
 
-    public Item Interact(GameObject interactor)
+    public Item Interact(ulong interactor)
     {
-        if (interactor.TryGetComponent<PlayerController>(out PlayerController controller))
-        {
-            attemptToPickUpResource_ServerRpc(controller.clientID);
-        }
         return baseitem;
     }
-    [ServerRpc]
-    void attemptToPickUpResource_ServerRpc(ulong clientid)
+
+    void OnCollisionEnter(Collision col)
     {
-        if (!IsServer) return;
-        if (Vector3.Distance(NetworkGamePropertiesStorage.Singleton.spawnedPlayers[clientid].transform.position, transform.position) > 20)
+        if (col.transform.TryGetComponent(out PlayerController controller))
         {
-            if (NetworkGamePropertiesStorage.Singleton.spawnedPlayers[clientid].TryGetComponent<PlayerController>(out PlayerController controller))
-            {
-                //controller.playerInventory.addItem(baseItem);    
-            }
+            baseitem.OnPickup(controller.OwnerClientId, this.NetworkObjectId);
         }
     }
 
@@ -32,9 +23,6 @@ public class ResourceDropBehaviour : ItemBehaviour, IRaycastResponder, IInteract
         return baseitem;
     }
 
-    public void OnCollisionEnter()
-    {
 
-    }
 
 }

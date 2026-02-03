@@ -117,9 +117,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4607119196271868330}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4746055012376876125}
   m_SourcePrefab: {fileID: 100100000, guid: ba76dea094fd7334c94821d27ed85b7f, type: 3}
 --- !u!1 &3548012934083070747 stripped
 GameObject:
@@ -164,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   ShowTopMostFoldoutHeaderGroup: 1
-  amount: 0
+  amount: 500
 --- !u!114 &4607119196271868330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,30 +175,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MachineBehaviour
   ShowTopMostFoldoutHeaderGroup: 1
-  baseitem: {fileID: 0}
-  health: {fileID: 0}
---- !u!114 &4746055012376876125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3548012934083070747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d841340e79f83c43b8208351fb65d94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Buildable
-  ShowTopMostFoldoutHeaderGroup: 1
-  placementPoints: []
-  blockingLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  terrainLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  raycastDownDistance: 5
-  raycastUpDistance: 2
-  IsPlaced: 0
-  IsValidPlacement: 0
-  ValidRotation: {x: 0, y: 0, z: 0, w: 0}
+  baseitem: {fileID: 11400000, guid: b4826c2ddea294649a0de9fd7993e44f, type: 2}
+  health: {fileID: 7741178050492451244}

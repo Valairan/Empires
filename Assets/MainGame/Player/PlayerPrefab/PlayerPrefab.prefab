@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 2049745925185381702}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.45, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 1142106596359738240}
   - component: {fileID: -6025938488391799064}
   - component: {fileID: 6703637815125287513}
-  - component: {fileID: 7116514997391896152}
+  - component: {fileID: 7014954875726692685}
   m_Layer: 3
   m_Name: PlayerPrefab
   m_TagString: Untagged
@@ -95,13 +95,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
   GlobalObjectIdHash: 1520680668
-  InScenePlacedSourceGlobalObjectIdHash: 618126814
+  InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
-  Ownership: 1
+  Ownership: 7
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 0
+  SceneMigrationSynchronization: 1
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
@@ -131,15 +131,15 @@ MonoBehaviour:
   RotationMaxInterpolationTime: 0.1
   ScaleLerpSmoothing: 1
   ScaleMaxInterpolationTime: 0.1
-  AuthorityMode: 0
+  AuthorityMode: 1
   TickSyncChildren: 0
   UseUnreliableDeltas: 0
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
-  SyncRotAngleX: 1
+  SyncRotAngleX: 0
   SyncRotAngleY: 1
-  SyncRotAngleZ: 1
+  SyncRotAngleZ: 0
   SyncScaleX: 0
   SyncScaleY: 0
   SyncScaleZ: 0
@@ -189,14 +189,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkAnimatorExpanded: 0
-  AuthorityMode: 0
+  AuthorityMode: 1
   m_Animator: {fileID: 8691281464466454400}
   TransitionStateInfoList:
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: 348266038
     DestinationState: 983785542
-    TransitionDuration: 0.25
+    TransitionDuration: 0.04545474
     TriggerNameHash: 1080829965
     TransitionIndex: 0
   AnimatorParameterEntries:
@@ -231,6 +231,10 @@ MonoBehaviour:
       ParameterType: 4
     - name: Submerged
       NameHash: 1846329485
+      Synchronize: 1
+      ParameterType: 4
+    - name: Attacking
+      NameHash: -2123461723
       Synchronize: 1
       ParameterType: 4
   AnimatorParametersExpanded: 0
@@ -296,12 +300,17 @@ MonoBehaviour:
   WhatIsGround:
     serializedVersion: 2
     m_Bits: 4294967295
-  clientID: 0
+  WhatIsWater:
+    serializedVersion: 2
+    m_Bits: 16
   MoveInput: {x: 0, y: 0}
   LookInput: {x: 0, y: 0}
   aiming: 0
   sneaking: 0
   interacting: 0
+  sidearmAnimation: 0
+  rifleAnimation: 0
+  meleeAnimation: 0
 --- !u!114 &5430121383282861059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,6 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   isAttacking: 0
+  currentWeapon: {fileID: 0}
 --- !u!114 &2933855248979656309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,7 +497,6 @@ MonoBehaviour:
   primaryBehaviour: {fileID: 0}
   sidearmBehaviour: {fileID: 0}
   meleeBehaviour: {fileID: 0}
-  equipped: {fileID: 7412389350969685094}
   meleeStorage: {fileID: 0}
   primaryStorage: {fileID: 0}
   sideArmStorage: {fileID: 0}
@@ -495,10 +504,10 @@ MonoBehaviour:
   primaryGO: {fileID: 0}
   sidearamGO: {fileID: 0}
   meleeGO: {fileID: 0}
-  parentGameObject: {fileID: 7116514997391896152}
-  handGameObject: {fileID: 2108359388116965009}
+  networkObjectRoot: {fileID: 7014954875726692685}
+  handGameObject: {fileID: 5209917511073549232}
   storage: []
---- !u!114 &7116514997391896152
+--- !u!114 &7014954875726692685
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -511,10 +520,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkParentCentre
   ShowTopMostFoldoutHeaderGroup: 1
-  OwnerId:
-    m_InternalValue: 0
-  NetworkParents:
-  - {fileID: 2108359388116965009}
 --- !u!1 &6337495348874076394
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,7 +591,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7412389350969685094}
-  - component: {fileID: 2108359388116965009}
   m_Layer: 0
   m_Name: Hand
   m_TagString: Untagged
@@ -609,20 +613,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7985805759234837528}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2108359388116965009
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6450087433474945081}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e6132ed1ce53ab4181a0606f3a619c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetworkParent
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkParentId: Hand
 --- !u!1001 &8603815708551148496
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1001,6 +991,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -290750445479886849, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8189883203120726686}
+    - targetCorrespondingSourceObject: {fileID: 2715566404302941441, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5209917511073549232}
   m_SourcePrefab: {fileID: 100100000, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
 --- !u!1 &742290915202899927 stripped
 GameObject:
@@ -1254,6 +1247,24 @@ CapsuleCollider:
   m_Height: 0.3
   m_Direction: 1
   m_Center: {x: 0, y: 0.15, z: 0}
+--- !u!1 &5965375651198000849 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2715566404302941441, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
+  m_PrefabInstance: {fileID: 8603815708551148496}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5209917511073549232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5965375651198000849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e6132ed1ce53ab4181a0606f3a619c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkParent
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &6693443275796118013 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3135921509060577837, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}

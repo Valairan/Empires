@@ -25,4 +25,4 @@ MonoBehaviour:
   scale: {x: 0, y: 0, z: 0}
   drops:
   - {fileID: 5601903252570669853, guid: c592a141307ff134d88ce834ededa759, type: 3}
-  dropsHowMany: 14000000
+  dropsHowMany: 0a000000

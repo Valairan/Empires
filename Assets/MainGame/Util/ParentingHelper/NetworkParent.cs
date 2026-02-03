@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class NetworkParent : NetworkBehaviour
 {
-    public string NetworkParentId;
-
     public void TriggerParenting(NetworkObjectReference networkObjectReference)
     {
+        if (!IsServer) return;
+
         NetworkObject networkObject =
             NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectReference.NetworkObjectId];
 
@@ -19,7 +19,6 @@ public class NetworkParent : NetworkBehaviour
     {
         NetworkObject networkObject =
             NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectReference.NetworkObjectId];
-
         networkObject.transform.SetParent(transform);
     }
 }

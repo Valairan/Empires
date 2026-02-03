@@ -1,4 +1,7 @@
+using System.Net;
 using TMPro;
+using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 public class UiController : MonoBehaviour
@@ -16,6 +19,14 @@ public class UiController : MonoBehaviour
     [SerializeField] GameObject currentlyLookingAtParent;
     [SerializeField] TMP_Text currentlyLookingAtLabel;
     [SerializeField] TMP_Text currentlyLookingAtDescription;
+    [Header("In Game Display")]
+    [SerializeField] GameObject InGame;
+    [SerializeField] Image currentlyEquipped;
+    [SerializeField] GameObject ammoInTotal;
+    [SerializeField] GameObject ammoInGun;
+    [Header("Pause Display")]
+    [SerializeField] GameObject PauseMenu;
+
     [Header("Build Menu Display")]
     [SerializeField] GameObject buildablePlacementValid;
     [SerializeField] GameObject buildMenu;
@@ -69,6 +80,10 @@ public class UiController : MonoBehaviour
         buildableName.text = item.name;
         buildableDescription.text = item.ItemDescription;
     }
+    public void toggleInGameUI()
+    {
+        InGame.SetActive(!buildMenu.activeSelf);
+    }
     public void toggleBuildMenu()
     {
         buildMenu.SetActive(!buildMenu.activeSelf);
@@ -76,16 +91,29 @@ public class UiController : MonoBehaviour
     public void setCurrentBuildable(Machine machine)
     {
         currentPlayerBuildHandler.setCurrentMachine(machine);
-        toggleBuildMenu();
-        currentPlayerBuildHandler.startPreview();
+        if (currentPlayerBuildHandler.startPreview())
+            toggleBuildMenu();
     }
     public void purchaseWeapon(Weapon weapon)
     {
-        currentPlayerInventoryHandler.EquipItem(weapon);
+        //weapon.OnBuy(NetworkManager.Singleton.LocalClientId);
         toggleWeaponSelector();
     }
 
     public void canBuildSomethingButtonToggle()
+    {
+
+    }
+    public void weaponChanged(Weapon weapon)
+    {
+        switch (weapon.WeaponType)
+        {
+            case WeaponType.melee: ammoInGun.SetActive(false); ammoInTotal.SetActive(false); break;
+            case WeaponType.rifle: case WeaponType.sidearm: ammoInGun.SetActive(true); ammoInTotal.SetActive(true); ; break;
+        }
+        currentlyEquipped.sprite = weapon.ItemIcon;
+    }
+    public void firerateAndMagazineChanged()
     {
 
     }
@@ -100,6 +128,10 @@ public class UiController : MonoBehaviour
     {
         buildablePlacementValid.SetActive(!valid);
 
+    }
+    public void togglePauseMenu(bool valid)
+    {
+        PauseMenu.SetActive(!PauseMenu.activeSelf);
 
     }
 }

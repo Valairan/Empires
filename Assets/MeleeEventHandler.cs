@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MeleeEventHandler : StateMachineBehaviour
@@ -7,7 +8,16 @@ public class MeleeEventHandler : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         controller = animator.GetComponent<CombatController>();
-        controller.OnAttackAnimationStarted();
+        animator.SetBool("Attacking", true);
+
+    }
+
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        if (stateInfo.normalizedTime > 0.41f)
+            controller.OnAttackAnimationStarted();
+        if (stateInfo.normalizedTime > 0.70f)
+            controller.OnAttackAnimationFinished();
 
     }
     public override void OnStateExit(
@@ -16,6 +26,7 @@ public class MeleeEventHandler : StateMachineBehaviour
         int layerIndex
     )
     {
+        animator.SetBool("Attacking", false);
         if (controller != null)
         {
             controller.OnAttackAnimationFinished();

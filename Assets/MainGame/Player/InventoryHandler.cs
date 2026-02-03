@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InventoryHandler : NetworkBehaviour
 {
-    public Item current;
-    public Item primary;
-    public Item sidearm;
-    public Item melee;
+    public Weapon current;
+    public Weapon primary;
+    public Weapon sidearm;
+    public Weapon melee;
 
     public int coins;
     public int timber;
@@ -17,7 +18,6 @@ public class InventoryHandler : NetworkBehaviour
     public WeaponBehaviour primaryBehaviour;
     public WeaponBehaviour sidearmBehaviour;
     public WeaponBehaviour meleeBehaviour;
-    [SerializeField] public Transform equipped;
     [SerializeField] public Transform meleeStorage;
     [SerializeField] public Transform primaryStorage;
     [SerializeField] public Transform sideArmStorage;
@@ -25,7 +25,7 @@ public class InventoryHandler : NetworkBehaviour
     [SerializeField] public GameObject primaryGO;
     [SerializeField] public GameObject sidearamGO;
     [SerializeField] public GameObject meleeGO;
-    [SerializeField] public NetworkParentCentre parentGameObject;
+    [SerializeField] public NetworkParentCentre networkObjectRoot;
     [SerializeField] public NetworkParent handGameObject;
 
     public List<Item> storage;
@@ -33,7 +33,7 @@ public class InventoryHandler : NetworkBehaviour
 
     public void init()
     {
-        handGameObject.NetworkParentId = "Hand";
+
     }
     public void drop()
     {
@@ -46,49 +46,44 @@ public class InventoryHandler : NetworkBehaviour
     }
 
 
-    public void EquipItem(Item item)
-    {
-        if (!IsLocalPlayer) return;
-        //EquipItem_ServerRpc(item);
-    }
-
-
-    [ServerRpc]
-    public void EquipItem_ServerRpc()
-    {
-
-
-    }
-
-
-    [ServerRpc]
-    public void PickUpItem_ServerRpc(ulong itemGO, ulong clientID)
+    public void EquipItem(ulong parentID, ulong objectID, Weapon weapon)
     {
         if (!IsServer) return;
-        if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(itemGO, out NetworkObject obj))
-            return;
-        if (!(Vector3.Distance(NetworkGamePropertiesStorage.Singleton.spawnedPlayers[clientID].transform.position, obj.transform.position) < 2f))
-            return;
-
-        Weapon item = (Weapon)obj.GetComponent<ItemBehaviour>().baseitem;
-
-        GameObject temp = Instantiate(item.weaponPrefab_onplayer);
+        GameObject temp = Instantiate(weapon.weaponPrefab_onplayer);
         NetworkObject nettemp = temp.GetComponent<NetworkObject>();
-        currentGO = temp;
         nettemp.Spawn();
+        nettemp.ChangeOwnership(parentID);
         NetworkObjectReference netref = nettemp;
-
-        parentGameObject.TryToParentNetworkObject(netref, "Hand");
-        temp.transform.localScale = item.scale;
-        temp.transform.localPosition = item.position;
-        temp.transform.localRotation = Quaternion.Euler(item.rotation);
-        obj.Despawn();
+        networkObjectRoot.TryToParentNetworkObject(netref, handGameObject);
+        nettemp.transform.localPosition = weapon.position;
+        nettemp.transform.localRotation = Quaternion.Euler(weapon.rotation);
+        nettemp.transform.localScale = weapon.scale;
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects[objectID].Despawn(true);
+        updateWeaponOn_ClientRpc(nettemp.NetworkObjectId, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
     }
 
     [ClientRpc]
-    public void setTransformsWhenPickingUp_ClientRpc()
+    public void updateWeaponOn_ClientRpc(ulong updatedweaponid, ClientRpcParams _ = default)
+    {
+        TryGetComponent(out PlayerController controller);
+        current = NetworkManager.Singleton.SpawnManager.SpawnedObjects[updatedweaponid].GetComponent<WeaponBehaviour>().baseWeapon;
+        currentGO = NetworkManager.Singleton.SpawnManager.SpawnedObjects[updatedweaponid].gameObject;
+        controller.playerCombatController.currentWeapon = currentGO.GetComponent<WeaponBehaviour>();
+        controller.onWeaponChanged.Invoke(current);
+    }
+    public void BuyItem(Weapon weapon)
+    {
+    }
+
+
+
+
+
+    [ServerRpc]
+    public void EquipItem_ServerRpc(ulong itemGO, ulong clientID)
     {
 
     }
+
 
 }

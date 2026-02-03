@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f33ce3f6695c5464a9e94c98d53ef980
+guid: 38f4aa6835e33674a8b29ae6c290d47b
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Panzer
+  - Ver Army
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

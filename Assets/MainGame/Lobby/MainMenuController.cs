@@ -7,6 +7,7 @@ using Unity.Services.Relay.Models;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using TMPro;
+using Unity.VisualScripting;
 public class MainMenuController : MonoBehaviour
 {
 
@@ -48,10 +49,13 @@ public class MainMenuController : MonoBehaviour
 
     public async void joinRoom()
     {
-        mainMenuParent.SetActive(false);
-        LoadingParent.SetActive(true);
-        if (roomcodeInput.text.Length > 0)
+
+        if (roomcodeInput.text.ToString().Length != 6) return;
+        try
         {
+            mainMenuParent.SetActive(false);
+            LoadingParent.SetActive(true);
+
             if (await StartClientWithRelay(roomcodeInput.text.ToString().Trim(), "dtls"))
             {
                 LoadingParent.SetActive(false);
@@ -59,18 +63,20 @@ public class MainMenuController : MonoBehaviour
                 LobbyParent.SetActive(true);
                 return;
             }
-            else
-            {
-                InvalidRoomCode.SetActive(true);
-                LoadingParent.SetActive(false);
+        }
+        catch
+        {
+            InvalidRoomCode.SetActive(true);
+            LoadingParent.SetActive(false);
 
-            }
         }
     }
 
 
     public async Task<string> StartHostWithRelay(int maxConnections, string connectionType)
     {
+
+
         await UnityServices.InitializeAsync();
         if (!AuthenticationService.Instance.IsSignedIn)
         {
@@ -80,19 +86,29 @@ public class MainMenuController : MonoBehaviour
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(AllocationUtils.ToRelayServerData(allocation, connectionType));
         var joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
         return NetworkManager.Singleton.StartHost() ? joinCode : null;
+
+
     }
 
     public async Task<bool> StartClientWithRelay(string joinCode, string connectionType)
     {
-        await UnityServices.InitializeAsync();
-        if (!AuthenticationService.Instance.IsSignedIn)
+        try
         {
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        }
+            await UnityServices.InitializeAsync();
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
 
-        var allocation = await RelayService.Instance.JoinAllocationAsync(joinCode: joinCode);
-        NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(AllocationUtils.ToRelayServerData(allocation, connectionType));
-        return !string.IsNullOrEmpty(joinCode) && NetworkManager.Singleton.StartClient();
+            var allocation = await RelayService.Instance.JoinAllocationAsync(joinCode: joinCode);
+
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(AllocationUtils.ToRelayServerData(allocation, connectionType));
+            return NetworkManager.Singleton.StartClient();
+        }
+        catch
+        {
+            return false;
+        }
     }
 
 

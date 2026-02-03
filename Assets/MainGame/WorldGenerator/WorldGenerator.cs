@@ -17,7 +17,7 @@ public class WorldGenerator : MonoBehaviour
     public VegetationChunk[][,] totaleVegetationChunks;
     RenderParams renderParams;
     [SerializeField] Material grassMaterial;
-    [SerializeField] int numberOfChunksToRender;
+    [SerializeField] public int numberOfChunksToRender;
 
     int mapWidth = 0;
     int mapHeight = 0;
@@ -74,18 +74,26 @@ public class WorldGenerator : MonoBehaviour
     Matrix4x4[] visibleMatrices = new Matrix4x4[1023]; // max batch size
     int maxInstances = 1023;
 
+
+    const float chunkWorldSize = 5f;
+    const float behindChunkRows = 1f;   // how many chunks behind to keep
+    [SerializeField]
+    [Range(-1, 1)]
+    float forwardDotThreshold = 0.5f; // how far "behind" is acceptable
     void Update()
     {
         if (!generationComplete) return;
 
-        int positionX = (int)Math.Clamp(mainCamera.position.x, 0, mapWidth) / 5;
-        int positionZ = (int)Math.Clamp(mainCamera.position.z, 0, mapHeight) / 5;
+        Vector3 camPos = mainCamera.position;
+        Vector3 camForward = mainCamera.forward;
+
+        int positionX = (int)Math.Clamp(camPos.x, 0, mapWidth) / 5;
+        int positionZ = (int)Math.Clamp(camPos.z, 0, mapHeight) / 5;
 
         for (int k = 0; k < vegetation.Length; k++)
         {
-            int count = 0; // How many instances in this batch
+            int count = 0;
 
-            // Loop over visible chunks
             for (int i = -numberOfChunksToRender; i <= numberOfChunksToRender; i++)
             {
                 for (int j = -numberOfChunksToRender; j <= numberOfChunksToRender; j++)
@@ -93,13 +101,36 @@ public class WorldGenerator : MonoBehaviour
                     int chunkX = positionX + i;
                     int chunkZ = positionZ + j;
 
-                    if (chunkX < 0 || chunkZ < 0 || chunkX >= mapWidth / 5 || chunkZ >= mapHeight / 5)
+                    if (chunkX < 0 || chunkZ < 0 ||
+                        chunkX >= mapWidth / 5 ||
+                        chunkZ >= mapHeight / 5)
                         continue;
+
+                    // -------- Directional chunk culling --------
+
+                    Vector3 chunkCenter = new Vector3(
+                        chunkX * chunkWorldSize + chunkWorldSize * 0.5f,
+                        camPos.y,
+                        chunkZ * chunkWorldSize + chunkWorldSize * 0.5f
+                    );
+
+                    Vector3 toChunk = chunkCenter - camPos;
+                    float dot = Vector3.Dot(camForward, toChunk.normalized);
+
+                    // How far behind camera this chunk is (in chunks)
+                    float behindChunks = -Vector3.Dot(camForward, toChunk) / chunkWorldSize;
+
+                    // HARD reject:
+                    // - not in forward cone
+                    // - AND more than N chunks behind
+                    if (dot < forwardDotThreshold && behindChunks > behindChunkRows)
+                        continue;
+
+                    // ------------------------------------------
 
                     VegetationChunk chunk = totaleVegetationChunks[k][chunkX, chunkZ];
                     if (chunk.count == 0) continue;
 
-                    // Copy chunk matrices into the preallocated array in batches of 1023
                     for (int m = 0; m < chunk.count; m++)
                     {
                         visibleMatrices[count] = chunk.matrices[m];
@@ -107,24 +138,34 @@ public class WorldGenerator : MonoBehaviour
 
                         if (count == maxInstances)
                         {
-                            // Render current batch
-                            Graphics.RenderMeshInstanced(renderParams, vegetation[k].mesh, 0, visibleMatrices);
-                            count = 0; // reset counter for next batch
+                            Graphics.RenderMeshInstanced(
+                                renderParams,
+                                vegetation[k].mesh,
+                                0,
+                                visibleMatrices
+                            );
+                            count = 0;
                         }
                     }
                 }
             }
 
-            // Render any leftover instances
+            // Render leftovers
             if (count > 0)
             {
                 Matrix4x4[] leftover = new Matrix4x4[count];
                 Array.Copy(visibleMatrices, leftover, count);
-                Graphics.RenderMeshInstanced(renderParams, vegetation[k].mesh, 0, leftover);
+
+                Graphics.RenderMeshInstanced(
+                    renderParams,
+                    vegetation[k].mesh,
+                    0,
+                    leftover
+                );
             }
         }
-
     }
+
 }
 
 

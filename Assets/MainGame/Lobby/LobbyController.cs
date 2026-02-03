@@ -1,5 +1,7 @@
+using System;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,54 +15,56 @@ public class LobbyController : NetworkBehaviour
 
     public void OnEnable()
     {
+
+    }
+
+    public override void OnNetworkSpawn()
+    {
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
         NetworkGamePropertiesStorage.Singleton.connectedPlayerData.OnListChanged += assignNamesToScreen;
 
-        if (NetworkManager.Singleton.IsServer)
+        for (int i = 0; i < NetworkGamePropertiesStorage.Singleton.connectedPlayerData.Count; i++)
         {
-            initForServer();
+            playerNames[i].text = NetworkGamePropertiesStorage.Singleton.connectedPlayerData[i].name.ToString();
         }
     }
 
-    public void OnDisable()
+    public override void OnNetworkDespawn()
     {
         NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
         NetworkGamePropertiesStorage.Singleton.connectedPlayerData.OnListChanged -= assignNamesToScreen;
     }
 
-    void initForServer()
-    {
-        if (!NetworkManager.Singleton.IsServer)
-            return;
-        NetworkGamePropertiesStorage.Singleton.myname = NetworkGamePropertiesStorage.Singleton.generateName();
-        NetworkGamePropertiesStorage.Singleton.connectedPlayerData.Add(new PlayerData(NetworkManager.Singleton.LocalClientId, NetworkGamePropertiesStorage.Singleton.myname, 0, 0, 0));
-        playerNames[(int)(NetworkManager.Singleton.LocalClientId % 8)].text = NetworkGamePropertiesStorage.Singleton.myname;
-        playerIcons[(int)(NetworkManager.Singleton.LocalClientId % 8)].SetActive(true);
-        StartButton.SetActive(true);
-
-    }
 
     private void assignNamesToScreen(NetworkListEvent<PlayerData> changeEvent)
     {
         for (int i = 0; i < NetworkGamePropertiesStorage.Singleton.connectedPlayerData.Count; i++)
         {
             playerNames[i].text = NetworkGamePropertiesStorage.Singleton.connectedPlayerData[i].name.ToString();
-
         }
     }
     private void OnClientConnected(ulong clientId)
     {
-        if (NetworkManager.Singleton.IsServer)
+        if (IsServer)
         {
-            NetworkGamePropertiesStorage.Singleton.connectedPlayerData.Add(new PlayerData(clientId, NetworkGamePropertiesStorage.Singleton.generateName(), 0, 0, 0));
             NetworkGamePropertiesStorage.Singleton.spawnedPlayersIndex[(int)(clientId % 8)] = clientId;
-            return;
+            string playername = NetworkGamePropertiesStorage.Singleton.generateName();
+            NetworkGamePropertiesStorage.Singleton.connectedPlayerData.Add(new PlayerData(clientId, playername, 0, 0, 0));
+            setLocalName_ClientRpc(playername, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { clientId } } });
+            StartButton.SetActive(true);
         }
-        playerIcons[(int)(NetworkManager.Singleton.LocalClientId % 8)].SetActive(true);
-        ReadyButton.SetActive(true);
+        playerIcons[(int)(NetworkManager.LocalClientId % 8)].SetActive(true);
     }
+
+    [ClientRpc]
+    public void setLocalName_ClientRpc(string playerName, ClientRpcParams _ = default)
+    {
+        NetworkGamePropertiesStorage.Singleton.myname = playerName;
+        playerNames[NetworkManager.LocalClientId % 8].text = playerName;
+    }
+
     private void OnClientDisconnected(ulong clientId)
     {
         if (NetworkGamePropertiesStorage.Singleton.spawnedPlayers.ContainsKey(clientId))
@@ -71,28 +75,29 @@ public class LobbyController : NetworkBehaviour
         }
     }
 
-    public void setReady()
-    {
-        setReady_ServerRpc();
-        ReadyButton.SetActive(false);
-    }
 
     [ServerRpc]
     public void setReady_ServerRpc()
     {
-        if (!IsServer) return;
-        NetworkGamePropertiesStorage.Singleton.readyState += 1;
+        if (IsServer)
+            NetworkGamePropertiesStorage.Singleton.readyState.Value += 1;
     }
 
     public void StartGame()
     {
-        if (!NetworkManager.Singleton.IsServer) return;
-        if (NetworkGamePropertiesStorage.Singleton.readyState == NetworkManager.Singleton.ConnectedClients.Count - 1)
+        if (!IsServer) return;
+        Loader.Singelton.setProgress(.1f);
+        NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += NetworkGamePropertiesStorage.Singleton.onSceneLoadComplete;
+        NetworkManager.Singleton.SceneManager.LoadScene("MainGameScene", LoadSceneMode.Single);
+        StartGame_ClientRpc();
+        if (NetworkGamePropertiesStorage.Singleton.readyState.Value == NetworkManager.Singleton.ConnectedClients.Count - 1)
         {
-            Loader.Singelton.gameObject.SetActive(true);
-            NetworkManager.Singleton.SceneManager.LoadScene("MainGameScene", LoadSceneMode.Single);
-            Loader.Singelton.setProgress(.1f);
         }
+    }
+    [ClientRpc]
+    public void StartGame_ClientRpc()
+    {
+        Loader.Singelton.gameObject.SetActive(true);
     }
 
 }

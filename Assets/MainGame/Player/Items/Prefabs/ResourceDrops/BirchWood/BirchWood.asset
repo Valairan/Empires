@@ -20,9 +20,5 @@ MonoBehaviour:
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  position: {x: 0, y: 0, z: 0}
-  rotation: {x: 0, y: 0, z: 0}
-  scale: {x: 0, y: 0, z: 0}
-  drops:
-  - {fileID: 5601903252570669853, guid: c592a141307ff134d88ce834ededa759, type: 3}
-  dropsHowMany: 14000000
+  drop: {fileID: 5601903252570669853, guid: c592a141307ff134d88ce834ededa759, type: 3}
+  type: 3

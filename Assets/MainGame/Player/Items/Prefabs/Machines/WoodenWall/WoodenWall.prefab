@@ -101,9 +101,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 51bdd2fef8d20ed47bdcd3a944474842, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6388067078405333286}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 51bdd2fef8d20ed47bdcd3a944474842, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1893896666057385853}
     - targetCorrespondingSourceObject: {fileID: 3623335522743212046, guid: 51bdd2fef8d20ed47bdcd3a944474842, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2999461039180316204}
@@ -125,7 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3115807483
+  GlobalObjectIdHash: 3645048948
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -151,7 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   ShowTopMostFoldoutHeaderGroup: 1
-  amount: 0
+  amount: 200
 --- !u!114 &6388067078405333286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,31 +164,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   baseitem: {fileID: 11400000, guid: 2bfd3f6b04414e74bb706d59272e80e7, type: 2}
   health: {fileID: 8903087962217244193}
---- !u!114 &1893896666057385853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5818426843855211294}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d841340e79f83c43b8208351fb65d94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Buildable
-  ShowTopMostFoldoutHeaderGroup: 1
-  placementPoints: []
-  blockingLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  terrainLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  raycastDownDistance: 5
-  raycastUpDistance: 2
-  IsPlaced: 0
-  IsValidPlacement: 0
-  ValidRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &7941800830195379777 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3623335522743212046, guid: 51bdd2fef8d20ed47bdcd3a944474842, type: 3}

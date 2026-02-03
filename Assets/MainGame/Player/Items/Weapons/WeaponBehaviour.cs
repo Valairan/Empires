@@ -1,18 +1,26 @@
+using JetBrains.Annotations;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
-public class WeaponBehaviour : ItemBehaviour
+public class WeaponBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
 {
+    public bool isAttacking = false;
+    public Weapon baseWeapon;
+    public Transform attachementParent;
+    public float InteractionDuration => 1f;
 
+    public override void OnNetworkSpawn()
+    {
+        baseitem = baseWeapon;
+        if (!IsLocalPlayer)
+            enabled = false;
+    }
 
-    public Item Interact(GameObject interactor)
+    public Item Interact(ulong interactor)
     {
 
-        if (interactor.TryGetComponent(out PlayerController interactingPlayer))
-        {
-            attemptToInteract_ServerRpc(interactingPlayer.clientID);
-        }
+        attemptToInteract_ServerRpc(interactor, NetworkObjectId);
         return baseitem;
     }
 
@@ -21,46 +29,36 @@ public class WeaponBehaviour : ItemBehaviour
         return baseitem;
     }
 
-    void OnCollisionEnter(Collision collision)
+    [ServerRpc(RequireOwnership = false)]
+    void attemptToInteract_ServerRpc(ulong interactingPlayerId, ulong interactee)
     {
-        if (collision.transform.TryGetComponent(out IDamageable damageable))
-        {
-            damageable.takeDamage((MeleeWeapon)baseitem);
-        }
-    }
-
-    [ServerRpc]
-    void attemptToInteract_ServerRpc(ulong interactingPlayerId)
-    {
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(interactingPlayerId, out var client))
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(interactingPlayerId, out NetworkClient client))
             return;
+        Debug.Log("after first check");
 
-        var playerObject = client.PlayerObject;
+        NetworkObject playerObject = client.PlayerObject;
         if (playerObject == null)
             return;
+        Debug.Log("after second check");
 
         if (!playerObject.TryGetComponent(out PlayerController player))
             return;
 
+        Debug.Log("after third check");
         if (baseitem == null)
             return;
 
+        Debug.Log("after fourth check");
         float distance = Vector3.Distance(
             player.transform.position,
             transform.position
         );
 
+        Debug.Log("after final check");
         if (distance > 2.5f) // interaction range
             return;
+        Debug.Log("before base.onpuit check");
 
-
-        if (!player.PickUpItem(this))
-            return;
-
-        
-
-        Debug.Log("The item has been picked up");
-
+        baseitem.OnPickup(interactingPlayerId, interactee);
     }
-
 }

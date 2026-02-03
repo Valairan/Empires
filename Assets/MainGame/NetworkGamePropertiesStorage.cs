@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkGamePropertiesStorage : NetworkBehaviour
 {
@@ -11,7 +12,7 @@ public class NetworkGamePropertiesStorage : NetworkBehaviour
     public ulong[] spawnedPlayersIndex = new ulong[8];
     public Dictionary<ulong, GameObject> spawnedPlayers = new Dictionary<ulong, GameObject>();
     public NetworkList<PlayerData> connectedPlayerData;
-    public int readyState;
+    public NetworkVariable<int> readyState;
     public NetworkVariable<int> WorldGenerationSeed;
     public BaseResource[,] resourcesInGame;
     public string myname;
@@ -22,13 +23,27 @@ public class NetworkGamePropertiesStorage : NetworkBehaviour
     {
         if (Singleton == null) Singleton = this;
         DontDestroyOnLoad(gameObject);
-        connectedPlayerData = new NetworkList<PlayerData>();
+        connectedPlayerData = new NetworkList<PlayerData>(null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     }
 
     public string generateName()
     {
         return namesPrefix[UnityEngine.Random.Range(0, 8)] + "." + names[UnityEngine.Random.Range(0, 8)];
     }
+
+    public void onSceneLoadComplete(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    {
+        tellServerSceneLoadHasCompleted_ServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void tellServerSceneLoadHasCompleted_ServerRpc()
+    {
+        GameManager.Singleton.sceneLoadComplete.Invoke();
+
+
+    }
+
 }
 
 

@@ -4,16 +4,22 @@ public class CombatController : MonoBehaviour
 {
     public bool isAttacking;
 
+    public WeaponBehaviour currentWeapon;
     public virtual void OnAttackAnimationFinished()
     {
-        isAttacking = false;
+        currentWeapon.isAttacking = false;
     }
     public virtual void OnAttackAnimationStarted()
     {
-        isAttacking = true;
+        currentWeapon.isAttacking = true;
+    }
+    public void setCurrentWeapon(Weapon wepaon)
+    {   
+                
     }
     public void Attack()
     {
 
     }
 }
+

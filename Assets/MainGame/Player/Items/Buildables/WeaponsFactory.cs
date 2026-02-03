@@ -18,7 +18,7 @@ public class WeaponsFactory : MachineBehaviour, IInteractable
 
     }
 
-    public Item Interact(GameObject interactor)
+    public Item Interact(ulong interactor)
     {
         if (!placed) return null;
         UiController.Singleton.toggleWeaponSelector();

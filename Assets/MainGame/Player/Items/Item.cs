@@ -43,9 +43,7 @@ public enum ItemType
 {
     resource,
     machine,
-    melee,
-    primary,
-    sidearm,
+    weapon
 }
 
 [Serializable]

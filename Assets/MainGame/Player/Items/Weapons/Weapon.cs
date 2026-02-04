@@ -5,16 +5,18 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Base Weapon", menuName = "Items/Weapons/New Weapon")]
 public class Weapon : Item
 {
+    public WeaponType WeaponType;
     public float treeDamage;
     public float oreDamage;
     public float playerDamage;
     public GameObject weaponPrefab_rb;
     public GameObject weaponPrefab_onplayer;
     [Header("While attached to player")]
+    [Header("Parented Position")]
     public Vector3 position;
     public Vector3 rotation;
     public Vector3 scale;
-    public WeaponType WeaponType;
+
     void Awake()
     {
         stack = false;
@@ -22,11 +24,9 @@ public class Weapon : Item
 
     public override void OnPickup(ulong parentID, ulong objectID)
     {
-        Debug.Log("Something before onpickup");
         InventoryHandler handler = NetworkManager.Singleton.ConnectedClients[parentID].PlayerObject.GetComponent<InventoryHandler>();
         handler.current = this;
         handler.EquipItem(parentID, objectID, this);
-        Debug.Log("Something after onpicup");
 
     }
 

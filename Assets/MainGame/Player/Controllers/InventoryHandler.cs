@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -14,10 +15,7 @@ public class InventoryHandler : NetworkBehaviour
     public int timber;
     public int iron;
     public int stone;
-    public WeaponBehaviour currentBehaviour;
-    public WeaponBehaviour primaryBehaviour;
-    public WeaponBehaviour sidearmBehaviour;
-    public WeaponBehaviour meleeBehaviour;
+
     [SerializeField] public Transform meleeStorage;
     [SerializeField] public Transform primaryStorage;
     [SerializeField] public Transform sideArmStorage;
@@ -54,21 +52,22 @@ public class InventoryHandler : NetworkBehaviour
         nettemp.Spawn();
         nettemp.ChangeOwnership(parentID);
         NetworkObjectReference netref = nettemp;
-        networkObjectRoot.TryToParentNetworkObject(netref, handGameObject);
-        nettemp.transform.localPosition = weapon.position;
-        nettemp.transform.localRotation = Quaternion.Euler(weapon.rotation);
-        nettemp.transform.localScale = weapon.scale;
+        if (networkObjectRoot.TryToParentNetworkObject(netref, handGameObject)) ;
         NetworkManager.Singleton.SpawnManager.SpawnedObjects[objectID].Despawn(true);
         updateWeaponOn_ClientRpc(nettemp.NetworkObjectId, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
     }
+
 
     [ClientRpc]
     public void updateWeaponOn_ClientRpc(ulong updatedweaponid, ClientRpcParams _ = default)
     {
         TryGetComponent(out PlayerController controller);
-        current = NetworkManager.Singleton.SpawnManager.SpawnedObjects[updatedweaponid].GetComponent<WeaponBehaviour>().baseWeapon;
+
+        WeaponBehaviour currentBehaviour = NetworkManager.Singleton.SpawnManager.SpawnedObjects[updatedweaponid].GetComponent<WeaponBehaviour>();
+        current = currentBehaviour.baseWeapon;
         currentGO = NetworkManager.Singleton.SpawnManager.SpawnedObjects[updatedweaponid].gameObject;
         controller.playerCombatController.currentWeapon = currentGO.GetComponent<WeaponBehaviour>();
+        controller.playerAnimationController.setTarget(currentBehaviour.ik_target);
         controller.onWeaponChanged.Invoke(current);
     }
     public void BuyItem(Weapon weapon)

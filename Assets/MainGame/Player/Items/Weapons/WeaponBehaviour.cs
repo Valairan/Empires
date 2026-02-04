@@ -7,7 +7,7 @@ public class WeaponBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
 {
     public bool isAttacking = false;
     public Weapon baseWeapon;
-    public Transform attachementParent;
+    public Transform ik_target;
     public float InteractionDuration => 1f;
 
     public override void OnNetworkSpawn()
@@ -15,6 +15,18 @@ public class WeaponBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
         baseitem = baseWeapon;
         if (!IsLocalPlayer)
             enabled = false;
+    }
+
+    public void Init(ulong sender)
+    {
+        if (NetworkManager.Singleton.LocalClientId != sender)
+        {
+            enabled = false;
+            return;
+        }
+        transform.localPosition = baseWeapon.position;
+        transform.localRotation = Quaternion.Euler(baseWeapon.rotation);
+        transform.localScale = baseWeapon.scale;
     }
 
     public Item Interact(ulong interactor)

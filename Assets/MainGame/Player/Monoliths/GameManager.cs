@@ -99,17 +99,17 @@ public class GameManager : NetworkBehaviour
         Loader.Singelton.gameObject.SetActive(false);
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void DamageOre_ServerRpc(float damage, int x, int y, ServerRpcParams rpcParams = default)
     {
+        if (!IsServer) return;
         if (damage <= 0) return;
         BaseResourceBehaviour currentTree = worldGenerator.placedTrees[x, y];
         NetworkGamePropertiesStorage.Singleton.spawnedPlayers.TryGetValue(rpcParams.Receive.SenderClientId, out GameObject sender);
         float health = currentTree.health.amount;
-        if (Vector3.Distance(sender.transform.position, currentTree.transform.position) < 2)
-        {
-            health -= damage;
-        }
+        if (Vector3.Distance(sender.transform.position, currentTree.transform.position) > 2)
+            return;
+        health -= damage;
         Vector3 position = currentTree.transform.position;
         if (((BaseResource)currentTree.baseitem).drops.Length > 0)
         {
@@ -135,18 +135,17 @@ public class GameManager : NetworkBehaviour
         updateResource_ClientRpc(x, y, health);
 
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void DamageTree_ServerRpc(float damage, int x, int y, ServerRpcParams rpcParams = default)
     {
+        if (!IsServer) return;
         if (damage <= 0) return;
         BaseResourceBehaviour currentTree = worldGenerator.placedTrees[x, y];
         NetworkGamePropertiesStorage.Singleton.spawnedPlayers.TryGetValue(rpcParams.Receive.SenderClientId, out GameObject sender);
         float health = currentTree.health.amount;
-        if (Vector3.Distance(sender.transform.position, currentTree.transform.position) < 2)
-        {
-
-            health -= damage;
-        }
+        if (Vector3.Distance(sender.transform.position, currentTree.transform.position) > 2)
+            return;
+        health -= damage;
         if (health <= 0f)
         {
             Vector3 position = currentTree.transform.position;

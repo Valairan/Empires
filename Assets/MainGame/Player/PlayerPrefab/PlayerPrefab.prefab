@@ -46,7 +46,6 @@ GameObject:
   - component: {fileID: 2655157825016834110}
   - component: {fileID: 531750188607022820}
   - component: {fileID: 2240988776460454622}
-  - component: {fileID: 4720122550096299429}
   - component: {fileID: 5430121383282861059}
   - component: {fileID: 3213553562105768937}
   - component: {fileID: 3911377783466050159}
@@ -56,6 +55,8 @@ GameObject:
   - component: {fileID: -6025938488391799064}
   - component: {fileID: 6703637815125287513}
   - component: {fileID: 7014954875726692685}
+  - component: {fileID: 4835396568835302231}
+  - component: {fileID: 4720122550096299429}
   m_Layer: 3
   m_Name: PlayerPrefab
   m_TagString: Untagged
@@ -94,7 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1520680668
+  GlobalObjectIdHash: 618126814
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 7
@@ -264,53 +265,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildHandler
   allAvailableMachines: []
---- !u!114 &4720122550096299429
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3549461418572006148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf6b3fc671e84a54894eb089fc8e069b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  ShowTopMostFoldoutHeaderGroup: 1
-  baseitem: {fileID: 0}
-  playerCCMotor: {fileID: 2933855248979656309}
-  playerCamerasMotor: {fileID: 4308909321517958399}
-  playerCombatController: {fileID: 3911377783466050159}
-  playerInventoryController: {fileID: 6703637815125287513}
-  playerAnimator: {fileID: 8691281464466454400}
-  playerClothesParent: {fileID: 0}
-  playerInputHandler: {fileID: 531750188607022820}
-  playerBuildHandler: {fileID: 2240988776460454622}
-  playerInteractionHandler: {fileID: 3213553562105768937}
-  playerCamera: {fileID: 0}
-  health: {fileID: 5430121383282861059}
-  armor: {fileID: 0}
-  runSpeed: 4
-  walkSpeed: 1.5
-  gravity: 200
-  jumpHeight: 2000
-  turnSmoothVelocity: 0.01
-  turnSmoothTime: 0.1
-  GroundCheck: {fileID: 8549256906201458926}
-  WhatIsGround:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  WhatIsWater:
-    serializedVersion: 2
-    m_Bits: 16
-  MoveInput: {x: 0, y: 0}
-  LookInput: {x: 0, y: 0}
-  aiming: 0
-  sneaking: 0
-  interacting: 0
-  sidearmAnimation: 0
-  rifleAnimation: 0
-  meleeAnimation: 0
 --- !u!114 &5430121383282861059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,10 +447,6 @@ MonoBehaviour:
   timber: 0
   iron: 0
   stone: 0
-  currentBehaviour: {fileID: 0}
-  primaryBehaviour: {fileID: 0}
-  sidearmBehaviour: {fileID: 0}
-  meleeBehaviour: {fileID: 0}
   meleeStorage: {fileID: 0}
   primaryStorage: {fileID: 0}
   sideArmStorage: {fileID: 0}
@@ -520,6 +470,69 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkParentCentre
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &4835396568835302231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3549461418572006148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61614b47f5dcb6b46997a2f2f3cf94fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationController
+  animator: {fileID: 8691281464466454400}
+  leftHandTarget: {fileID: 0}
+  ikWeight: 1
+--- !u!114 &4720122550096299429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3549461418572006148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf6b3fc671e84a54894eb089fc8e069b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  ShowTopMostFoldoutHeaderGroup: 1
+  baseitem: {fileID: 0}
+  playerCCMotor: {fileID: 2933855248979656309}
+  playerAnimationController: {fileID: 4835396568835302231}
+  playerCamerasMotor: {fileID: 4308909321517958399}
+  playerCombatController: {fileID: 3911377783466050159}
+  playerInventoryController: {fileID: 6703637815125287513}
+  playerAnimator: {fileID: 8691281464466454400}
+  playerClothesParent: {fileID: 0}
+  playerInputHandler: {fileID: 531750188607022820}
+  playerBuildHandler: {fileID: 2240988776460454622}
+  playerInteractionHandler: {fileID: 3213553562105768937}
+  playerCamera: {fileID: 0}
+  health: {fileID: 5430121383282861059}
+  armor: {fileID: 0}
+  runSpeed: 4
+  walkSpeed: 1.5
+  gravity: 200
+  jumpHeight: 2000
+  turnSmoothVelocity: 0.01
+  turnSmoothTime: 0.1
+  GroundCheck: {fileID: 8549256906201458926}
+  WhatIsGround:
+    serializedVersion: 2
+    m_Bits: 1527
+  WhatIsWater:
+    serializedVersion: 2
+    m_Bits: 16
+  MoveInput: {x: 0, y: 0}
+  LookInput: {x: 0, y: 0}
+  aiming: 0
+  sneaking: 0
+  interacting: 0
+  sidearmAnimation: 0
+  rifleAnimation: 0
+  meleeAnimation: 0
 --- !u!1 &6337495348874076394
 GameObject:
   m_ObjectHideFlags: 0

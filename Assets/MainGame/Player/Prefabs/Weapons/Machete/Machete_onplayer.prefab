@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3719774629429970330}
   - component: {fileID: 2855521101426964725}
   - component: {fileID: 6302603119473885444}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Machete_onplayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,4 +183,3 @@ MonoBehaviour:
   baseitem: {fileID: 11400000, guid: ea94eba0a191aa64cb59f95e86c3dd23, type: 2}
   isAttacking: 0
   baseWeapon: {fileID: 11400000, guid: ea94eba0a191aa64cb59f95e86c3dd23, type: 2}
-  attachementParent: {fileID: 0}

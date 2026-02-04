@@ -2023,7 +2023,7 @@ MonoBehaviour:
   - {fileID: 285084976}
   - {fileID: 399065728}
   playerCanvas: {fileID: 0}
-  testPrefab: {fileID: 6751512441510544877, guid: 163a8d21a6102b64e8ed3cdba1f9e62c, type: 3}
+  testPrefab: {fileID: 3685391815476615198, guid: 416bf7fd29b7fe94eb013d9515252a64, type: 3}
 --- !u!1 &85531233
 GameObject:
   m_ObjectHideFlags: 0
@@ -27839,6 +27839,7 @@ MonoBehaviour:
     probability: 4
   grassMaterial: {fileID: 2100000, guid: cbe8b8ac0997ef74480ba34c66a384f3, type: 2}
   numberOfChunksToRender: 6
+  forwardDotThreshold: 0.5
 --- !u!1 &1591981243
 GameObject:
   m_ObjectHideFlags: 0

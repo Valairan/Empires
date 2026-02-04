@@ -7,6 +7,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 {
     [Header("Components")]
     [SerializeField] public LocomotionController playerCCMotor;
+    [SerializeField] public AnimationController playerAnimationController;
     [SerializeField] public CameraController playerCamerasMotor;
     [SerializeField] public CombatController playerCombatController;
     [SerializeField] public InventoryHandler playerInventoryController;
@@ -81,6 +82,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerCombatController.enabled = false;
         playerBuildHandler.enabled = false;
         playerCamerasMotor.enabled = false;
+        health.enabled = false;
     }
 
     public void enableComponents()
@@ -92,6 +94,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerCombatController.enabled = true;
         playerBuildHandler.enabled = true;
         playerCamerasMotor.enabled = true;
+        health.enabled = true;
     }
 
     public void BindUI()

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2fca39b467192c1488700cc7898927a6
+guid: 11666b4569cd27446af5fbce299e16b1
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Gun.001
-    second: {fileID: 2100000, guid: 5df295bb069748343ab137caea2d3c23, type: 2}
+      name: Machete_Texture
+    second: {fileID: 2100000, guid: e94d887120059054dbc099b9f29f5733, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1970101532850723465
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2187406746557089851}
+  m_Layer: 10
+  m_Name: ik_target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2187406746557089851
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1970101532850723465}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0018524048, y: -0.18560566, z: 0.98262256, w: -0.00003451854}
+  m_LocalPosition: {x: 0.1072, y: 0.0005, z: -0.0714}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6267287093717606231}
+  m_LocalEulerAnglesHint: {x: 21.393, y: -0.223, z: 179.962}
 --- !u!1 &6751512441510544877
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,9 +44,9 @@ GameObject:
   - component: {fileID: 5094359233423631416}
   - component: {fileID: 5579832875816697468}
   - component: {fileID: 3719774629429970330}
-  - component: {fileID: 2855521101426964725}
+  - component: {fileID: -5806588291902872487}
   - component: {fileID: 6302603119473885444}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Machete_onplayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,7 +65,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2187406746557089851}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7013859383337718002
@@ -70,7 +102,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5df295bb069748343ab137caea2d3c23, type: 2}
+  - {fileID: 2100000, guid: e94d887120059054dbc099b9f29f5733, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -113,8 +145,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.055000022, y: 1.1680307, z: 0.15611331}
-  m_Center: {x: 0, y: 0.38401535, z: -0.035481066}
+  m_Size: {x: 0.8755079, y: 0.18131971, z: 0.03541021}
+  m_Center: {x: -0.4623495, y: 0.00015799701, z: -0.000000007450581}
 --- !u!54 &3719774629429970330
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -142,7 +174,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2855521101426964725
+--- !u!114 &-5806588291902872487
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -154,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2914219068
+  GlobalObjectIdHash: 1654290159
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -183,3 +215,4 @@ MonoBehaviour:
   baseitem: {fileID: 11400000, guid: ea94eba0a191aa64cb59f95e86c3dd23, type: 2}
   isAttacking: 0
   baseWeapon: {fileID: 11400000, guid: ea94eba0a191aa64cb59f95e86c3dd23, type: 2}
+  ik_target: {fileID: 2187406746557089851}

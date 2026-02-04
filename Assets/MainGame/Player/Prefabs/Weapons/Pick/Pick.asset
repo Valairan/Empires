@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05f416e9ba242a048aaf8af342f46ff9, type: 3}
-  m_Name: Axe
+  m_Name: Pick
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeapon
-  ItemIcon: {fileID: 21300000, guid: 93ee68e27290b55409ff23a31c30ddd5, type: 3}
-  ItemName: Axe
-  ItemDescription: Best used to chop wood
+  ItemIcon: {fileID: 21300000, guid: 53b67c09673a52d46bcc8f9a4951e9ff, type: 3}
+  ItemName: Pick
+  ItemDescription: It's about time that I mine a diamond...
   stack: 0
   Type: 2
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
   WeaponType: 0
-  treeDamage: 25
-  oreDamage: 0
-  playerDamage: 50
-  weaponPrefab_rb: {fileID: 1481613028642245804, guid: 3f1c3ce63f4f24f46ad98ef60d5abf09, type: 3}
-  weaponPrefab_onplayer: {fileID: 6880213769872489570, guid: b270246ab7a455a428055ab09ada9d89, type: 3}
-  position: {x: -0.028, y: 0.055, z: 0.019}
-  rotation: {x: 180, y: 180, z: 0}
-  scale: {x: 1, y: 1, z: 1}
+  treeDamage: 5
+  oreDamage: 40
+  playerDamage: 10
+  weaponPrefab_rb: {fileID: 0}
+  weaponPrefab_onplayer: {fileID: 0}
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: {x: 0, y: 0, z: 0}

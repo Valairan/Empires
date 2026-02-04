@@ -1,9 +1,14 @@
 fileFormatVersion: 2
-guid: 11666b4569cd27446af5fbce299e16b1
+guid: 3f1c1a681e9a75a4d9fd76e5ef3af9fe
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Machete_Texture
+    second: {fileID: 2100000, guid: e94d887120059054dbc099b9f29f5733, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

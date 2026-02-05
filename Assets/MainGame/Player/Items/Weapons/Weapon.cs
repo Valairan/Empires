@@ -11,6 +11,7 @@ public class Weapon : Item
     public float playerDamage;
     public GameObject weaponPrefab_rb;
     public GameObject weaponPrefab_onplayer;
+    public Sprite ScopedInTexture;
     [Header("While attached to player")]
     [Header("Parented Position")]
     public Vector3 position;

@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 public class BaseResourceBehaviour : ItemBehaviour, IDamageable, IRaycastResponder
@@ -16,12 +17,5 @@ public class BaseResourceBehaviour : ItemBehaviour, IDamageable, IRaycastRespond
 
     }
 
-    public virtual void dropItems()
-    {
 
-    }
-    public virtual void deactivateSelf()
-    {
-
-    }
 }

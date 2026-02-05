@@ -14,12 +14,21 @@ public class CombatController : MonoBehaviour
         currentWeapon.isAttacking = true;
     }
     public void setCurrentWeapon(Weapon wepaon)
-    {   
-                
+    {
+
     }
     public void Attack()
     {
-
+        switch (currentWeapon.baseWeapon.WeaponType)
+        {
+            case WeaponType.melee: return;
+            case WeaponType.sidearm:
+            
+                break;
+            case WeaponType.rifle:
+                break;
+            default: break;
+        }
     }
 }
 

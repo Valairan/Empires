@@ -9,11 +9,11 @@ public static class MeshGenerator
     public static void GenerateSquareMesh(int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int layer)
     {
 
-        GenerateTerrainMesh(mapWidth, mapHeight, chunkSize, meshMaterial, layer);
+        GenerateTerrainMesh(mapWidth, mapHeight, chunkSize, meshMaterial, layer, null, UnityEngine.Rendering.ShadowCastingMode.Off);
     }
 
 
-    public static void GenerateTerrainMesh(int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int layer, float[,] noise = null)
+    public static void GenerateTerrainMesh(int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int layer, float[,] noise = null, UnityEngine.Rendering.ShadowCastingMode shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On)
     {
 
         GameObject parent = new GameObject("Procedural Terrain");
@@ -54,7 +54,7 @@ public static class MeshGenerator
     }
 
 
-    public static GameObject calculateLOD(int i, int j, GameObject parent, int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int lodLevel, float[,] noise = null)
+    public static GameObject calculateLOD(int i, int j, GameObject parent, int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int lodLevel, float[,] noise = null, UnityEngine.Rendering.ShadowCastingMode shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On)
     {
 
         GameObject terrain = new GameObject($"LOD{lodLevel}");
@@ -66,6 +66,8 @@ public static class MeshGenerator
         MeshCollider meshCollider = terrain.AddComponent<MeshCollider>();
 
         meshRenderer.material = meshMaterial;
+        meshRenderer.shadowCastingMode = shadowCastingMode;
+        meshRenderer.staticShadowCaster = shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.Off;
         Mesh mesh = new Mesh();
         mesh.name = "Terrain Mesh";
 

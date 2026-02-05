@@ -5,7 +5,7 @@ using Unity.Netcode.Components;
 using UnityEngine;
 public class GameManager : NetworkBehaviour
 {
-    [SerializeField] WorldGenerator worldGenerator;
+    [SerializeField] public WorldGenerator worldGenerator;
     [SerializeField] Transform[] playerSpawnPositions;
     [SerializeField] Transform playerCanvas;
 
@@ -104,7 +104,7 @@ public class GameManager : NetworkBehaviour
     {
         if (!IsServer) return;
         if (damage <= 0) return;
-        BaseResourceBehaviour currentTree = worldGenerator.placedTrees[x, y];
+        BaseResourceBehaviour currentTree = GameManager.Singleton.worldGenerator.placedTrees[x, y];
         NetworkGamePropertiesStorage.Singleton.spawnedPlayers.TryGetValue(rpcParams.Receive.SenderClientId, out GameObject sender);
         float health = currentTree.health.amount;
         if (Vector3.Distance(sender.transform.position, currentTree.transform.position) > 2)
@@ -116,13 +116,15 @@ public class GameManager : NetworkBehaviour
             BaseResource res = (BaseResource)currentTree.baseitem;
             for (int i = 0; i < res.drops.Length; i++)
             {
-                for (int j = 0; j < res.dropsHowMany[i]; j++)
+                for (int j = 0; j < 5; j++)
                 {
+                    if (res.dropsHowMany[i] <= 0) break;
                     position.x += UnityEngine.Random.Range(-.1f, .1f);
                     position.z += UnityEngine.Random.Range(-.1f, .1f);
                     position.y += 1;
                     GameObject temp = Instantiate(res.drops[i], position, Quaternion.identity);
                     temp.GetComponent<NetworkObject>().Spawn();
+                    res.dropsHowMany[i] -= 1;
                 }
             }
         }
@@ -139,8 +141,9 @@ public class GameManager : NetworkBehaviour
     public void DamageTree_ServerRpc(float damage, int x, int y, ServerRpcParams rpcParams = default)
     {
         if (!IsServer) return;
+        Debug.Log("on server");
         if (damage <= 0) return;
-        BaseResourceBehaviour currentTree = worldGenerator.placedTrees[x, y];
+        BaseResourceBehaviour currentTree = GameManager.Singleton.worldGenerator.placedTrees[x, y];
         NetworkGamePropertiesStorage.Singleton.spawnedPlayers.TryGetValue(rpcParams.Receive.SenderClientId, out GameObject sender);
         float health = currentTree.health.amount;
         if (Vector3.Distance(sender.transform.position, currentTree.transform.position) > 2)
@@ -169,17 +172,16 @@ public class GameManager : NetworkBehaviour
         updateResource_ClientRpc(x, y, health);
 
     }
-
     [ClientRpc]
     public void updateResource_ClientRpc(int x, int y, float newHealth)
     {
-        worldGenerator.placedTrees[x, y].health.amount = newHealth;
+        GameManager.Singleton.worldGenerator.placedTrees[x, y].health.amount = newHealth;
     }
     [ClientRpc]
     public void killResource_ClientRpc(int x, int y)
     {
-        Destroy(worldGenerator.placedTrees[x, y].gameObject);
-        worldGenerator.placedTrees[x, y] = null;
+        Destroy(GameManager.Singleton.worldGenerator.placedTrees[x, y].gameObject);
+        GameManager.Singleton.worldGenerator.placedTrees[x, y] = null;
     }
 }
 // Item retrieveFromAssetDatabase(int id)

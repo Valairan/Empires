@@ -20,6 +20,7 @@ public class NetworkParent : NetworkBehaviour
         NetworkObject networkObject =
             NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectReference.NetworkObjectId];
         networkObject.transform.SetParent(transform);
+        
         networkObject.TryGetComponent(out WeaponBehaviour wb);
         if (wb) wb.Init(networkObject.OwnerClientId);
     }

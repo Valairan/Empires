@@ -13,20 +13,15 @@ public class WeaponBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
     public override void OnNetworkSpawn()
     {
         baseitem = baseWeapon;
-        if (!IsLocalPlayer)
-            enabled = false;
     }
 
     public void Init(ulong sender)
     {
-        if (NetworkManager.Singleton.LocalClientId != sender)
-        {
-            enabled = false;
-            return;
-        }
         transform.localPosition = baseWeapon.position;
         transform.localRotation = Quaternion.Euler(baseWeapon.rotation);
         transform.localScale = baseWeapon.scale;
+        if (!IsOwner)
+            enabled = false;
     }
 
     public Item Interact(ulong interactor)

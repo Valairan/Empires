@@ -102,6 +102,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         UiController.Singleton.currentPlayerBuildHandler = playerBuildHandler;
         onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
         onWeaponChanged += UiController.Singleton.weaponChanged;
+        playerInputHandler.Aim += UiController.Singleton.onAim;
     }
 
     public void BindInputs()
@@ -117,7 +118,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerInputHandler.Next += equipNextItem;
         playerInputHandler.Jump += jump;
         playerInputHandler.Interact += OnInteract;
-        playerInputHandler.Aim += OnAim;
+        playerInputHandler.Aim += OnAim;;
 
         playerInputHandler.Build += buildButtonPressed;
         playerInputHandler.Rotate += playerBuildHandler.rotateButtonPressed;
@@ -126,14 +127,12 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerInputHandler.enableInputs();
     }
 
-    Vector3 groundPoint;
     public override void OnNetworkDespawn()
     {
         if (!IsLocalPlayer) return;
 
         playerInputHandler.disableInputs();
     }
-    Vector3 horizontalVelocity;
 
 
     public void Update()
@@ -270,18 +269,6 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         //onArmorChanged.Invoke(armor.amount);
         onHealthChanged.Invoke(health.amount);
     }
-    void attemptToDamage()
-    {
-        if (!IsLocalPlayer) return;
-        attemptToDamage_ServerRpc();
-    }
-    [ServerRpc]
-    void attemptToDamage_ServerRpc()
-    {
-
-    }
-
-
 
     public bool checkIfInWater()
     {

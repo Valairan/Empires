@@ -604,7 +604,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7412389350969685094}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -640,7 +640,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8719145881424617654, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
       propertyPath: m_LocalPosition.x
@@ -776,7 +776,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3048232142371848103, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -2084811680363313996, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
       propertyPath: m_Layer
@@ -836,7 +836,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1082271958561512970, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
       propertyPath: m_Layer
@@ -944,7 +944,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8894093548336760337, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8953972740105248388, guid: 04c60b051edee9f4583332a97d7d8885, type: 3}
       propertyPath: m_Layer

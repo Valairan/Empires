@@ -21,6 +21,9 @@ public class UiController : MonoBehaviour
     [SerializeField] TMP_Text currentlyLookingAtDescription;
     [Header("In Game Display")]
     [SerializeField] GameObject InGame;
+    [SerializeField] GameObject BaseInGame;
+    [SerializeField] GameObject ScopedIn;
+    [SerializeField] Image ScopedInTexture;
     [SerializeField] Image currentlyEquipped;
     [SerializeField] GameObject ammoInTotal;
     [SerializeField] GameObject ammoInGun;
@@ -43,6 +46,14 @@ public class UiController : MonoBehaviour
         if (Singleton == null) Singleton = this;
     }
 
+    public void onAim(bool pressed)
+    {
+
+            BaseInGame.SetActive(!pressed);
+            ScopedIn.SetActive(pressed);
+
+        
+    }
     public void setCurerntlyLookingAt(Item item, Vector3 itemPosition)
     {
         if (item != null)
@@ -112,6 +123,7 @@ public class UiController : MonoBehaviour
             case WeaponType.rifle: case WeaponType.sidearm: ammoInGun.SetActive(true); ammoInTotal.SetActive(true); ; break;
         }
         currentlyEquipped.sprite = weapon.ItemIcon;
+        ScopedInTexture.sprite = weapon.ScopedInTexture;
     }
     public void firerateAndMagazineChanged()
     {

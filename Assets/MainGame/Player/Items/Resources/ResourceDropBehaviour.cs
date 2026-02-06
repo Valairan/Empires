@@ -12,10 +12,10 @@ public class ResourceDropBehaviour : ItemBehaviour, IRaycastResponder, IInteract
 
     void OnCollisionEnter(Collision col)
     {
-        if (col.transform.TryGetComponent(out PlayerController controller))
-        {
-            baseitem.OnPickup(controller.OwnerClientId, this.NetworkObjectId);
-        }
+        // if (col.transform.TryGetComponent(out PlayerController controller))
+        // {
+        //     baseitem.OnPickup(controller.OwnerClientId, this.NetworkObjectId);
+        // }
     }
 
     public Item respondToRaycast()

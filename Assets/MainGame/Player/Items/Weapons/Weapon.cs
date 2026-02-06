@@ -11,7 +11,11 @@ public class Weapon : Item
     public float playerDamage;
     public GameObject weaponPrefab_rb;
     public GameObject weaponPrefab_onplayer;
+    [Header("Scope In Settings")]
+    public bool canAim;
     public Sprite ScopedInTexture;
+    [Range(0, 1)]
+    public float scopeZoom;
     [Header("While attached to player")]
     [Header("Parented Position")]
     public Vector3 position;
@@ -23,19 +27,19 @@ public class Weapon : Item
         stack = false;
     }
 
-    public override void OnPickup(ulong parentID, ulong objectID)
+    public override void OnPickup(InventoryHandler player, NetworkBehaviour inworld)
     {
-        InventoryHandler handler = NetworkManager.Singleton.ConnectedClients[parentID].PlayerObject.GetComponent<InventoryHandler>();
-        handler.current = this;
-        handler.EquipItem(parentID, objectID, this);
-
+        inworld.NetworkObject.Despawn(true);
+        player.EquipWeapon(this, inworld);
     }
 
-    public override void OnBuy(ulong parentID, ulong objectID)
+    public override void OnBuy(InventoryHandler player)
     {
-        InventoryHandler handler = NetworkManager.Singleton.ConnectedClients[parentID].PlayerObject.GetComponent<InventoryHandler>();
-        handler.BuyItem(this);
+        //InventoryHandler handler = NetworkManager.Singleton.ConnectedClients[parentID].PlayerObject.GetComponent<InventoryHandler>();
+        //player.BuyItem(this);
     }
+
+
 }
 
 public enum WeaponType

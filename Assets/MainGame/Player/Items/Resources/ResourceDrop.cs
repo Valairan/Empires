@@ -6,15 +6,15 @@ public class ResourceDrop : Item
 {
     public GameObject drop;
     public ResourceDropType type;
-    public override void OnPickup(ulong parentID, ulong objectID)
+    public override void OnPickup(InventoryHandler player, NetworkBehaviour inworld)
     {
-        InventoryHandler handler = NetworkManager.Singleton.ConnectedClients[parentID].PlayerObject.GetComponent<InventoryHandler>();
+        inworld.NetworkObject.Despawn(true);
         switch (type)
         {
-            case ResourceDropType.Coin: handler.coins++; break;
-            case ResourceDropType.Stone: handler.coins++; break;
-            case ResourceDropType.Iron: handler.coins++; break;
-            case ResourceDropType.Timber: handler.coins++; break;
+            case ResourceDropType.Coin: player.coins++; break;
+            case ResourceDropType.Stone: player.coins++; break;
+            case ResourceDropType.Iron: player.coins++; break;
+            case ResourceDropType.Timber: player.coins++; break;
         }
     }
 }

@@ -64,7 +64,7 @@ public class WorldGenerator : MonoBehaviour
 
         renderParams = new RenderParams(grassMaterial);
         renderParams.receiveShadows = true;
-        renderParams.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+        renderParams.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 
         generationComplete = true;
         mainCamera = Camera.main.transform;

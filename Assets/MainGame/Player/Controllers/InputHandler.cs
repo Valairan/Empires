@@ -1,8 +1,6 @@
 using System;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class InputHandler : NetworkBehaviour
 {
@@ -30,8 +28,8 @@ public class InputHandler : NetworkBehaviour
         ingameInputActions.Player.Move.canceled += _ => Move?.Invoke(Vector2.zero);
         ingameInputActions.Player.Look.performed += ctx => Look?.Invoke(ctx.ReadValue<Vector2>()); ;
         ingameInputActions.Player.Look.canceled += _ => Look?.Invoke(Vector2.zero);
-        ingameInputActions.Player.Aim.performed += _ctx => Aim.Invoke(true);
-        ingameInputActions.Player.Aim.canceled += _ctx => Aim.Invoke(false);
+        ingameInputActions.Player.Aim.performed += ctx => Aim.Invoke(true);
+        ingameInputActions.Player.Aim.canceled += ctx => Aim.Invoke(false);
 
 
         ingameInputActions.Player.Attack.performed += ctx => Attack?.Invoke(true);

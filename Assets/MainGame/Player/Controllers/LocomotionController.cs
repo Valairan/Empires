@@ -1,7 +1,5 @@
-using System.Globalization;
+
 using KinematicCharacterController;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public struct PlayerInputs

@@ -26,7 +26,9 @@ MonoBehaviour:
   playerDamage: 40
   weaponPrefab_rb: {fileID: 363377050846602020, guid: 5f19553766e112848abcd675e29b62f2, type: 3}
   weaponPrefab_onplayer: {fileID: 9132386956755215543, guid: a417ce4fdc1d77b44af9b71651ef8eb5, type: 3}
+  canAim: 1
   ScopedInTexture: {fileID: 21300000, guid: f47b66771083330419d6ca65621e299a, type: 3}
+  scopeZoom: 0.2
   position: {x: 0.0088, y: 0.2578, z: 0.032}
   rotation: {x: 0, y: 0, z: 90}
   scale: {x: 1, y: 1, z: 1}

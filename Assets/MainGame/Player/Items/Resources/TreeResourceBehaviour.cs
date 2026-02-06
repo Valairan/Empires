@@ -1,7 +1,3 @@
-using System;
-using Unity.Netcode;
-using Unity.VisualScripting;
-using UnityEngine;
 
 public class TreeResourceBehaviour : BaseResourceBehaviour
 {
@@ -11,7 +7,7 @@ public class TreeResourceBehaviour : BaseResourceBehaviour
     {
 
         float damage = damager.treeDamage;
-        GameManager.Singleton.DamageTree_ServerRpc(damage, xCoordinate, yCoordinate);
+        ResourcesManager.Singleton.DamageTree_ServerRpc(damage, xCoordinate, yCoordinate);
     }
 
 

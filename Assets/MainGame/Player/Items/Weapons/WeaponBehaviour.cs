@@ -1,6 +1,4 @@
-using JetBrains.Annotations;
 using Unity.Netcode;
-using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class WeaponBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
@@ -41,31 +39,22 @@ public class WeaponBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
     {
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(interactingPlayerId, out NetworkClient client))
             return;
-        Debug.Log("after first check");
-
         NetworkObject playerObject = client.PlayerObject;
         if (playerObject == null)
             return;
-        Debug.Log("after second check");
-
         if (!playerObject.TryGetComponent(out PlayerController player))
             return;
 
-        Debug.Log("after third check");
         if (baseitem == null)
             return;
 
-        Debug.Log("after fourth check");
         float distance = Vector3.Distance(
             player.transform.position,
             transform.position
         );
-
-        Debug.Log("after final check");
         if (distance > 2.5f) // interaction range
             return;
-        Debug.Log("before base.onpuit check");
 
-        baseitem.OnPickup(interactingPlayerId, interactee);
+        baseitem.OnPickup(player.GetComponent<InventoryHandler>(), this);
     }
 }

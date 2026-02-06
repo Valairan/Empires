@@ -14,7 +14,6 @@ public class NetworkGamePropertiesStorage : NetworkBehaviour
     public NetworkList<PlayerData> connectedPlayerData;
     public NetworkVariable<int> readyState;
     public NetworkVariable<int> WorldGenerationSeed;
-    public BaseResource[,] resourcesInGame;
     public string myname;
 
     private string[] names = { "Avocado", "Potato", "Tomato", "Radish", "Carrot", "Bamboo", "Bean", "Cabbage" };

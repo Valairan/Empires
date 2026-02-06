@@ -1,5 +1,3 @@
-using System;
-using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 
 public class WeaponsFactory : MachineBehaviour, IInteractable
@@ -21,7 +19,6 @@ public class WeaponsFactory : MachineBehaviour, IInteractable
     public Item Interact(ulong interactor)
     {
         if (!placed) return null;
-        UiController.Singleton.toggleWeaponSelector();
         return baseitem;
     }
 }

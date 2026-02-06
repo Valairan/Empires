@@ -20,6 +20,9 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     [SerializeField] public Health health;
     [SerializeField] public Armor armor;
 
+    [SerializeField] SkinnedMeshRenderer[] playerMeshes;
+
+
     [Header("Locomotion Settings")]
     bool Grounded = true;
     bool Submerged = false;
@@ -52,7 +55,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
 
     public override void OnNetworkSpawn()
     {
-        playerCCMotor.motor.SetPosition(GameManager.Singleton.GetSpawnPointForClient(NetworkManager.LocalClientId));
+        //playerCCMotor.motor.SetPosition(GameManager.Singleton.GetSpawnPointForClient(NetworkManager.LocalClientId));
         if (!IsLocalPlayer)
         {
             disableComponents();
@@ -118,7 +121,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerInputHandler.Next += equipNextItem;
         playerInputHandler.Jump += jump;
         playerInputHandler.Interact += OnInteract;
-        playerInputHandler.Aim += OnAim;;
+        playerInputHandler.Aim += OnAim;
 
         playerInputHandler.Build += buildButtonPressed;
         playerInputHandler.Rotate += playerBuildHandler.rotateButtonPressed;
@@ -190,6 +193,24 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     void OnAim(bool pressed)
     {
         if (!IsLocalPlayer) return;
+        if (!playerInventoryController.current.canAim) return;
+        if (pressed)
+        {
+            playerCamera.fieldOfView = 60 * playerInventoryController.current.scopeZoom;
+            foreach (SkinnedMeshRenderer mesh in playerMeshes)
+            {
+                mesh.enabled = false;
+            }
+            //playerInventoryController.currentGO.transform = camera
+        }
+        else
+        {
+            playerCamera.fieldOfView = 60;
+            foreach (SkinnedMeshRenderer mesh in playerMeshes)
+            {
+                mesh.enabled = true;
+            }
+        }
         aiming = pressed;
 
 

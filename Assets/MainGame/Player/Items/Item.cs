@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Items/New Item")]
@@ -19,11 +20,11 @@ public class Item : ScriptableObject
 
     }
 
-    public virtual void OnPickup(ulong parentID, ulong objectID)
+    public virtual void OnPickup(InventoryHandler player, NetworkBehaviour inworld)
     {
-
+        
     }
-    public virtual void OnBuy(ulong parentID, ulong objectID)
+    public virtual void OnBuy(InventoryHandler player)
     {
 
     }

@@ -48,11 +48,7 @@ public class UiController : MonoBehaviour
 
     public void onAim(bool pressed)
     {
-
-            BaseInGame.SetActive(!pressed);
-            ScopedIn.SetActive(pressed);
-
-        
+        BaseInGame.SetActive(!pressed);
     }
     public void setCurerntlyLookingAt(Item item, Vector3 itemPosition)
     {

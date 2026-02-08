@@ -119,7 +119,8 @@ public class UiController : MonoBehaviour
             case WeaponType.rifle: case WeaponType.sidearm: ammoInGun.SetActive(true); ammoInTotal.SetActive(true); ; break;
         }
         currentlyEquipped.sprite = weapon.ItemIcon;
-        ScopedInTexture.sprite = weapon.ScopedInTexture;
+        if (weapon.WeaponType != WeaponType.melee)
+            ScopedInTexture.sprite = ((RangedWeapon)weapon).scopeTexture;
     }
     public void firerateAndMagazineChanged()
     {

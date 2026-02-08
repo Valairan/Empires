@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: Weatherby_Orion
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 21300000, guid: 514359276d98ad8448e4282ae1d92e1e, type: 3}
+  ItemName: Weatherby_Orion
+  ItemDescription: 'Fires 2 rounds at 65 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 2
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 70
+  bodyDamage: 55
+  legDamage: 35
+  fireRate: 65
+  magSize: 2
+  pelletCount: 10
+  accuracy: 1
+  recoil: 1
+  range: 50
+  isThrowable: 0
+  hasAreaEffect: 1
+  isAutomatic: 1
+  isStackable: 0
+  weaponPrefab_rb: {fileID: 7097667372630297894, guid: 1b31ba577954d13469a8923e9da83f6e, type: 3}
+  weaponPrefab_onplayer: {fileID: 5550850972770635361, guid: fbd134ee71a470a458590dc8b9e01f92, type: 3}
+  position: {x: -0.0446, y: 0.2004, z: 0.0384}
+  rotation: {x: 356.51587, y: 271.9516, z: 263.37732}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: 0, y: 0, z: -0.077}
+  storedRotation: {x: 356.51587, y: 271.9516, z: 263.37732}
+  storedScale: {x: 1, y: 1, z: 1}
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0.9
+  bulletSpread: 1
+  recoilPattern: {x: 0, y: 0}

@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: Canit_TP9_Elite_Combat
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 21300000, guid: 84f18c572e306e5468569727fc56be63, type: 3}
+  ItemName: Canit_TP9_Elite_Combat
+  ItemDescription: 'Fires 18 rounds at 380 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 1
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 28
+  bodyDamage: 20
+  legDamage: 12
+  fireRate: 380
+  magSize: 18
+  pelletCount: 1
+  accuracy: 1
+  recoil: 1
+  range: 50
+  isThrowable: 0
+  hasAreaEffect: 0
+  isAutomatic: 1
+  isStackable: 0
+  weaponPrefab_rb: {fileID: 4762584258327055892, guid: 6bc533d2923535248b5459b321055fc3, type: 3}
+  weaponPrefab_onplayer: {fileID: 1510306894269998255, guid: 9c0f7224751681a428cf5a365d44499d, type: 3}
+  position: {x: -0.0828, y: 0.2829, z: 0.0486}
+  rotation: {x: 356.51587, y: 271.9516, z: 263.37735}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: -0.004, y: -0.02, z: -0.004}
+  storedRotation: {x: 356.58957, y: 8.663162, z: 85.81269}
+  storedScale: {x: 1, y: 1, z: 1}
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0.9
+  bulletSpread: 1
+  recoilPattern: {x: 0, y: 0}

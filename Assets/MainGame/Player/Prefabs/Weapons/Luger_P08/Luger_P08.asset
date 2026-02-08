@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: Luger_P08
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 21300000, guid: 2c19c66bd7e296d46b1db2b41e602fb5, type: 3}
+  ItemName: Luger_P08
+  ItemDescription: 'Fires 8 rounds at 350 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 1
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 25
+  bodyDamage: 15
+  legDamage: 10
+  fireRate: 350
+  magSize: 8
+  pelletCount: 1
+  accuracy: 1
+  recoil: 1
+  range: 50
+  isThrowable: 0
+  hasAreaEffect: 0
+  isAutomatic: 1
+  isStackable: 0
+  weaponPrefab_rb: {fileID: 5047375506924566035, guid: 1ace32eb2285b0d469d03f8e201444ae, type: 3}
+  weaponPrefab_onplayer: {fileID: 2014463460500305743, guid: 68ecd982985febd48b0ac005081a3cbc, type: 3}
+  position: {x: -0.0828, y: 0.2829, z: 0.0486}
+  rotation: {x: 356.51587, y: 271.9516, z: 263.37735}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: -0.004, y: -0.02, z: -0.004}
+  storedRotation: {x: 356.58957, y: 8.663162, z: 85.81269}
+  storedScale: {x: 1, y: 1, z: 1}
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0.9
+  bulletSpread: 1
+  recoilPattern: {x: 0, y: 0}

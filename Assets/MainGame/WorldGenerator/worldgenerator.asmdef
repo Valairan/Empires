@@ -1,0 +1,16 @@
+{
+    "name": "worldgenerator",
+    "rootNamespace": "",
+    "references": [
+        "GUID:dfff022f2f6ff2e4e99fdb2ddb526384"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

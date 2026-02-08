@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05f416e9ba242a048aaf8af342f46ff9, type: 3}
+  m_Name: Bowie_Knife
+  m_EditorClassIdentifier: Items::MeleeWeapon
+  ItemIcon: {fileID: 21300000, guid: 4c0083fd37e9dcd4f91708583252576f, type: 3}
+  ItemName: Bowie_Knife
+  ItemDescription: Sharp
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 0
+  treeDamage: 10
+  oreDamage: 5
+  headDamage: 40
+  bodyDamage: 35
+  legDamage: 20
+  fireRate: 1
+  magSize: 0
+  pelletCount: 1
+  accuracy: 1
+  recoil: 1
+  range: 50
+  isThrowable: 0
+  hasAreaEffect: 0
+  isAutomatic: 0
+  isStackable: 0
+  weaponPrefab_rb: {fileID: 6061389255185397595, guid: 369abc1df15d72b4d935aca65576726b, type: 3}
+  weaponPrefab_onplayer: {fileID: 9021256813604614573, guid: d5ab9d55bf51b584daa77cb387e5dc94, type: 3}
+  position: {x: -0.0346, y: 0.0654, z: 0.0134}
+  rotation: {x: 84.65632, y: 0.52146846, z: 0.49288982}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: 0.0022, y: -0.0189, z: -0.0797}
+  storedRotation: {x: 1.829955, y: 272.27478, z: 271.47968}
+  storedScale: {x: 1, y: 1, z: 1}
+  swingSpeed: 1

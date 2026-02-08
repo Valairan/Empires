@@ -82,10 +82,10 @@ Material:
     - _EnableBlendModePreserveSpecularLighting: 0
     - _EnableFogOnTransparent: 1
     - _ExcludeFromTUAndAA: 0
-    - _FoamLineCount: 10
-    - _FoamNoise: 500
-    - _FoamSpeed: 0.001
-    - _FoamThickness: 1
+    - _FoamLineCount: 3
+    - _FoamNoise: 100
+    - _FoamSpeed: 0.002
+    - _FoamThickness: 2.46
     - _MaterialID: 1
     - _MaterialTypeMask: 2
     - _OpaqueCullMode: 2
@@ -126,9 +126,9 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _EdgeColor: {r: 0.372864, g: 0.53168535, b: 0.5943396, a: 1}
+    - _EdgeColor: {r: 0.5896226, g: 1, b: 0.9624674, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SurfaceColor: {r: 0, g: 0.4256895, b: 0.5943396, a: 1}
+    - _SurfaceColor: {r: 0, g: 0.37998104, b: 0.4339623, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &5194490319693787716

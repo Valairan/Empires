@@ -5,6 +5,7 @@ public class GameManager : NetworkBehaviour
 {
     [SerializeField] Transform[] playerSpawnPositions;
     [SerializeField] Transform playerCanvas;
+    [SerializeField] WorldGenerator worldGenerator;
 
     public Action sceneLoadComplete;
     public static GameManager Singleton;
@@ -34,7 +35,7 @@ public class GameManager : NetworkBehaviour
         if (!IsServer) return;
 
         NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value = UnityEngine.Random.Range(0, 2000);
-        ResourcesManager.Singleton.GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
+        //GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
 
         int count = 0;
         foreach (ulong client in NetworkManager.ConnectedClientsIds)
@@ -48,16 +49,6 @@ public class GameManager : NetworkBehaviour
             count++;
             loaderProgress = count / NetworkManager.Singleton.ConnectedClients.Count;
             SetLoader_ClientRpc(loaderProgress);
-        }
-        for (int i = 0; i < 5; i++)
-        {
-            Instantiate(testPrefab, playerSpawnPositions[0].position, Quaternion.identity).GetComponent<NetworkObject>().Spawn();
-            Instantiate(testPrefab2, playerSpawnPositions[0].position, Quaternion.identity).GetComponent<NetworkObject>().Spawn();
-        }
-        for (int i = 0; i < 5; i++)
-        {
-            Instantiate(testPrefab, playerSpawnPositions[1].position, Quaternion.identity).GetComponent<NetworkObject>().Spawn();
-            Instantiate(testPrefab2, playerSpawnPositions[1].position, Quaternion.identity).GetComponent<NetworkObject>().Spawn();
         }
         DisableLoader_ClientRpc();
 
@@ -82,7 +73,26 @@ public class GameManager : NetworkBehaviour
         Loader.Singelton.gameObject.SetActive(false);
     }
 
+    [ClientRpc]
+    public void GenerateTerrain_ClientRpc(int seed)
+    {
+        TerrainSettings settings = new TerrainSettings
+        {
+            mapWidth = 1000,
+            mapHeight = 1000,
+            seed = seed,
+            scale = 32,
+            octaves = 4,
+            persistance = 4,
+            lacunarity = 0,
+            multiplier = 5,
+            offset = Vector2.zero,
+            falloffHeight = 20,
+            falloffDistance = 5
+        };
+        worldGenerator.GenerateTerrain(settings);
 
+    }
 }
 // Item retrieveFromAssetDatabase(int id)
 // {

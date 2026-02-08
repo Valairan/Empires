@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: UMP45
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 21300000, guid: 85b12820736383d43b30324a7299d557, type: 3}
+  ItemName: UMP45
+  ItemDescription: 'Fires 25 rounds at 750 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 2
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 32
+  bodyDamage: 22
+  legDamage: 12
+  fireRate: 750
+  magSize: 25
+  pelletCount: 1
+  accuracy: 1
+  recoil: 1
+  range: 50
+  isThrowable: 0
+  hasAreaEffect: 0
+  isAutomatic: 1
+  isStackable: 0
+  weaponPrefab_rb: {fileID: 4175056489792962398, guid: 5ed994a08d2dc344784a34678b801d5c, type: 3}
+  weaponPrefab_onplayer: {fileID: 2036252754967676134, guid: 465662fe62282974daad0b555a978749, type: 3}
+  position: {x: -0.0828, y: 0.2829, z: 0.0486}
+  rotation: {x: 356.51587, y: 271.9516, z: 263.37735}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: 0, y: 0, z: -0.077}
+  storedRotation: {x: 356.51587, y: 271.9516, z: 263.37732}
+  storedScale: {x: 1, y: 1, z: 1}
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0.9
+  bulletSpread: 1
+  recoilPattern: {x: 0, y: 0}

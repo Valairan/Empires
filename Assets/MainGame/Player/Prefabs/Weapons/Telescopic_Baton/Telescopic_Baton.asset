@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05f416e9ba242a048aaf8af342f46ff9, type: 3}
+  m_Name: Telescopic_Baton
+  m_EditorClassIdentifier: Items::MeleeWeapon
+  ItemIcon: {fileID: 21300000, guid: a23d9f8996edfe149a75644bc91c2346, type: 3}
+  ItemName: Telescopic_Baton
+  ItemDescription: Sharp
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 0
+  treeDamage: 5
+  oreDamage: 2
+  headDamage: 30
+  bodyDamage: 25
+  legDamage: 15
+  fireRate: 1
+  magSize: 0
+  pelletCount: 1
+  accuracy: 1
+  recoil: 1
+  range: 50
+  isThrowable: 0
+  hasAreaEffect: 0
+  isAutomatic: 0
+  isStackable: 0
+  weaponPrefab_rb: {fileID: 4927848021516023801, guid: b723504a2879b25418619f1cddb9e5fe, type: 3}
+  weaponPrefab_onplayer: {fileID: 779341291204446232, guid: 29adbcfbcd9c22f43b6700e9ed9b76f1, type: 3}
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: 0, y: 0, z: 0}
+  storedRotation: {x: 0, y: 0, z: 0}
+  storedScale: {x: 1, y: 1, z: 1}
+  swingSpeed: 1

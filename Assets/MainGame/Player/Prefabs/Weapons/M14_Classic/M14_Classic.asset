@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: M14_Classic
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 21300000, guid: dc1802b4f32d9fb4a9e4237f469bf56e, type: 3}
+  ItemName: M14_Classic
+  ItemDescription: 'Fires 20 rounds at 450 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 2
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 48
+  bodyDamage: 34
+  legDamage: 22
+  fireRate: 450
+  magSize: 20
+  pelletCount: 1
+  accuracy: 1
+  recoil: 1
+  range: 50
+  isThrowable: 0
+  hasAreaEffect: 0
+  isAutomatic: 1
+  isStackable: 0
+  weaponPrefab_rb: {fileID: 1864871866104553393, guid: e26aa7def36697e42870f10fe81b9c72, type: 3}
+  weaponPrefab_onplayer: {fileID: 8307963376181314001, guid: 1e22708dc108c294b8f7fb80b874f3be, type: 3}
+  position: {x: -0.0828, y: 0.2829, z: 0.0486}
+  rotation: {x: 356.51587, y: 271.9516, z: 263.37735}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: 0, y: 0, z: -0.077}
+  storedRotation: {x: 356.51587, y: 271.9516, z: 263.37732}
+  storedScale: {x: 1, y: 1, z: 1}
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0.9
+  bulletSpread: 1
+  recoilPattern: {x: 0, y: 0}

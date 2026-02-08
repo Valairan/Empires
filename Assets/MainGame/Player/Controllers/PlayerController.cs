@@ -193,10 +193,10 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     void OnAim(bool pressed)
     {
         if (!IsLocalPlayer) return;
-        if (!playerInventoryController.current.canAim) return;
+        if (playerInventoryController.current.WeaponType == WeaponType.melee || playerInventoryController.current.WeaponType == WeaponType.throwable) return;
         if (pressed)
         {
-            playerCamera.fieldOfView = 60 * playerInventoryController.current.scopeZoom;
+            playerCamera.fieldOfView = 60 * ((RangedWeapon)playerInventoryController.current).scopeZoom;
             foreach (SkinnedMeshRenderer mesh in playerMeshes)
             {
                 mesh.enabled = false;

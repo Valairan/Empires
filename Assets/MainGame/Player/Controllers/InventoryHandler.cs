@@ -46,44 +46,66 @@ public class InventoryHandler : NetworkBehaviour, IInventory
 
     }
 
-    public void DropWeapon(Weapon weapon)
+    [ServerRpc]
+    public void DropWeapon_ServerRpc(WeaponType type)
     {
         if (!IsServer) return;
-        if (current.WeaponType == weapon.WeaponType)
-            currentGO.GetComponent<NetworkObject>().Despawn(true);
 
-        switch (weapon.WeaponType)
+        Weapon weaponToDrop = null;
+        GameObject weaponGO = null;
+        GameObject inWorldPrefab = null;
+
+        switch (type)
         {
             case WeaponType.melee:
-                if (melee)
-                {
-                    meleeGO.GetComponent<WeaponBehaviour>().NetworkObject.Despawn(true);
-                    inworldMelee_prefab.GetComponent<NetworkObject>().TrySetParent((Transform)null);
-                    inworldMelee_prefab.transform.position = inWorldStorageForDiscarding.transform.position;
-                    toggleInWorldWeaponOnAllPlayers_ClientRpc(inworldMelee_prefab);
+                weaponToDrop = melee;
+                weaponGO = meleeGO;
+                inWorldPrefab = inworldMelee_prefab;
+                break;
 
-                }
+            case WeaponType.rifle:
+                weaponToDrop = primary;
+                weaponGO = primaryGO;
+                inWorldPrefab = inworldPrimary_prefab;
+                break;
+
+            case WeaponType.sidearm:
+                weaponToDrop = sidearm;
+                weaponGO = sidearamGO;
+                inWorldPrefab = inworldSidearm_prefab;
+                break;
+        }
+
+        if (weaponToDrop == null) return;
+
+        // Despawn equipped weapon
+        weaponGO.GetComponent<NetworkObject>().Despawn(true);
+
+        // Move in-world version to drop location
+        NetworkObject inWorldNetObj = inWorldPrefab.GetComponent<NetworkObject>();
+        inWorldNetObj.TrySetParent((Transform)null);
+        inWorldPrefab.transform.position = inWorldStorageForDiscarding.transform.position;
+
+        toggleInWorldWeaponOnAllPlayers_ClientRpc(inWorldNetObj);
+
+        // Clear references
+        switch (type)
+        {
+            case WeaponType.melee:
+                melee = null;
+                meleeGO = null;
                 break;
             case WeaponType.rifle:
-                if (primary)
-                {
-                    primaryGO.GetComponent<WeaponBehaviour>().NetworkObject.Despawn(true);
-                    inworldPrimary_prefab.GetComponent<NetworkObject>().TrySetParent((Transform)null);
-                    inworldPrimary_prefab.transform.position = inWorldStorageForDiscarding.transform.position;
-                    toggleInWorldWeaponOnAllPlayers_ClientRpc(inworldPrimary_prefab);
-                }
+                primary = null;
+                primaryGO = null;
                 break;
             case WeaponType.sidearm:
-                if (sidearm)
-                {
-                    sidearamGO.GetComponent<WeaponBehaviour>().NetworkObject.Despawn(true);
-                    inworldSidearm_prefab.GetComponent<NetworkObject>().TrySetParent((Transform)null);
-                    inworldSidearm_prefab.transform.position = inWorldStorageForDiscarding.transform.position;
-                    toggleInWorldWeaponOnAllPlayers_ClientRpc(inworldSidearm_prefab);
-                }
+                sidearm = null;
+                sidearamGO = null;
                 break;
         }
     }
+
 
     public void EquipWeapon(Weapon weapon, NetworkBehaviour inworld)
     {
@@ -161,16 +183,15 @@ public class InventoryHandler : NetworkBehaviour, IInventory
                 storeWeaponOnAllPlayers_ClientRpc(currentRef);
             }
         }
+        toggleInWorldWeaponOnAllPlayers_ClientRpc(inworld.NetworkObject);
         inworld.NetworkObject.TrySetParent(transform);
         inworld.transform.position = Vector3.zero;
-        toggleInWorldWeaponOnAllPlayers_ClientRpc(inworld.NetworkObject);
 
         current = weapon;
         currentGO = nettemp.gameObject;
 
         networkObjectRoot.TryToParentNetworkObject(netref, handParent);
         equipWeaponOnAllPlayers_ClientRpc(netref);
-        //initWeaponOnAllPlayers_ClientRpc(netref);
         updateWeaponOn_ClientRpc(nettemp.NetworkObjectId, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
     }
 
@@ -200,10 +221,10 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     [ClientRpc]
     public void updateWeaponOn_ClientRpc(ulong updatedweaponid, ClientRpcParams _ = default)
     {
-        TryGetComponent(out PlayerController controller);
         WeaponBehaviour incomingBehaviour = NetworkManager.Singleton.SpawnManager.SpawnedObjects[updatedweaponid].GetComponent<WeaponBehaviour>();
-        current = incomingBehaviour.baseWeapon;
+        current = incomingBehaviour.baseitem;
         currentGO = NetworkManager.Singleton.SpawnManager.SpawnedObjects[updatedweaponid].gameObject;
+
         switch (current.WeaponType)
         {
             case WeaponType.melee:
@@ -225,6 +246,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
                     break;
                 }
         }
+        TryGetComponent(out PlayerController controller);
         controller.playerCombatController.currentWeapon = currentGO.GetComponent<WeaponBehaviour>();
         controller.playerAnimationController.setTarget(incomingBehaviour.ik_target);
         controller.onWeaponChanged.Invoke(current);

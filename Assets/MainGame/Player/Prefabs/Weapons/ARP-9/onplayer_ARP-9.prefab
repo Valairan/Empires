@@ -42,8 +42,8 @@ GameObject:
   - component: {fileID: 6182268537860882772}
   - component: {fileID: 8919230841373298478}
   - component: {fileID: 4188617484769336409}
-  - component: {fileID: 4461645742914783453}
   - component: {fileID: 7768376564870715602}
+  - component: {fileID: 4461645742914783453}
   m_Layer: 10
   m_Name: onplayer_ARP-9
   m_TagString: Untagged
@@ -124,24 +124,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4461645742914783453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8916341903523624784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62c99c7cd0c3795478786a2f42da60ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: behaviours::RangedWeaponBehaviour
-  ShowTopMostFoldoutHeaderGroup: 1
-  baseitem: {fileID: 0}
-  isAttacking: 0
-  baseWeapon: {fileID: 11400000, guid: f8ebaebf976b9b3489fd8c7b12496958, type: 2}
-  state: 0
-  ik_target: {fileID: 3406149319834077991}
 --- !u!114 &7768376564870715602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,3 +149,23 @@ MonoBehaviour:
   AutoObjectParentSync: 0
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &4461645742914783453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8916341903523624784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62c99c7cd0c3795478786a2f42da60ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: behaviours::RangedWeaponBehaviour
+  ShowTopMostFoldoutHeaderGroup: 1
+  baseitem: {fileID: 11400000, guid: f8ebaebf976b9b3489fd8c7b12496958, type: 2}
+  isAttacking: 0
+  state: 0
+  ik_target: {fileID: 3406149319834077991}
+  currentFiremode: 0
+  muzzleStartPoint: {fileID: 0}
+  muzzleFlash: {fileID: 0}

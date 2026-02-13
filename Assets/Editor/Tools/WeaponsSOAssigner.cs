@@ -127,25 +127,10 @@ public class WeaponsSOAssigner : EditorWindow
 
             // Create ScriptableObject in this folder
             string soPath = Path.Combine(weaponFolder, weapon.name + ".asset");
-            Weapon weaponSO;
+            RangedWeapon weaponSO;
 
-            // Determine which type of SO to create
-            switch (weapon.weaponType)
-            {
-                case WeaponType.melee:
-                    weaponSO = ScriptableObject.CreateInstance<MeleeWeapon>();
-                    break;
-                case WeaponType.rifle:
-                case WeaponType.sidearm:
-                    weaponSO = ScriptableObject.CreateInstance<RangedWeapon>();
-                    break;
-                case WeaponType.throwable:
-                    weaponSO = ScriptableObject.CreateInstance<ThrowableWeapon>();
-                    break;
-                default:
-                    weaponSO = ScriptableObject.CreateInstance<Weapon>();
-                    break;
-            }
+            weaponSO = ScriptableObject.CreateInstance<RangedWeapon>();
+
 
             // Populate fields from WeaponData
             weaponSO.ItemIcon = AssetDatabase.LoadAssetAtPath<Sprite>(Path.Combine(weaponFolder, weapon.name + "_Icon.png"));
@@ -158,16 +143,8 @@ public class WeaponsSOAssigner : EditorWindow
             weaponSO.headDamage = weapon.headDamage;
             weaponSO.bodyDamage = weapon.bodyDamage;
             weaponSO.legDamage = weapon.legDamage;
-            weaponSO.fireRate = weapon.fireRate;
-            weaponSO.magSize = weapon.magSize;
-            weaponSO.pelletCount = weapon.pelletCount;
-            weaponSO.accuracy = weapon.accuracy;
-            weaponSO.recoil = weapon.recoil;
-            weaponSO.range = weapon.range;
-            weaponSO.isThrowable = weapon.isThrowable;
             weaponSO.hasAreaEffect = weapon.hasAreaEffect;
             weaponSO.isAutomatic = weapon.isAutomatic;
-            weaponSO.isStackable = weapon.isStackable;
             weaponSO.position = weapon.position;
             weaponSO.rotation = weapon.rotation;
             weaponSO.scale = weapon.scale;
@@ -191,7 +168,7 @@ public class WeaponsSOAssigner : EditorWindow
                 RangedWeaponBehaviour behaviour = onPlayerPrefab.GetComponent<RangedWeaponBehaviour>();
                 if (behaviour != null)
                 {
-                    behaviour.baseWeapon = weaponSO;
+                    behaviour.baseitem = weaponSO;
                     EditorUtility.SetDirty(onPlayerPrefab);
                     weaponSO.weaponPrefab_onplayer = onPlayerPrefab;
                     behaviour.ik_target = ikTarget.transform;
@@ -203,7 +180,7 @@ public class WeaponsSOAssigner : EditorWindow
                 RangedWeaponBehaviour behaviour = rbPrefab.GetComponent<RangedWeaponBehaviour>();
                 if (behaviour != null)
                 {
-                    behaviour.baseWeapon = weaponSO;
+                    behaviour.baseitem = weaponSO;
                     EditorUtility.SetDirty(rbPrefab);
                     weaponSO.weaponPrefab_rb = rbPrefab;
                 }

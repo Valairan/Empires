@@ -19,6 +19,7 @@ public class InputHandler : NetworkBehaviour
     public Action Cancel;
     public Action Previous;
     public Action Next;
+    public Action Drop;
 
     public override void OnNetworkSpawn()
     {
@@ -45,6 +46,7 @@ public class InputHandler : NetworkBehaviour
         ingameInputActions.Player.Sneak.canceled += ctx => Sneak?.Invoke(false);
         ingameInputActions.Player.Previous.started += ctx => Previous?.Invoke();
         ingameInputActions.Player.Next.started += ctx => Next?.Invoke();
+        ingameInputActions.Player.Drop.performed += ctx => Drop?.Invoke();
 
         ingameInputActions.Player.Build.performed += _ => Build.Invoke();
         ingameInputActions.Player.RotateBuild.performed += _ => Rotate.Invoke();

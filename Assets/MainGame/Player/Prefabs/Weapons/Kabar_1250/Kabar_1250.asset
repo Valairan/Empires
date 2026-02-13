@@ -34,12 +34,12 @@ MonoBehaviour:
   range: 50
   isThrowable: 0
   hasAreaEffect: 0
-  isAutomatic: 1
+  isAutomatic: 0
   isStackable: 0
   weaponPrefab_rb: {fileID: 137090809945064965, guid: 0e4ec2058e468574a8ac1973754d4d7a, type: 3}
-  weaponPrefab_onplayer: {fileID: 0}
-  position: {x: 0, y: 0, z: 0}
-  rotation: {x: 0, y: 0, z: 0}
+  weaponPrefab_onplayer: {fileID: 6705310193709414490, guid: 0ac6b2d2c12e4fa49a8b594f766bf138, type: 3}
+  position: {x: -0.016, y: 0.0586, z: 0.0107}
+  rotation: {x: 78.589134, y: 181.98506, z: 182.45763}
   scale: {x: 1, y: 1, z: 1}
   storedPosition: {x: 0, y: 0, z: 0}
   storedRotation: {x: 0, y: 0, z: 0}

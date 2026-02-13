@@ -224,11 +224,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponBehaviour
   ShowTopMostFoldoutHeaderGroup: 1
-  baseitem: {fileID: 0}
+  baseitem: {fileID: 11400000, guid: 634ed5b0186977a47b4142d6942b56cf, type: 2}
   isAttacking: 0
-  baseWeapon: {fileID: 11400000, guid: 634ed5b0186977a47b4142d6942b56cf, type: 2}
   state: 2
   ik_target: {fileID: 0}
+  currentFiremode: 0
+  muzzleStartPoint: {fileID: 0}
+  muzzleFlash: {fileID: 0}
 --- !u!65 &3082664214723295698
 BoxCollider:
   m_ObjectHideFlags: 0

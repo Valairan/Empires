@@ -1,11 +1,22 @@
 
+using UnityEngine;
 public class TreeResourceBehaviour : BaseResourceBehaviour
 {
-    public override void takeDamage(Weapon damager)
-    {
+    [SerializeField] ParticleSystem woodImpact;
 
-        float damage = damager.treeDamage;
-        ResourcesManager.Singleton.DamageTree_ServerRpc(damage, xCoordinate, yCoordinate);
+    public override void takeDamage(DamageContext ctx)
+    {
+        Debug.Log("The tree is being hit");
+        float damage = ctx.damager.treeDamage;
+        ResourcesManager.Singleton.DamageTree_ServerRpc(damage, ctx.damager.WeaponType, ctx.hitpoint, ctx.hitnormal, xCoordinate, yCoordinate);
+    }
+
+
+    public override void playEffect(Vector3 hitpoint, Vector3 hitnormal, WeaponType type)
+    {
+        woodImpact.transform.position = hitpoint;
+        woodImpact.transform.rotation = Quaternion.LookRotation(hitnormal);
+        woodImpact.Play();
     }
 
 }

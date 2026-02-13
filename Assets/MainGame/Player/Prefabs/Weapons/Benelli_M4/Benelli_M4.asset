@@ -7,7 +7,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
   m_Name: Benelli_M4
@@ -26,16 +26,8 @@ MonoBehaviour:
   headDamage: 65
   bodyDamage: 50
   legDamage: 30
-  fireRate: 90
-  magSize: 7
-  pelletCount: 8
-  accuracy: 1
-  recoil: 1
-  range: 50
-  isThrowable: 0
   hasAreaEffect: 1
   isAutomatic: 1
-  isStackable: 0
   weaponPrefab_rb: {fileID: 7494282159342565885, guid: 95a9abf45de868b4497c53f725bdba62, type: 3}
   weaponPrefab_onplayer: {fileID: 4438027743347289791, guid: 4d465a5bf0b221b43a3cf7e293d23a2e, type: 3}
   position: {x: -0.0828, y: 0.2829, z: 0.0486}
@@ -44,6 +36,11 @@ MonoBehaviour:
   storedPosition: {x: 0, y: 0, z: -0.077}
   storedRotation: {x: 356.51587, y: 271.9516, z: 263.37732}
   storedScale: {x: 1, y: 1, z: 1}
+  firemodes: 00000000
+  fireRate: 90
+  magSize: 7
+  pelletCount: 8
+  recoil: 1
   scopeTexture: {fileID: 0}
   scopeZoom: 0.9
   bulletSpread: 1

@@ -285,21 +285,21 @@ MonoBehaviour:
   m_Animator: {fileID: 8691281464466454400}
   TransitionStateInfoList:
   - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 537620060
-    DestinationState: -151370449
-    TransitionDuration: 0.25
-    TriggerNameHash: 1080829965
-    TransitionIndex: 0
-  - IsCrossFadeExit: 0
-    Layer: 0
+    Layer: 1
     OriginatingState: 1362929345
     DestinationState: -1092816430
     TransitionDuration: 0.25
     TriggerNameHash: 1080829965
     TransitionIndex: 0
   - IsCrossFadeExit: 0
-    Layer: 0
+    Layer: 1
+    OriginatingState: 537620060
+    DestinationState: -151370449
+    TransitionDuration: 0.01
+    TriggerNameHash: 1080829965
+    TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 1
     OriginatingState: 348266038
     DestinationState: 983785542
     TransitionDuration: 0.04545474
@@ -415,6 +415,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   isAttacking: 0
+  cameraTransform: {fileID: 0}
+  lookingAtPoint: {x: 0, y: 0, z: 0}
   currentWeapon: {fileID: 0}
 --- !u!114 &2933855248979656309
 MonoBehaviour:
@@ -450,9 +452,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f1a5df49e0357a4d9150bcc485ed302, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
-  defaultDistance: 0
+  defaultDistance: 5
   minimumDistance: 0
-  maximumDistance: 3
+  cameraDefaultDistance: 5
   distanceMovementSpeed: 200
   movementInterpolationFactor: 100
   horizontalSensitivity: 0.3
@@ -462,6 +464,9 @@ MonoBehaviour:
   minimumAngle: -90
   maximumAngle: 90
   defaultAngle: 20
+  cameraBlockers:
+    serializedVersion: 2
+    m_Bits: 2263
   cameraFollowTarget: {fileID: 1795218282399508059}
   currentFollowPosition: {x: 0, y: 0, z: 0}
   cameraForward: {x: 0, y: 0, z: 0}
@@ -593,6 +598,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AnimationController
   animator: {fileID: 8691281464466454400}
   leftHandTarget: {fileID: 0}
+  rightHandTarget: {fileID: 0}
+  headTarget: {fileID: 0}
   ikWeight: 1
 --- !u!114 &4720122550096299429
 MonoBehaviour:
@@ -747,7 +754,7 @@ Transform:
   m_GameObject: {fileID: 6392717263452255731}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.3, y: 1.5, z: 0.2}
+  m_LocalPosition: {x: 0.5, y: 1.5, z: 0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

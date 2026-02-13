@@ -12,16 +12,8 @@ public class Weapon : Item
     public float bodyDamage;
     public float legDamage;
     // Flags
-    public int fireRate;                     // Shots per minute (or per second if you prefer)
-    public int magSize;                      // Magazine size
-    public int pelletCount;                  // For shotguns, number of pellets per shot
-    public float accuracy = 1f;              // Optional: 0-1 scale, higher = more accurate
-    public float recoil = 1f;                // Optional: 0-1 scale, higher = more recoil
-    public float range = 50f;                // Optional: range in meters
-    public bool isThrowable = false;
     public bool hasAreaEffect = false;
     public bool isAutomatic = true;
-    public bool isStackable = false;
     public GameObject weaponPrefab_rb;
     public GameObject weaponPrefab_onplayer;
     [Header("Parented Position")]
@@ -33,7 +25,7 @@ public class Weapon : Item
     public Vector3 storedPosition;
     public Vector3 storedRotation;
     public Vector3 storedScale = Vector3.one;
-    void Awake()
+    protected virtual void Awake()
     {
         stack = false;
     }

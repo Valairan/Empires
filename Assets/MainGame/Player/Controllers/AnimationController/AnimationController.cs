@@ -5,6 +5,8 @@ public class AnimationController : MonoBehaviour
 {
     public Animator animator;
     public Transform leftHandTarget;
+    public Transform rightHandTarget;
+    public Transform headTarget;
     [Range(0, 1)] public float ikWeight = 1f;
 
     public void setTarget(Transform target)

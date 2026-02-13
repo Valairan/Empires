@@ -7,7 +7,6 @@ public class ResourcesManager : NetworkBehaviour
     public static ResourcesManager Singleton;
 
     public BaseResourceBehaviour[,] placedTrees;
-    public BaseResource[,] resources;
 
     void Awake()
     {
@@ -16,16 +15,13 @@ public class ResourcesManager : NetworkBehaviour
         //worldGenerator.numberOfChunksToRender = (int)grassDistance;
     }
 
-    public void init()
-    {
-        
-    }
 
     [ServerRpc(RequireOwnership = false)]
-    public void DamageOre_ServerRpc(float damage, int x, int y, ServerRpcParams rpcParams = default)
+    public void DamageOre_ServerRpc(float damage, WeaponType type, Vector3 hitpoint, Vector3 hitnormal, int x, int y, ServerRpcParams rpcParams = default)
     {
         if (!IsServer) return;
-        if (damage <= 0) return;
+        playDamageEffect_ClientRpc(x, y, type, hitpoint, hitnormal);
+        if (damage <= 5) return;
         BaseResourceBehaviour currentTree = placedTrees[x, y];
         NetworkObject sender = NetworkManager.Singleton.ConnectedClients[rpcParams.Receive.SenderClientId].PlayerObject;
         float health = currentTree.health.amount;
@@ -60,11 +56,12 @@ public class ResourcesManager : NetworkBehaviour
 
     }
     [ServerRpc(RequireOwnership = false)]
-    public void DamageTree_ServerRpc(float damage, int x, int y, ServerRpcParams rpcParams = default)
+    public void DamageTree_ServerRpc(float damage, WeaponType type, Vector3 hitpoint, Vector3 hitnormal, int x, int y, ServerRpcParams rpcParams = default)
     {
         if (!IsServer) return;
-        Debug.Log("on server");
-        if (damage <= 0) return;
+        Debug.Log("The tree is being hit on the server");
+        playDamageEffect_ClientRpc(x, y, type, hitpoint, hitnormal);
+        if (damage <= 5) return;
         BaseResourceBehaviour currentTree = placedTrees[x, y];
         NetworkObject sender = NetworkManager.Singleton.ConnectedClients[rpcParams.Receive.SenderClientId].PlayerObject;
         float health = currentTree.health.amount;
@@ -93,6 +90,11 @@ public class ResourcesManager : NetworkBehaviour
         }
         updateResource_ClientRpc(x, y, health);
 
+    }
+    [ClientRpc]
+    public void playDamageEffect_ClientRpc(int x, int y, WeaponType type, Vector3 hitpoint, Vector3 hitnormal)
+    {
+        placedTrees[x, y].playEffect(hitpoint, hitnormal, type);
     }
     [ClientRpc]
     public void updateResource_ClientRpc(int x, int y, float newHealth)

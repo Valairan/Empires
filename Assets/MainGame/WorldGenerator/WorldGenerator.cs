@@ -10,8 +10,10 @@ public class WorldGenerator : MonoBehaviour
     [SerializeField] Material terrainMaterial;
     [SerializeField] Material oceanMaterial;
     [SerializeField] GameObject[] TreesToPlace;
+    [SerializeField] GameObject[] DecorToPlace;
     [SerializeField] public BaseResourceBehaviour[,] placedTrees;
-    Transform mainCamera;
+    public bool[,] spotsLeft;
+    Camera mainCamera;
     bool generationComplete;
     public VegetationType[] vegetation;
     public VegetationChunk[][,] totaleVegetationChunks;
@@ -62,30 +64,31 @@ public class WorldGenerator : MonoBehaviour
             totaleVegetationChunks[i] = VegetationPlanter.scatterGrassInChunks(settings, 5, vegetation[i].density, vegetation[i].isWaterPlant, vegetation[i].seed, vegetation[i].scaleRangeMin, vegetation[i].scaleRangeMax, vegetation[i].probability, terrainNoise);
         }
 
-        renderParams = new RenderParams(grassMaterial);
-        renderParams.receiveShadows = true;
-        renderParams.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        renderParams = new RenderParams(grassMaterial)
+        {
+            receiveShadows = true,
+            shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off
+        };
+
 
         generationComplete = true;
-        mainCamera = Camera.main.transform;
+        ResourcesManager.Singleton.placedTrees = placedTrees;
+        mainCamera = Camera.main;
 
     }
 
     Matrix4x4[] visibleMatrices = new Matrix4x4[1023]; // max batch size
     int maxInstances = 1023;
-
+    Plane[] planes;
 
     const float chunkWorldSize = 5f;
-    const float behindChunkRows = 1f;   // how many chunks behind to keep
-    [SerializeField]
-    [Range(-1, 1)]
-    float forwardDotThreshold = 0.5f; // how far "behind" is acceptable
+
     void Update()
     {
         if (!generationComplete) return;
 
-        Vector3 camPos = mainCamera.position;
-        Vector3 camForward = mainCamera.forward;
+        Vector3 camPos = mainCamera.transform.position;
+        Vector3 camForward = mainCamera.transform.forward;
 
         int positionX = (int)Math.Clamp(camPos.x, 0, mapWidth) / 5;
         int positionZ = (int)Math.Clamp(camPos.z, 0, mapHeight) / 5;
@@ -114,21 +117,24 @@ public class WorldGenerator : MonoBehaviour
                         chunkZ * chunkWorldSize + chunkWorldSize * 0.5f
                     );
 
+                    float halfFov = mainCamera.fieldOfView * 0.5f;
+                    float cosThreshold = Mathf.Cos(halfFov * Mathf.Deg2Rad);
                     Vector3 toChunk = chunkCenter - camPos;
-                    float dot = Vector3.Dot(camForward, toChunk.normalized);
-
                     // How far behind camera this chunk is (in chunks)
                     float behindChunks = -Vector3.Dot(camForward, toChunk) / chunkWorldSize;
 
                     // HARD reject:
                     // - not in forward cone
                     // - AND more than N chunks behind
-                    if (dot < forwardDotThreshold && behindChunks > behindChunkRows)
-                        continue;
+                    VegetationChunk chunk = totaleVegetationChunks[k][chunkX, chunkZ];
+                    planes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
 
+                    if (!GeometryUtility.TestPlanesAABB(planes, chunk.bounds))
+                    {
+                        continue;
+                    }
                     // ------------------------------------------
 
-                    VegetationChunk chunk = totaleVegetationChunks[k][chunkX, chunkZ];
                     if (chunk.count == 0) continue;
 
                     for (int m = 0; m < chunk.count; m++)
@@ -180,7 +186,7 @@ public struct VegetationType
     public float scaleRangeMax;
     public Mesh mesh;
     public int submesh;
-    [Range(0, 10)]
+    [Range(0, 100)]
     public int probability;
 }
 

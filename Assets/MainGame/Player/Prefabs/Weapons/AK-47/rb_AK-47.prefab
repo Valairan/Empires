@@ -108,14 +108,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2079313342
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 3436149662
+  InScenePlacedSourceGlobalObjectIdHash: 2079313342
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 0
@@ -193,7 +193,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &-5753817683300900878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,7 +208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 0
+  UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
 --- !u!114 &862287156435407956
@@ -224,11 +224,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponBehaviour
   ShowTopMostFoldoutHeaderGroup: 1
-  baseitem: {fileID: 0}
+  baseitem: {fileID: 11400000, guid: d9fce840a9b396d4ba869cb854e0f0a3, type: 2}
   isAttacking: 0
-  baseWeapon: {fileID: 11400000, guid: d9fce840a9b396d4ba869cb854e0f0a3, type: 2}
   state: 2
   ik_target: {fileID: 0}
+  currentFiremode: 1
+  muzzleStartPoint: {fileID: 0}
+  muzzleFlash: {fileID: 0}
 --- !u!65 &6120468105067437370
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7803456923526227227}
   - component: {fileID: 4544389530655835576}
   - component: {fileID: 6401783682657250667}
-  - component: {fileID: -8218469232075946193}
   - component: {fileID: -4837663360634794664}
+  - component: {fileID: -8218469232075946193}
   m_Layer: 10
   m_Name: onplayer_Benelli_M4
   m_TagString: Untagged
@@ -93,24 +93,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-8218469232075946193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4438027743347289791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62c99c7cd0c3795478786a2f42da60ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: behaviours::RangedWeaponBehaviour
-  ShowTopMostFoldoutHeaderGroup: 1
-  baseitem: {fileID: 0}
-  isAttacking: 0
-  baseWeapon: {fileID: 11400000, guid: 1b741e51845dfc0459f5e9a8d325e6e1, type: 2}
-  state: 0
-  ik_target: {fileID: 1823581095354849583}
 --- !u!114 &-4837663360634794664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +118,26 @@ MonoBehaviour:
   AutoObjectParentSync: 0
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &-8218469232075946193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4438027743347289791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62c99c7cd0c3795478786a2f42da60ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: behaviours::RangedWeaponBehaviour
+  ShowTopMostFoldoutHeaderGroup: 1
+  baseitem: {fileID: 11400000, guid: 1b741e51845dfc0459f5e9a8d325e6e1, type: 2}
+  isAttacking: 0
+  state: 0
+  ik_target: {fileID: 1823581095354849583}
+  currentFiremode: 0
+  muzzleStartPoint: {fileID: 0}
+  muzzleFlash: {fileID: 0}
 --- !u!1 &7301555039349170056
 GameObject:
   m_ObjectHideFlags: 0

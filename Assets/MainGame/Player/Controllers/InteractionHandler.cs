@@ -13,7 +13,7 @@ public class InteractionHandler : MonoBehaviour
     public Action<Item, Vector3> onLookingAtChanged;
     public LayerMask whatToInclude;
 
-    public void Init()
+    public void init()
     {
         onLookingAtChanged += UiController.Singleton != null ? UiController.Singleton.setCurerntlyLookingAt : null;
         onInteractionProgressChanged += UiController.Singleton != null ? UiController.Singleton.setInteractionProgress : null;

@@ -7,7 +7,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
   m_Name: Benelli_M2
@@ -22,20 +22,12 @@ MonoBehaviour:
     howManyItemsNeededToManufacture: 
   WeaponType: 2
   treeDamage: 0
-  oreDamage: 0
+  oreDamage: 0.07
   headDamage: 60
   bodyDamage: 45
   legDamage: 28
-  fireRate: 85
-  magSize: 7
-  pelletCount: 8
-  accuracy: 1
-  recoil: 1
-  range: 50
-  isThrowable: 0
-  hasAreaEffect: 1
+  hasAreaEffect: 0
   isAutomatic: 1
-  isStackable: 0
   weaponPrefab_rb: {fileID: 1603847908491756278, guid: ab98586aec156824980f0244a62a0184, type: 3}
   weaponPrefab_onplayer: {fileID: 3875494079081183106, guid: 876fcdaee04cb4d4bbdc7f8edbdc67fd, type: 3}
   position: {x: -0.0453, y: 0.2768, z: 0.0244}
@@ -44,7 +36,12 @@ MonoBehaviour:
   storedPosition: {x: 0, y: 0, z: -0.077}
   storedRotation: {x: 356.51587, y: 271.9516, z: 263.37732}
   storedScale: {x: 1, y: 1, z: 1}
+  firemodes: 00000000
+  fireRate: 85
+  magSize: 7
+  pelletCount: 8
+  recoil: 1
   scopeTexture: {fileID: 0}
   scopeZoom: 0.9
-  bulletSpread: 1
-  recoilPattern: {x: 0, y: 0}
+  bulletSpread: 1.01
+  recoilPattern: {x: 0.1, y: 0}

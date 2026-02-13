@@ -1,34 +1,74 @@
 using UnityEngine;
+using Unity.Netcode;
 
 public class CombatController : MonoBehaviour
 {
-    public bool isAttacking;
-
+    [Header("References")]
+    public Transform cameraTransform;
     public WeaponBehaviour currentWeapon;
-    public virtual void OnAttackAnimationFinished()
-    {
-        currentWeapon.isAttacking = false;
-    }
-    public virtual void OnAttackAnimationStarted()
-    {
-        currentWeapon.isAttacking = true;
-    }
-    public void setCurrentWeapon(Weapon wepaon)
-    {
 
-    }
-    public void Attack()
+    [HideInInspector] public Vector3 lookingAtPoint;
+
+    private bool isAttacking;
+
+
+    public void init()
     {
-        switch (currentWeapon.baseWeapon.WeaponType)
+        cameraTransform = Camera.main.transform;
+    }
+
+    public void RaycastFromCamera()
+    {
+        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, 500f))
         {
-            case WeaponType.melee: return;
-            case WeaponType.sidearm:
-            
-                break;
-            case WeaponType.rifle:
-                break;
-            default: break;
+            lookingAtPoint = hit.point;
+        }
+        else
+        {
+            lookingAtPoint = cameraTransform.position + cameraTransform.forward * 500f;
         }
     }
-}
 
+
+    public void OnAttackDown()
+    {
+        isAttacking = true;
+
+        if (currentWeapon is IWeaponTriggerable triggerable)
+        {
+            triggerable.TriggerPressed(lookingAtPoint);
+        }
+    }
+
+    public void OnAttackUp()
+    {
+        isAttacking = false;
+
+        if (currentWeapon is IWeaponTriggerable triggerable)
+        {
+            triggerable.TriggerReleased();
+        }
+    }
+ 
+    public void UpdateWeapon()
+    {
+        if (currentWeapon == null) return;
+
+        if (currentWeapon is IWeaponUpdatable updatable)
+        {
+            updatable.UpdateWeapon(lookingAtPoint);
+        }
+    }
+ 
+    public virtual void OnAttackAnimationStarted()
+    {
+        if (currentWeapon != null)
+            currentWeapon.isAttacking = true;
+    }
+
+    public virtual void OnAttackAnimationFinished()
+    {
+        if (currentWeapon != null)
+            currentWeapon.isAttacking = false;
+    }
+}

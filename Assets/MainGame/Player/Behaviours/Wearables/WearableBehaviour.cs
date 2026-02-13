@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class WearableBehaviour : ItemBehaviour, IRaycastResponder, IDamageable
+public class WearableBehaviour : ItemBehaviour<Wearable>, IRaycastResponder, IDamageable
 {
     public Item respondToRaycast()
     {
@@ -9,7 +9,7 @@ public class WearableBehaviour : ItemBehaviour, IRaycastResponder, IDamageable
 
 
 
-    public void takeDamage(Weapon damager)
+    public void takeDamage(DamageContext ctx)
     {
         throw new System.NotImplementedException();
     }

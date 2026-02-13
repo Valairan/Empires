@@ -1,40 +1,55 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class WeaponBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
+//
+// NON-GENERIC RUNTIME BASE
+// Unity & Netcode talk to this.
+//
+public abstract class WeaponBehaviour
+    : ItemBehaviour<Weapon>, IRaycastResponder, IInteractable
 {
     public bool isAttacking = false;
-    public Weapon baseWeapon;
     public WeaponState state;
     public Transform ik_target;
+
     public float InteractionDuration => 1f;
 
     public override void OnNetworkSpawn()
     {
-        baseitem = baseWeapon;
         if (!IsOwner)
             enabled = false;
     }
 
-    public void store()
+    public virtual void store()
     {
-        transform.localPosition = baseWeapon.storedPosition;
-        transform.localRotation = Quaternion.Euler(baseWeapon.storedRotation);
-        transform.localScale = baseWeapon.storedScale;
+        transform.localPosition = baseitem.storedPosition;
+        transform.localRotation = Quaternion.Euler(baseitem.storedRotation);
+        transform.localScale = baseitem.storedScale;
         state = WeaponState.stored;
     }
-    public void equip(ulong sender)
+
+    public virtual void equip(ulong sender)
     {
-        transform.localPosition = baseWeapon.position;
-        transform.localRotation = Quaternion.Euler(baseWeapon.rotation);
-        transform.localScale = baseWeapon.scale;
+        transform.localPosition = baseitem.position;
+        transform.localRotation = Quaternion.Euler(baseitem.rotation);
+        transform.localScale = baseitem.scale;
+        state = WeaponState.equipped;
     }
 
+    [ServerRpc]
+    public virtual void Attack_ServerRpc(Vector3 target)
+    {
+        // Base weapon does nothing.
+        // Concrete classes override this.
+    }
 
+    // -------------------------
+    // Interaction Logic
+    // -------------------------
 
     public Item Interact(ulong interactor)
     {
-
         attemptToInteract_ServerRpc(interactor, NetworkObjectId);
         return baseitem;
     }
@@ -47,35 +62,66 @@ public class WeaponBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
     [ServerRpc(RequireOwnership = false)]
     void attemptToInteract_ServerRpc(ulong interactingPlayerId, ulong interactee)
     {
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(interactingPlayerId, out NetworkClient client))
+        if (!NetworkManager.Singleton.ConnectedClients
+            .TryGetValue(interactingPlayerId, out NetworkClient client))
             return;
+
         NetworkObject playerObject = client.PlayerObject;
         if (playerObject == null)
             return;
-
 
         if (baseitem == null)
             return;
 
         float distance = Vector3.Distance(
-            NetworkManager.Singleton.ConnectedClients[interactingPlayerId].PlayerObject.transform.position,
+            playerObject.transform.position,
             transform.position
         );
-        if (distance > 2.5f) // interaction range
+
+        if (distance > 2.5f)
             return;
+
         ItemPickupContext ctx = new ItemPickupContext
         {
-            inventory = NetworkManager.Singleton.ConnectedClients[interactingPlayerId]
-        .PlayerObject.GetComponent<IInventory>(),
+            inventory = playerObject.GetComponent<IInventory>(),
             inworld = this
         };
+
         baseitem.OnPickup(ctx);
     }
 }
 
+//
+// GENERIC TYPED LAYER
+// Only adds strong typing — no duplicate logic.
+//
+public abstract class WeaponBehaviour<T>
+    : WeaponBehaviour
+    where T : Weapon
+{
+    protected T TypedItem => (T)baseitem;
+}
+
+//
+// ENUM
+//
 public enum WeaponState
 {
     stored,
     equipped,
     inworld
+}
+
+
+public interface IWeaponTriggerable
+{
+    void TriggerPressed(Vector3 aimPoint);
+    void TriggerReleased();
+    bool CanFire();
+}
+public interface IWeaponUpdatable
+{
+    public void switchFiremode();
+    public void reload();
+    public void UpdateWeapon(Vector3 aimPoint);
 }

@@ -4,7 +4,7 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private float defaultDistance = 6f;
     [SerializeField] private float minimumDistance = 7f;
-    [SerializeField] private float maximumDistance = 10f;
+    [SerializeField] private float cameraDefaultDistance = 10f;
     [SerializeField] private float distanceMovementSpeed = 5f;
     [SerializeField] private float movementInterpolationFactor = 10f;
     [SerializeField] private float horizontalSensitivity = 10f;
@@ -14,6 +14,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float minimumAngle = -90f;
     [SerializeField] private float maximumAngle = 90f;
     [SerializeField] private float defaultAngle = 20f;
+    [SerializeField] private LayerMask cameraBlockers;
     [SerializeField] public Transform cameraFollowTarget;
     [SerializeField] private Vector3 currentFollowPosition, cameraForward;
     [SerializeField] private float targetAngle;
@@ -38,7 +39,7 @@ public class CameraController : MonoBehaviour
 
     private void OnValidate()
     {
-        defaultDistance = Mathf.Clamp(defaultDistance, minimumDistance, maximumDistance);
+        defaultDistance = Mathf.Clamp(defaultDistance, minimumDistance, cameraDefaultDistance);
         defaultAngle = Mathf.Clamp(defaultAngle, minimumAngle, maximumAngle);
     }
 
@@ -55,11 +56,16 @@ public class CameraController : MonoBehaviour
         return Quaternion.Slerp(currentRotation, forwardRotation * verticalRotation, rotationInterpolationFactor * deltaTime);
 
     }
+    float cameraCurrentFollowDistance;
 
-
-    public Vector3 HandlePosition(float deltaTime, bool AimInput, Quaternion targetRotation)
+    public Vector3 HandlePosition(float deltaTime, bool AimInput, Quaternion targetRotation, Vector3 cameraCurrentPosition)
     {
-        targetDistance = (AimInput) ? minimumDistance : maximumDistance;
+        if (Physics.SphereCast(cameraFollowTarget.position, 0.2f, (cameraCurrentPosition - cameraFollowTarget.position).normalized, out RaycastHit hit, defaultDistance, cameraBlockers))
+            cameraCurrentFollowDistance = Vector3.Distance(hit.point, cameraFollowTarget.position) - 0.2f;
+        else
+            cameraCurrentFollowDistance = cameraDefaultDistance;
+
+        targetDistance = (AimInput) ? minimumDistance : cameraCurrentFollowDistance;
 
         currentFollowPosition = Vector3.Lerp(currentFollowPosition, cameraFollowTarget.position, 1f - Mathf.Exp(-movementInterpolationFactor * deltaTime));
         Vector3 targetPosition = currentFollowPosition - ((targetRotation * Vector3.forward) * currentDistance);

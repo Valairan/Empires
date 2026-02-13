@@ -64,7 +64,7 @@ public static class MeshGenerator
 
         meshRenderer.material = meshMaterial;
         meshRenderer.shadowCastingMode = shadowCastingMode;
-        meshRenderer.staticShadowCaster = shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.Off;
+        meshRenderer.staticShadowCaster = true;
         Mesh mesh = new Mesh();
         mesh.name = "Terrain Mesh";
 

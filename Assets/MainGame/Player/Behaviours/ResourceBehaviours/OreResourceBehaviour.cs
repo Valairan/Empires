@@ -5,11 +5,17 @@ using UnityEngine;
 
 public class OreResourceBehaviour : BaseResourceBehaviour
 {
-    public override void takeDamage(Weapon damager)
+    [SerializeField] ParticleSystem impact;
+    public override void takeDamage(DamageContext ctx)
     {
-        float damage = damager.oreDamage;
-        ResourcesManager.Singleton.DamageOre_ServerRpc(damage, xCoordinate, yCoordinate);
+        float damage = ctx.damager.treeDamage;
+        ResourcesManager.Singleton.DamageOre_ServerRpc(damage, ctx.damager.WeaponType, ctx.hitpoint, ctx.hitnormal, xCoordinate, yCoordinate);
     }
-
+    public override void playEffect(Vector3 hitpoint, Vector3 hitnormal, WeaponType type)
+    {
+        impact.transform.position = hitpoint;
+        impact.transform.rotation = Quaternion.Euler(hitnormal);
+        impact.Play();
+    }
 
 }

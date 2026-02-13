@@ -1,6 +1,138 @@
 using UnityEngine;
+using Unity.Netcode;
+using Codice.CM.Common.Serialization.Replication;
 
-public class RangedWeaponBehaviour : WeaponBehaviour
+public class RangedWeaponBehaviour
+    : WeaponBehaviour<RangedWeapon>, IWeaponTriggerable, IWeaponUpdatable
 {
+    public RangedWeapon baseitem
+    {
+        get => (RangedWeapon)base.baseitem;
+        set => base.baseitem = value;
+    }
+    [Header("References")]
+    public Transform muzzleStartPoint;
+    public ParticleSystem muzzleFlash;
+
+    [Header("FireMode")]
+    public FireMode currentFiremode;
+    public int firemodeindex = 0;
+    private bool isHoldingTrigger;
+    private int burstShotsRemaining;
+    private float lastShotTime;
+
+    private float FireInterval => 60f / baseitem.fireRate;
+
+    public override void OnNetworkSpawn()
+    {
+        currentFiremode = baseitem.firemodes[0];
+    }
+
+    public void TriggerPressed(Vector3 aimPoint)
+    {
+        Debug.Log(FireInterval);
+        switch (currentFiremode)
+        {
+            case FireMode.SemiAuto:
+                TryShoot(aimPoint);
+                break;
+
+            case FireMode.FullAuto:
+                isHoldingTrigger = true;
+                break;
+
+            case FireMode.Burst:
+                burstShotsRemaining = 3; // configurable per weapon
+                break;
+        }
+    }
+
+    public void TriggerReleased()
+    {
+        isHoldingTrigger = false;
+    }
+
+    public bool CanFire()
+    {
+        return Time.time - lastShotTime >= FireInterval;
+    }
+
+    public void UpdateWeapon(Vector3 aimPoint)
+    {
+
+        if (currentFiremode == FireMode.FullAuto && isHoldingTrigger)
+            TryShoot(aimPoint);
+
+        if (currentFiremode == FireMode.Burst && burstShotsRemaining > 0)
+        {
+            if (Time.time - lastShotTime >= FireInterval)
+            {
+                burstShotsRemaining--;
+                TryShoot(aimPoint);
+            }
+        }
+    }
+    public void switchFiremode()
+    {
+        firemodeindex++;
+        if (firemodeindex >= baseitem.firemodes.Length) firemodeindex = 0;
+        currentFiremode = baseitem.firemodes[firemodeindex];
+    }
+
+    private void TryShoot(Vector3 aimPoint)
+    {
+        if (Time.time - lastShotTime < FireInterval) return;
+
+        lastShotTime = Time.time;
+        Attack_ServerRpc(aimPoint);
+    }
+
+    [ServerRpc]
+    public override void Attack_ServerRpc(Vector3 point)
+    {
+        for (int i = 0; i < TypedItem.pelletCount; i++)
+        {
+            Vector3 dir = (point - muzzleStartPoint.position).normalized;
+            dir = ApplySpread(dir, TypedItem.bulletSpread);
+
+            if (Physics.Raycast(muzzleStartPoint.position, dir, out RaycastHit hit))
+            {
+                if (hit.transform.TryGetComponent(out IDamageable damageable))
+                {
+                    DamageContext ctx = new DamageContext
+                    {
+                        damagingPlayerID = OwnerClientId,
+                        hitpoint = hit.point,
+                        hitnormal = hit.normal,
+                        damager = TypedItem
+                    };
+
+                    damageable.takeDamage(ctx);
+                }
+            }
+        }
+
+        PlayMuzzleFlash_ClientRpc();
+    }
+
+    private Vector3 ApplySpread(Vector3 direction, float accuracy)
+    {
+        float spreadAmount = (1f - accuracy) * 5f;
+        direction += new Vector3(
+            Random.Range(-spreadAmount, spreadAmount),
+            Random.Range(-spreadAmount, spreadAmount),
+            Random.Range(-spreadAmount, spreadAmount)
+        );
+        return direction.normalized;
+    }
+
+    [ClientRpc]
+    void PlayMuzzleFlash_ClientRpc()
+    {
+        muzzleFlash.Play();
+    }
+
+    // Optional helper: CanFire for CombatController
+
 
 }

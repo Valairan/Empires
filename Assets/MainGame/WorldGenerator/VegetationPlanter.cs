@@ -16,8 +16,6 @@ public struct VegetationChunk
 }
 public static class VegetationPlanter
 {
-
-
     public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, int probability, float[,] availableSpots)
     {
         int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
@@ -79,6 +77,93 @@ public static class VegetationPlanter
         }
         return false;
     }
+    private static Vector2 CalculateWaterEdgeOffset(
+        int x,
+        int y,
+        float[,] heightMap,
+        DeterministicRng rng,
+        float pushStrength = 0.35f,
+        float sideStrength = 0.25f,
+        bool scaleBySlope = true)
+    {
+        Vector2 pushDir = Vector2.zero;
+        float current = heightMap[x, y];
+
+        int width = heightMap.GetLength(0);
+        int height = heightMap.GetLength(1);
+
+        // Accumulate direction AWAY from lower neighbours
+        for (int dx = -1; dx <= 1; dx++)
+        {
+            for (int dy = -1; dy <= 1; dy++)
+            {
+                if (dx == 0 && dy == 0)
+                    continue;
+
+                int nx = x + dx;
+                int ny = y + dy;
+
+                if (nx < 0 || nx >= width || ny < 0 || ny >= height)
+                    continue;
+
+                float neighbour = heightMap[nx, ny];
+
+                if (neighbour < current)
+                {
+                    float weight = scaleBySlope ? (current - neighbour) : 1f;
+
+                    // push AWAY from lower neighbour
+                    pushDir -= new Vector2(dx, dy) * weight;
+                }
+            }
+        }
+
+        if (pushDir == Vector2.zero)
+            return Vector2.zero;
+
+        pushDir.Normalize();
+
+        // Base inland push
+        Vector2 offset = pushDir * pushStrength;
+
+        // Perpendicular shoreline sliding
+        Vector2 alongEdge = new Vector2(-pushDir.y, pushDir.x);
+
+        float sideSlide = (rng.NextFloat() * 2f - 1f) * sideStrength;
+        offset += alongEdge * sideSlide;
+
+        return offset;
+    }
+    public static VegetationChunk[,] scatterVegetationInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, int probability, float[,] availableSpots)
+    {
+        int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
+
+        int chunkCountY = Mathf.CeilToInt((float)settings.mapHeight / grassChunkSize);
+        VegetationChunk[,] chunkGrid = new VegetationChunk[chunkCountX, chunkCountY];
+
+        for (int cy = 0; cy < chunkCountY; cy++)
+        {
+            for (int cx = 0; cx < chunkCountX; cx++)
+            {
+                chunkGrid[cx, cy] = GenerateGrassChunk(
+                    cx,
+                    cy,
+                    settings,
+                    grassChunkSize,
+                    grassPerCell,
+                    isWaterPlant,
+                    seed,
+                    scaleRangeMin,
+                    scaleRangeMax,
+                    probability,
+                    availableSpots
+                );
+            }
+        }
+
+        return chunkGrid;
+    }
+
 
     public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, int probability, float[,] availableSpots)
     {
@@ -110,7 +195,7 @@ public static class VegetationPlanter
             for (int y = startY; y <= endY; y++)
             {
 
-                if (rng.NextInt(0, 11) >= probability) continue;
+                if (rng.NextInt(0, 101) >= probability) continue;
                 float height = availableSpots[x, y];
                 if (height < 4) continue;
                 if (x > 0 && x < settings.mapWidth - 1 && y > 0 && y < settings.mapHeight - 1)
@@ -131,12 +216,17 @@ public static class VegetationPlanter
                         if (isEdge(x, y, height, availableSpots)) continue;
 
 
-                    // deterministic per-cell RNG
-
                     for (int i = 0; i < grassPerCell; i++)
                     {
-                        float offsetX = isWaterPlant ? 0f : Random.Range(-0.5f, 0.5f);
-                        float offsetZ = isWaterPlant ? 0f : Random.Range(-0.5f, 0.5f);
+                        Vector2 offset2D = isWaterPlant
+                            ? CalculateWaterEdgeOffset(x, y, availableSpots, rng)
+                            : new Vector2(
+                                rng.NextFloat(-0.5f, 0.5f),
+                                rng.NextFloat(-0.5f, 0.5f)
+                              );
+
+                        float offsetX = offset2D.x;
+                        float offsetZ = offset2D.y;
 
                         float scale = isWaterPlant ? 1f : Random.Range(scaleRangeMin, scaleRangeMax);
                         float rotY = Random.Range(0f, 360f);
@@ -198,15 +288,13 @@ public static class VegetationPlanter
 
                     if (availableSpots[x + 1, y + 1] == height && availableSpots[x + 1, y - 1] == height && availableSpots[x - 1, y + 1] == height && availableSpots[x - 1, y - 1] == height)
                     {
-
                         bool spawn = rng.NextFloat() > 0.98f;
 
-                        //int whatToSpawn = (int)Mathf.Clamp(biome[y / ((mapWidth - 1) / (biomeDimensionsY - 1)), x / ((mapHeight - 1) / (biomeDimensionsX - 1))] * 5, 0, availableItems - 1);
-
-                        if (!((availableSpots[x, y] <= 1) && (availableSpots[x, y] > 30)))
+                        if (!((availableSpots[x, y] <= 1) && (availableSpots[x, y] < 40)))
                         {
                             if (spawn)
                             {
+                                //int whatToSpawn = (int)Mathf.Clamp(biome[y / ((mapWidth - 1) / (biomeDimensionsY - 1)), x / ((mapHeight - 1) / (biomeDimensionsX - 1))] * 5, 0, availableItems - 1);
                                 int whatToSpawn = rng.NextInt(0, vegetation.Length);
                                 GameObject resource = GameObject.Instantiate(vegetation[whatToSpawn], new Vector3(x + rng.NextFloat(), availableSpots[x, y], y + rng1.NextFloat()), Quaternion.Euler(new Vector3(0f, rng.NextInt(0, 360), 0f)), treeParent.transform);
                                 resource.isStatic = true;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ResourceDropBehaviour : ItemBehaviour, IRaycastResponder, IInteractable
+public class ResourceDropBehaviour : ItemBehaviour<ResourceDrop>, IRaycastResponder, IInteractable
 {
 
     float IInteractable.InteractionDuration => 0f;
@@ -22,7 +22,5 @@ public class ResourceDropBehaviour : ItemBehaviour, IRaycastResponder, IInteract
     {
         return baseitem;
     }
-
-
 
 }

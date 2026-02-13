@@ -1,9 +1,7 @@
 using System;
 using Unity.Netcode;
-using Unity.Netcode.Components;
-using Unity.VisualScripting;
 using UnityEngine;
-public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
+public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamageable
 {
     [Header("Components")]
     [SerializeField] public LocomotionController playerCCMotor;
@@ -71,8 +69,8 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerCamerasMotor.setFollowTransform(playerCamerasMotor.cameraFollowTarget);
         playerCCMotor.init();
         playerInventoryController.init();
+        playerCombatController.init();
         onWeaponChanged += setCurrentAnimatorWeapon;
-        onWeaponChanged += playerCombatController.setCurrentWeapon;
         base.OnNetworkDespawn();
     }
 
@@ -106,12 +104,14 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
         onWeaponChanged += UiController.Singleton.weaponChanged;
         playerInputHandler.Aim += UiController.Singleton.onAim;
+        UiController.Singleton.init();
+
     }
 
     public void BindInputs()
     {
 
-        playerInteractionHandler.Init();
+        playerInteractionHandler.init();
 
         playerInputHandler.Move += ctx => MoveInput = ctx;
         playerInputHandler.Look += ctx => LookInput = ctx;
@@ -122,6 +122,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerInputHandler.Jump += jump;
         playerInputHandler.Interact += OnInteract;
         playerInputHandler.Aim += OnAim;
+
 
         playerInputHandler.Build += buildButtonPressed;
         playerInputHandler.Rotate += playerBuildHandler.rotateButtonPressed;
@@ -146,12 +147,17 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         playerInteractionHandler.checkForRaycasts(playerCamera.transform);
         playerInteractionHandler.HandleTimedInteraction(NetworkManager.Singleton.LocalClientId);
         playerInteractionHandler.interacting = interacting;
-        PlayerInputs inputs = new PlayerInputs();
-        inputs.Horizontal = MoveInput.x;
-        inputs.Vertical = MoveInput.y;
-        inputs.transformRotation = playerCamera.transform.rotation;
+        PlayerInputs inputs = new PlayerInputs
+        {
+            Horizontal = MoveInput.x,
+            Vertical = MoveInput.y,
+            transformRotation = playerCamera.transform.rotation
+        };
         playerCCMotor.setInputs(ref inputs);
         Grounded = playerCCMotor.motor.GroundingStatus.IsStableOnGround;
+
+        playerCombatController.RaycastFromCamera();
+        playerCombatController.UpdateWeapon();
         //playerCCMotor.Move(finalMove * Time.deltaTime);
         updateAnimationParams(MoveInput, Grounded, sidearmAnimation, rifleAnimation, meleeAnimation, Submerged);
 
@@ -187,7 +193,7 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
         if (!IsLocalPlayer) return;
 
         playerCamera.transform.rotation = playerCamerasMotor.HandleRotation(playerCamera.transform.rotation, Time.deltaTime, LookInput);
-        playerCamera.transform.position = playerCamerasMotor.HandlePosition(Time.deltaTime, aiming, playerCamera.transform.rotation);
+        playerCamera.transform.position = playerCamerasMotor.HandlePosition(Time.deltaTime, aiming, playerCamera.transform.rotation, playerCamera.transform.position);
 
     }
     void OnAim(bool pressed)
@@ -270,18 +276,20 @@ public class PlayerController : ItemBehaviour, IRaycastResponder, IDamageable
     {
 
     }
+    public void dropItem()
+    {
+        //playerInventoryController.DropWeapon(playerInventoryController.current);
+    }
 
     public void Attack(bool input)
     {
-        if (input && !Submerged)
-        {
-            playerCombatController.Attack();
-            playerAnimator.SetTrigger("Attack");
-        }
+        if (Submerged || !Grounded) return;
+        if (input) playerCombatController.OnAttackDown();
+        else playerCombatController.OnAttackUp();
 
     }
 
-    public void takeDamage(Weapon damager)
+    public void takeDamage(DamageContext ctx)
     {
 
         //armor.amount -= damage;

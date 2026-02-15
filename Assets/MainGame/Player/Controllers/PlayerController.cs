@@ -9,7 +9,6 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     [SerializeField] public CameraController playerCamerasMotor;
     [SerializeField] public CombatController playerCombatController;
     [SerializeField] public InventoryHandler playerInventoryController;
-    [SerializeField] public Animator playerAnimator;
     [SerializeField] public SkinnedMeshRenderer playerClothesParent;
     [SerializeField] public InputHandler playerInputHandler;
     [SerializeField] public BuildHandler playerBuildHandler;
@@ -32,6 +31,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     [SerializeField]
     float turnSmoothVelocity;
     public float turnSmoothTime = 0.1f;
+    [SerializeField] Transform lookTargetTransform;
     [SerializeField] Transform GroundCheck;
     [SerializeField] LayerMask WhatIsGround;
     [SerializeField] LayerMask WhatIsWater;
@@ -139,6 +139,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     }
 
 
+    Vector3 currentlyLookingAtPoint;
     public void Update()
     {
         if (!IsLocalPlayer) return;
@@ -156,10 +157,11 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerCCMotor.setInputs(ref inputs);
         Grounded = playerCCMotor.motor.GroundingStatus.IsStableOnGround;
 
-        playerCombatController.RaycastFromCamera();
+        currentlyLookingAtPoint = playerCombatController.RaycastFromCamera();
         playerCombatController.UpdateWeapon();
+        lookTargetTransform.position = currentlyLookingAtPoint;
         //playerCCMotor.Move(finalMove * Time.deltaTime);
-        updateAnimationParams(MoveInput, Grounded, sidearmAnimation, rifleAnimation, meleeAnimation, Submerged);
+        playerAnimationController.updateAnimationParams(MoveInput, Grounded, sidearmAnimation, rifleAnimation, meleeAnimation, Submerged);
 
     }
     public bool sidearmAnimation = false;
@@ -238,24 +240,8 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         if (input && !Submerged)
             playerCCMotor.jump();
     }
-    public void updateAnimationParams(Vector2 movement, bool grounded, bool sideArm, bool rifle, bool melee, bool inwater)
-    {
-        if (!IsLocalPlayer) return;
-        playerAnimator.SetBool("Grounded", grounded);
-        playerAnimator.SetBool("Submerged", inwater);
-        if (inwater)
-        {
-            playerAnimator.SetFloat("Horizontal", movement.sqrMagnitude);
-            return;
-        }
-        playerAnimator.SetFloat("Horizontal", Mathf.Round(movement.x));
-        playerAnimator.SetFloat("Vertical", Mathf.Round(movement.y));
-        playerAnimator.SetBool("SideArm", sideArm);
-        playerAnimator.SetBool("Rifle", rifle);
-        playerAnimator.SetBool("Melee", melee);
 
 
-    }
 
     public void buildButtonPressed()
     {

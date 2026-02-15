@@ -248,8 +248,9 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         }
         TryGetComponent(out PlayerController controller);
         controller.playerCombatController.currentWeapon = currentGO.GetComponent<WeaponBehaviour>();
-        controller.playerAnimationController.setTarget(incomingBehaviour.ik_target);
+        controller.playerAnimationController.updateCurrentWeapon(current.WeaponType, incomingBehaviour.ik_target, incomingBehaviour.ik_hint);
         controller.onWeaponChanged.Invoke(current);
+
     }
     public void BuyItem(Weapon weapon)
     {

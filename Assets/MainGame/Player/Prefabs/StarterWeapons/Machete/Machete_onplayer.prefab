@@ -67,6 +67,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2187406746557089851}
+  - {fileID: 7288079551501040970}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7013859383337718002
@@ -212,8 +213,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponBehaviour
   ShowTopMostFoldoutHeaderGroup: 1
-  baseitem: {fileID: 0}
+  baseitem: {fileID: 11400000, guid: 685a5421a035c7a4c94b017a0cad2b73, type: 2}
   isAttacking: 0
-  baseWeapon: {fileID: 11400000, guid: 685a5421a035c7a4c94b017a0cad2b73, type: 2}
   state: 0
   ik_target: {fileID: 2187406746557089851}
+  ik_hint: {fileID: 7288079551501040970}
+--- !u!1 &8110931400393353595
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7288079551501040970}
+  m_Layer: 10
+  m_Name: ik_hint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7288079551501040970
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8110931400393353595}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0018524048, y: -0.18560566, z: 0.98262256, w: -0.00003451854}
+  m_LocalPosition: {x: 0.142, y: 0.051, z: -0.199}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6267287093717606231}
+  m_LocalEulerAnglesHint: {x: 21.393, y: -0.223, z: 179.962}

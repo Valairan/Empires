@@ -245,8 +245,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponBehaviour
   ShowTopMostFoldoutHeaderGroup: 1
-  baseitem: {fileID: 0}
+  baseitem: {fileID: 11400000, guid: 685a5421a035c7a4c94b017a0cad2b73, type: 2}
   isAttacking: 0
-  baseWeapon: {fileID: 11400000, guid: 685a5421a035c7a4c94b017a0cad2b73, type: 2}
   state: 0
   ik_target: {fileID: 0}
+  ik_hint: {fileID: 0}

@@ -17,7 +17,7 @@ public class CombatController : MonoBehaviour
         cameraTransform = Camera.main.transform;
     }
 
-    public void RaycastFromCamera()
+    public Vector3 RaycastFromCamera()
     {
         if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, 500f))
         {
@@ -27,6 +27,8 @@ public class CombatController : MonoBehaviour
         {
             lookingAtPoint = cameraTransform.position + cameraTransform.forward * 500f;
         }
+
+        return lookingAtPoint;
     }
 
 

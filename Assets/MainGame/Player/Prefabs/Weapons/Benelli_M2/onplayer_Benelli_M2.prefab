@@ -24,13 +24,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549651335871701881}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.21240796, y: -0.58642197, z: 0.74375373, w: 0.24046335}
-  m_LocalPosition: {x: 0.0238, y: 0.0534, z: -0.0171}
+  m_LocalRotation: {x: -0.054241665, y: -0.106249824, z: 0.94116956, w: 0.31617844}
+  m_LocalPosition: {x: -0.0176, y: 0.0561, z: -0.0201}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9152711512775927462}
-  m_LocalEulerAnglesHint: {x: 50.368, y: -69.634, z: 107.949}
+  m_LocalEulerAnglesHint: {x: 9.538, y: -9.884, z: 142.035}
 --- !u!1 &981391865868241283
 GameObject:
   m_ObjectHideFlags: 0
@@ -5062,9 +5062,11 @@ MonoBehaviour:
   isAttacking: 0
   state: 0
   ik_target: {fileID: 1572302280955573818}
-  currentFiremode: 0
+  ik_hint: {fileID: 0}
   muzzleStartPoint: {fileID: 3593135968808144103}
   muzzleFlash: {fileID: 1322274865844432613}
+  currentFiremode: 0
+  firemodeindex: 0
 --- !u!1 &6571588566240082281
 GameObject:
   m_ObjectHideFlags: 0

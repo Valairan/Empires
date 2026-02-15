@@ -2,11 +2,10 @@ using UnityEngine;
 
 public class RifleEventHandler : StateMachineBehaviour
 {
-    CombatController controller;
-
+    PlayerController player;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        controller = animator.GetComponent<CombatController>();
+        if (!animator.transform.parent.TryGetComponent(out player)) return;
         animator.SetBool("Attacking", true);
 
     }
@@ -16,16 +15,13 @@ public class RifleEventHandler : StateMachineBehaviour
 
 
     }
-    public override void OnStateExit(
-        Animator animator,
-        AnimatorStateInfo stateInfo,
-        int layerIndex
-    )
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetBool("Attacking", false);
-        if (controller != null)
+        if (player != null)
         {
-            controller.OnAttackAnimationFinished();
+            player.playerCombatController.OnAttackAnimationFinished();
         }
+
     }
 }

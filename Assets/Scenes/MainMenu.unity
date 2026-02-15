@@ -6624,7 +6624,6 @@ GameObject:
   - component: {fileID: 1622181147}
   - component: {fileID: 1622181148}
   - component: {fileID: 1622181149}
-  - component: {fileID: 1622181150}
   m_Layer: 0
   m_Name: PropertiesStorage
   m_TagString: Untagged
@@ -6692,18 +6691,6 @@ MonoBehaviour:
   WorldGenerationSeed:
     m_InternalValue: 0
   myname: 
---- !u!114 &1622181150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1622181146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec08462ad6be9b442bb15758c00faedc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GamePropertiesStorage
 --- !u!1 &1686097927
 GameObject:
   m_ObjectHideFlags: 0

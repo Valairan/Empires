@@ -1,6 +1,5 @@
 using UnityEngine;
 using Unity.Netcode;
-using Codice.CM.Common.Serialization.Replication;
 
 public class RangedWeaponBehaviour
     : WeaponBehaviour<RangedWeapon>, IWeaponTriggerable, IWeaponUpdatable
@@ -72,13 +71,16 @@ public class RangedWeaponBehaviour
             }
         }
     }
-    public void switchFiremode()
+    public void SwitchFiremode()
     {
         firemodeindex++;
         if (firemodeindex >= baseitem.firemodes.Length) firemodeindex = 0;
         currentFiremode = baseitem.firemodes[firemodeindex];
     }
+    public void Reload()
+    {
 
+    }
     private void TryShoot(Vector3 aimPoint)
     {
         if (Time.time - lastShotTime < FireInterval) return;

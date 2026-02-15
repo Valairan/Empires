@@ -12,6 +12,7 @@ public abstract class WeaponBehaviour
     public bool isAttacking = false;
     public WeaponState state;
     public Transform ik_target;
+    public Transform ik_hint;
 
     public float InteractionDuration => 1f;
 
@@ -121,7 +122,7 @@ public interface IWeaponTriggerable
 }
 public interface IWeaponUpdatable
 {
-    public void switchFiremode();
-    public void reload();
+    public void SwitchFiremode();
+    public void Reload();
     public void UpdateWeapon(Vector3 aimPoint);
 }

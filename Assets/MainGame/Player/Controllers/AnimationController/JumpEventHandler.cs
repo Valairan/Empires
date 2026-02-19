@@ -11,6 +11,7 @@ public class JumpEventHandler : StateMachineBehaviour
         player.playerAnimationController.pistolRig.weight = 0f;
         player.playerAnimationController.throwableRig.weight = 0f;
         player.playerAnimationController.leftHandRig.weight = 0f;
+        player.playerAnimationController.parentRig.Build();
 
     }
 

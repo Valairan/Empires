@@ -10,9 +10,6 @@ public class GameManager : NetworkBehaviour
     public Action sceneLoadComplete;
     public static GameManager Singleton;
     float loaderProgress = 0;
-    [SerializeField] Transform[] testPrefabSpawnPositions;
-    public GameObject[] testPrefab;
-
 
     void Awake()
     {
@@ -36,7 +33,7 @@ public class GameManager : NetworkBehaviour
         if (!IsServer) return;
 
         NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value = UnityEngine.Random.Range(0, 2000);
-       //GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
+        GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
 
         int count = 0;
         foreach (ulong client in NetworkManager.ConnectedClientsIds)
@@ -52,12 +49,7 @@ public class GameManager : NetworkBehaviour
             SetLoader_ClientRpc(loaderProgress);
         }
         DisableLoader_ClientRpc();
-        int gunCount = 0;
-        foreach (GameObject weapon in testPrefab)
-        {
-            Instantiate(weapon, testPrefabSpawnPositions[gunCount].position, Quaternion.identity).GetComponent<NetworkObject>().Spawn();
-            gunCount ++;
-        }
+
     }
     public Vector3 GetSpawnPointForClient(ulong clientID)
     {

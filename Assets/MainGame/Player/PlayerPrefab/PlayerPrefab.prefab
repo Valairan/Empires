@@ -360,7 +360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1520680668
+  GlobalObjectIdHash: 618126814
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 7
@@ -603,9 +603,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f1a5df49e0357a4d9150bcc485ed302, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
-  defaultDistance: 5
+  defaultDistance: 2
   minimumDistance: 0
-  cameraDefaultDistance: 5
+  cameraDefaultDistance: 2
   distanceMovementSpeed: 200
   movementInterpolationFactor: 100
   horizontalSensitivity: 0.3

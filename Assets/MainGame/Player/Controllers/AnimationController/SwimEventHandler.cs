@@ -9,7 +9,8 @@ public class SwimEventHandler : StateMachineBehaviour
         player.playerAnimationController.rifleRig.weight = 0f;
         player.playerAnimationController.pistolRig.weight = 0f;
         player.playerAnimationController.throwableRig.weight = 0f;
-        player.playerAnimationController.leftHandRig.weight = 1f;
+        player.playerAnimationController.leftHandRig.weight = 0f;
+        player.playerAnimationController.parentRig.Build();
 
     }
 }

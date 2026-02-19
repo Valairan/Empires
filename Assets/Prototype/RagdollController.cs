@@ -40,10 +40,6 @@ public class RagdollController : MonoBehaviour, IDamageable
     public void takeDamage(DamageContext ctx)
     {
         Die();
-
-        Debug.Log("I got damaged");
-
-        // Play particles
         damageParticles.transform.position = ctx.hitpoint;
         damageParticles.transform.rotation = Quaternion.LookRotation(ctx.hitnormal);
         damageParticles.Play();

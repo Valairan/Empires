@@ -114,7 +114,7 @@ public class RangedWeaponBehaviour
             }
         }
 
-        PlayMuzzleFlash_ClientRpc();
+        //PlayMuzzleFlash_ClientRpc();
     }
 
     private Vector3 ApplySpread(Vector3 direction, float accuracy)

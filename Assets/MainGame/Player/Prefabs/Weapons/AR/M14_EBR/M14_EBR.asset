@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: M14_EBR
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 0}
+  ItemName: M14_EBR
+  ItemDescription: 'Fires 20 rounds at 500 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 2
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 50
+  bodyDamage: 36
+  legDamage: 22
+  hasAreaEffect: 0
+  isAutomatic: 1
+  weaponPrefab_rb: {fileID: 1288014334721354883, guid: 70774e9c46e5e85438d7071d28bb2fa0, type: 3}
+  weaponPrefab_onplayer: {fileID: 1781885001196089888, guid: 95bad3930a4df4e4eab37995b47ff512, type: 3}
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: 0, y: 0, z: 0}
+  storedRotation: {x: 0, y: 0, z: 0}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes: 01000000
+  fireRate: 500
+  magSize: 20
+  pelletCount: 1
+  recoil: 1
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0
+  bulletSpread: 1.02
+  recoilPattern: {x: 0, y: 0}

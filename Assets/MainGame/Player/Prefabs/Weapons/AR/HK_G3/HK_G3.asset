@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: HK_G3
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 0}
+  ItemName: HK_G3
+  ItemDescription: 'Fires 20 rounds at 550 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 2
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 40
+  bodyDamage: 28
+  legDamage: 18
+  hasAreaEffect: 0
+  isAutomatic: 1
+  weaponPrefab_rb: {fileID: 795454346795496747, guid: 473cc3ea892f676499ec66eea5a0a8c2, type: 3}
+  weaponPrefab_onplayer: {fileID: 3962629646809037176, guid: 220690b9066fa7f44a6742a056aac56a, type: 3}
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: 0, y: 0, z: 0}
+  storedRotation: {x: 0, y: 0, z: 0}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes: 01000000
+  fireRate: 550
+  magSize: 20
+  pelletCount: 1
+  recoil: 1
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0
+  bulletSpread: 1.02
+  recoilPattern: {x: 0, y: 0}

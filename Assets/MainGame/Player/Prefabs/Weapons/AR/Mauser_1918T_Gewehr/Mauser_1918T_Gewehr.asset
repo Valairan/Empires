@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: Mauser_1918T_Gewehr
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 0}
+  ItemName: Mauser_1918T_Gewehr
+  ItemDescription: 'Fires 1 rounds at 20 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 2
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 140
+  bodyDamage: 110
+  legDamage: 80
+  hasAreaEffect: 0
+  isAutomatic: 1
+  weaponPrefab_rb: {fileID: 3748555075666476651, guid: cf012f84ee06c9941a17a66b32768403, type: 3}
+  weaponPrefab_onplayer: {fileID: 5395416338406412661, guid: 03c5b487a9fa9f74697b76538ae792a3, type: 3}
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: 0, y: 0, z: 0}
+  storedRotation: {x: 0, y: 0, z: 0}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes: 01000000
+  fireRate: 20
+  magSize: 1
+  pelletCount: 1
+  recoil: 1
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0
+  bulletSpread: 1.02
+  recoilPattern: {x: 0, y: 0}

@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: KrissVector
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 0}
+  ItemName: KrissVector
+  ItemDescription: 'Fires 25 rounds at 950 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 2
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 28
+  bodyDamage: 18
+  legDamage: 10
+  hasAreaEffect: 0
+  isAutomatic: 1
+  weaponPrefab_rb: {fileID: 2478601360231791228, guid: b0f2be408ce7fb341a31902fa28367c1, type: 3}
+  weaponPrefab_onplayer: {fileID: 8654077261588572249, guid: fa54ef0a6be4ff046ab59461fae409c4, type: 3}
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: 0, y: 0, z: 0}
+  storedRotation: {x: 0, y: 0, z: 0}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes: 01000000
+  fireRate: 950
+  magSize: 25
+  pelletCount: 1
+  recoil: 1
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0
+  bulletSpread: 1.02
+  recoilPattern: {x: 0, y: 0}

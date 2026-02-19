@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class WeaponsSOAssigner : EditorWindow
 {
 
-    public string weaponsRootPath = "Assets/MainGame/Player/Prefabs/Weapons"; // Root folder containing all weapon folders
     List<WeaponData> weapons = new List<WeaponData> {
     new WeaponData { name="AK-47", weaponType=WeaponType.rifle, treeDamage=0f, oreDamage=0f, headDamage=35f, bodyDamage=25f, legDamage=15f, isThrowable=false, hasAreaEffect=false, fireRate=600, magSize=30, pelletCount=1, weaponPrefab_rb="AK-47_RB", weaponPrefab_onplayer="AK-47_OnPlayer" },
     new WeaponData { name="Colt_M4A1", weaponType=WeaponType.rifle, treeDamage=0f, oreDamage=0f, headDamage=34f, bodyDamage=24f, legDamage=14f, isThrowable=false, hasAreaEffect=false, fireRate=700, magSize=30, pelletCount=1, weaponPrefab_rb="M4A1_RB", weaponPrefab_onplayer="M4A1_OnPlayer" },
@@ -93,6 +92,9 @@ public class WeaponsSOAssigner : EditorWindow
     new WeaponData { name="Tarran_Tactical", weaponType=WeaponType.melee, treeDamage=15f, oreDamage=6f, headDamage=50f, bodyDamage=42f, legDamage=28f, isThrowable=false, hasAreaEffect=false, fireRate=1, magSize=0, pelletCount=1, weaponPrefab_rb="Tarran_RB", weaponPrefab_onplayer="Tarran_OnPlayer" },
 }; // Your WeaponData list
 
+    public string weaponsRootPath = "Assets/MainGame/Player/Prefabs/Weapons"; // Root folder containing all weapon folders
+    public string weaponsIconPath = "Assets/MainGame/Player/Prefabs/Weapons/WeaponIcons"; // Root folder containing all weapon icons
+
     [MenuItem("Tools/Generate Weapon ScriptableObjects")]
     static void ShowWindow()
     {
@@ -104,6 +106,7 @@ public class WeaponsSOAssigner : EditorWindow
         GUILayout.Label("Weapon ScriptableObject Generator", EditorStyles.boldLabel);
 
         weaponsRootPath = EditorGUILayout.TextField("Weapons Root Path", weaponsRootPath);
+        weaponsIconPath = EditorGUILayout.TextField("Weapons Icons Path", weaponsIconPath);
 
         if (GUILayout.Button("Generate ScriptableObjects and Assign to Prefabs"))
         {
@@ -131,9 +134,10 @@ public class WeaponsSOAssigner : EditorWindow
 
             weaponSO = ScriptableObject.CreateInstance<RangedWeapon>();
 
+            AssetDatabase.MoveAsset(Path.Combine(weaponsIconPath, weapon.name + "_Icon.png"), Path.Combine(weaponsRootPath, weapon.name + "_Icon.png"));
 
             // Populate fields from WeaponData
-            weaponSO.ItemIcon = AssetDatabase.LoadAssetAtPath<Sprite>(Path.Combine(weaponFolder, weapon.name + "_Icon.png"));
+            weaponSO.ItemIcon = AssetDatabase.LoadAssetAtPath<Sprite>(Path.Combine(weaponsRootPath, weapon.name + "_Icon.png"));
             weaponSO.ItemName = weapon.name;
             weaponSO.Type = ItemType.weapon;
             weaponSO.ItemDescription = "Fires " + weapon.magSize + " rounds at " + weapon.fireRate + " rounds per minute. ";
@@ -151,6 +155,10 @@ public class WeaponsSOAssigner : EditorWindow
             weaponSO.storedPosition = weapon.storedPosition;
             weaponSO.storedRotation = weapon.storedRotation;
             weaponSO.storedScale = weapon.storedScale;
+            weaponSO.fireRate = weapon.fireRate;
+            weaponSO.magSize = weapon.magSize;
+            weaponSO.pelletCount = weapon.pelletCount;
+            weaponSO.bulletSpread = 1.02f;
 
             // Save the ScriptableObject
             AssetDatabase.CreateAsset(weaponSO, soPath);
@@ -162,6 +170,8 @@ public class WeaponsSOAssigner : EditorWindow
             GameObject onPlayerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(onPlayerPrefabPath);
             GameObject rbPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(rbPrefabPath);
             GameObject ikTarget = onPlayerPrefab.transform.GetChild(0).gameObject;
+            GameObject ikHint = onPlayerPrefab.transform.GetChild(1).gameObject;
+            GameObject muzzleStart = onPlayerPrefab.transform.GetChild(2).gameObject;
 
             if (onPlayerPrefab != null)
             {
@@ -172,6 +182,8 @@ public class WeaponsSOAssigner : EditorWindow
                     EditorUtility.SetDirty(onPlayerPrefab);
                     weaponSO.weaponPrefab_onplayer = onPlayerPrefab;
                     behaviour.ik_target = ikTarget.transform;
+                    behaviour.ik_hint = ikHint.transform;
+                    behaviour.muzzleStartPoint = ikHint.transform;
                 }
             }
 

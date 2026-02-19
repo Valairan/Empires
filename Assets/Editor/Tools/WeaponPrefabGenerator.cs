@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
 
 public class WeaponPrefabGenerator : EditorWindow
 {
@@ -91,6 +92,10 @@ public class WeaponPrefabGenerator : EditorWindow
     new WeaponData { name="Mikor_MGL", weaponType=WeaponType.rifle, treeDamage=0f, oreDamage=0f, headDamage=140f, bodyDamage=120f, legDamage=80f, isThrowable=false, hasAreaEffect=true, fireRate=60, magSize=6, pelletCount=1, weaponPrefab_rb="MGL_RB", weaponPrefab_onplayer="MGL_OnPlayer" },
     new WeaponData { name="Tarran_Tactical", weaponType=WeaponType.melee, treeDamage=15f, oreDamage=6f, headDamage=50f, bodyDamage=42f, legDamage=28f, isThrowable=false, hasAreaEffect=false, fireRate=1, magSize=0, pelletCount=1, weaponPrefab_rb="Tarran_RB", weaponPrefab_onplayer="Tarran_OnPlayer" },
 };
+
+    string rootPath = $"Assets/MainGame/Player/Prefabs/Weapons/";
+    public Material materialWeapon;
+
     [MenuItem("Tools/Generate Weapon Prefabs")]
     static void ShowWindow()
     {
@@ -99,72 +104,89 @@ public class WeaponPrefabGenerator : EditorWindow
 
     void OnGUI()
     {
-        GUILayout.Label("Weapon Prefab Generator", EditorStyles.boldLabel);
-
-        if (GUILayout.Button("Generate Prefabs"))
         {
-            GeneratePrefabs();
-        }
-    }
+            GUILayout.Label("Weapon ScriptableObject Generator", EditorStyles.boldLabel);
+            rootPath = EditorGUILayout.TextField("Weapons Root Path", rootPath);
 
-    void GeneratePrefabs()
-    {
-        foreach (var weapon in weapons)
-        {
-            // FBX path: Weapons/{WeaponName}/{WeaponName}.fbx
-            string fbxPath = $"Assets/MainGame/Player/Prefabs/Weapons/{weapon.name}/{weapon.name}_Mesh.fbx";
-            GameObject fbxAsset = AssetDatabase.LoadAssetAtPath<GameObject>(fbxPath);
-
-            if (fbxAsset == null)
+            if (GUILayout.Button("Generate Prefabs"))
             {
-                Debug.LogWarning($"FBX not found for {weapon.name} at {fbxPath}");
-                continue;
+                GeneratePrefabs();
+            }
+        }
+
+        void GeneratePrefabs()
+        {
+            foreach (var weapon in weapons)
+            {
+                string fbxPath = Path.Combine(rootPath, $"{weapon.name}/{weapon.name}_Mesh.fbx");
+
+                GameObject fbxAsset = AssetDatabase.LoadAssetAtPath<GameObject>(fbxPath);
+
+                if (fbxAsset == null)
+                {
+                    Debug.LogWarning($"FBX not found for {weapon.name} at {fbxPath}");
+                    continue;
+                }
+
+                // Folder of FBX
+                string folderPath = Path.GetDirectoryName(fbxPath);
+
+                // Create temporary GameObject
+                GameObject go = new GameObject(weapon.name);
+                go.AddComponent<RangedWeaponBehaviour>();
+
+                // Add MeshFilter and MeshRenderer
+                MeshFilter mf = go.AddComponent<MeshFilter>();
+                MeshRenderer mr = go.AddComponent<MeshRenderer>();
+
+                // Assign mesh if FBX has one
+                MeshFilter fbxMF = fbxAsset.GetComponentInChildren<MeshFilter>();
+                if (fbxMF != null)
+                    mf.sharedMesh = fbxMF.sharedMesh;
+
+                // Assign a default material
+                if (materialWeapon)
+                    mr.sharedMaterial = materialWeapon;
+                else
+                    mr.sharedMaterial = new Material(Shader.Find("Standard"));
+
+                // --- Create onplayer_ prefab ---
+                string onPlayerPrefabPath = Path.Combine(folderPath, "onplayer_" + weapon.name + ".prefab");
+
+                // Add IK target to temporary GameObject before saving
+                GameObject ikTarget = new GameObject("ik_target");
+                ikTarget.transform.parent = go.transform;
+                ikTarget.transform.localPosition = Vector3.zero;
+                ikTarget.transform.localRotation = Quaternion.identity;
+
+                GameObject ikHint = new GameObject("ik_hint");
+                ikHint.transform.parent = go.transform;
+                ikHint.transform.localPosition = Vector3.zero;
+                ikHint.transform.localRotation = Quaternion.identity;
+
+                // Add muzzleStart to temporary GameObject before saving
+                GameObject muzzleStart = new GameObject(weapon.name + "_muzzleStart");
+                muzzleStart.transform.parent = go.transform;
+
+                PrefabUtility.SaveAsPrefabAsset(go, onPlayerPrefabPath);
+
+                // Remove IK target so the rb_ prefab doesn't have it
+                DestroyImmediate(ikTarget);
+
+                // --- Save rb_ prefab ---
+                string rbPrefabPath = Path.Combine(folderPath, "rb_" + weapon.name + ".prefab");
+                PrefabUtility.SaveAsPrefabAsset(go, rbPrefabPath);
+
+                // Clean up temp object
+                DestroyImmediate(go);
             }
 
-            // Folder of FBX
-            string folderPath = Path.GetDirectoryName(fbxPath);
-
-            // Create temporary GameObject
-            GameObject go = new GameObject(weapon.name);
-
-            // Add MeshFilter and MeshRenderer
-            MeshFilter mf = go.AddComponent<MeshFilter>();
-            MeshRenderer mr = go.AddComponent<MeshRenderer>();
-
-            // Assign mesh if FBX has one
-            MeshFilter fbxMF = fbxAsset.GetComponentInChildren<MeshFilter>();
-            if (fbxMF != null)
-                mf.sharedMesh = fbxMF.sharedMesh;
-
-            // Assign a default material
-            mr.sharedMaterial = new Material(Shader.Find("Standard"));
-
-            // --- Create onplayer_ prefab ---
-            string onPlayerPrefabPath = Path.Combine(folderPath, "onplayer_" + weapon.name + ".prefab");
-
-            // Add IK target to temporary GameObject before saving
-            GameObject ikTarget = new GameObject("ik_target");
-            ikTarget.transform.parent = go.transform;
-            ikTarget.transform.localPosition = Vector3.zero;
-            ikTarget.transform.localRotation = Quaternion.identity;
-
-            PrefabUtility.SaveAsPrefabAsset(go, onPlayerPrefabPath);
-
-            // Remove IK target so the rb_ prefab doesn't have it
-            DestroyImmediate(ikTarget);
-
-            // --- Save rb_ prefab ---
-            string rbPrefabPath = Path.Combine(folderPath, "rb_" + weapon.name + ".prefab");
-            PrefabUtility.SaveAsPrefabAsset(go, rbPrefabPath);
-
-            // Clean up temp object
-            DestroyImmediate(go);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("Weapon prefabs with IK targets generated successfully!");
         }
-
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-        Debug.Log("Weapon prefabs with IK targets generated successfully!");
     }
+
 }
 
 
@@ -220,4 +242,5 @@ public class WeaponData
         this.weaponType = type;
     }
 }
+
 

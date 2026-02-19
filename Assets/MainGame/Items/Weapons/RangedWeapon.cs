@@ -16,9 +16,8 @@ public class RangedWeapon : Weapon
     public float bulletSpread = 0f;  // Degrees
     public Vector2 recoilPattern;     // Optional
 
-    protected override void Awake()
+    protected void OnCreate()
     {
-        base.Awake();
         if (firemodes == null)
         {
             firemodes = new FireMode[1];

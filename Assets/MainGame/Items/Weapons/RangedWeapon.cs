@@ -7,15 +7,17 @@ public class RangedWeapon : Weapon
 {
     [Header("Gun Properties")]
     public FireMode[] firemodes;
+    public float shellsize;                      // Magazine size
     public float fireRate;                     // Shots per minute (or per second if you prefer)
     public int magSize;                      // Magazine size
     public int pelletCount;                  // For shotguns, number of pellets per shot
     public float recoil = 1f;                // Optional: 0-1 scale, higher = more recoil
-    public Sprite scopeTexture;
-    public float scopeZoom;
     public float bulletSpread = 0f;  // Degrees
     public Vector2 recoilPattern;     // Optional
-
+    public Sprite scopeTexture;
+    public float scopeZoom;
+    public AudioClip shotSound;
+    public AudioClip reloadSound;
     protected void OnCreate()
     {
         if (firemodes == null)
@@ -24,7 +26,6 @@ public class RangedWeapon : Weapon
             firemodes[0] = FireMode.FullAuto;
         }
     }
-
 }
 public enum FireMode
 {

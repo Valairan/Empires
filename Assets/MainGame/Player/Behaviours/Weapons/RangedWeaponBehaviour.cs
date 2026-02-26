@@ -1,9 +1,12 @@
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.VFX;
+using UnityEngine.Audio;
 
 public class RangedWeaponBehaviour
     : WeaponBehaviour<RangedWeapon>, IWeaponTriggerable, IWeaponUpdatable
 {
+    
     public RangedWeapon baseitem
     {
         get => (RangedWeapon)base.baseitem;
@@ -11,7 +14,7 @@ public class RangedWeaponBehaviour
     }
     [Header("References")]
     public Transform muzzleStartPoint;
-    public ParticleSystem muzzleFlash;
+    public VisualEffect muzzleFlash;
 
     [Header("FireMode")]
     public FireMode currentFiremode;
@@ -19,8 +22,11 @@ public class RangedWeaponBehaviour
     private bool isHoldingTrigger;
     private int burstShotsRemaining;
     private float lastShotTime;
-
     private float FireInterval => 60f / baseitem.fireRate;
+    public int currentShot = 0;
+
+    [Header("Audio")]
+    [SerializeField] AudioSource audioSource;
 
     public override void OnNetworkSpawn()
     {
@@ -49,6 +55,7 @@ public class RangedWeaponBehaviour
     public void TriggerReleased()
     {
         isHoldingTrigger = false;
+        currentShot = 0;
     }
 
     public bool CanFire()
@@ -87,6 +94,7 @@ public class RangedWeaponBehaviour
 
         lastShotTime = Time.time;
         Attack_ServerRpc(aimPoint);
+        currentShot++;
     }
 
     [ServerRpc]
@@ -94,6 +102,8 @@ public class RangedWeaponBehaviour
     {
         for (int i = 0; i < TypedItem.pelletCount; i++)
         {
+            PlayMuzzleFlash_ClientRpc();
+
             Vector3 dir = (point - muzzleStartPoint.position).normalized;
             dir = ApplySpread(dir, TypedItem.bulletSpread);
 
@@ -106,6 +116,7 @@ public class RangedWeaponBehaviour
                         damagingPlayerID = OwnerClientId,
                         hitpoint = hit.point,
                         hitnormal = hit.normal,
+                        hitforce = baseitem.shellsize,
                         damager = TypedItem
                     };
 
@@ -114,12 +125,12 @@ public class RangedWeaponBehaviour
             }
         }
 
-        //PlayMuzzleFlash_ClientRpc();
     }
 
     private Vector3 ApplySpread(Vector3 direction, float accuracy)
     {
-        float spreadAmount = (1f - accuracy) * 5f;
+
+        float spreadAmount = (1f - accuracy) * Mathf.Clamp(currentShot, 0, 5f);
         direction += new Vector3(
             Random.Range(-spreadAmount, spreadAmount),
             Random.Range(-spreadAmount, spreadAmount),
@@ -132,6 +143,7 @@ public class RangedWeaponBehaviour
     void PlayMuzzleFlash_ClientRpc()
     {
         muzzleFlash.Play();
+        audioSource.Play();
     }
 
     // Optional helper: CanFire for CombatController

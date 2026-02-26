@@ -70,6 +70,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerCCMotor.init();
         playerInventoryController.init();
         playerCombatController.init();
+        playerCombatController.controller = this;
         onWeaponChanged += setCurrentAnimatorWeapon;
         base.OnNetworkDespawn();
     }
@@ -162,6 +163,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         lookTargetTransform.position = currentlyLookingAtPoint;
         //playerCCMotor.Move(finalMove * Time.deltaTime);
         playerAnimationController.updateAnimationParams(MoveInput, Grounded, sidearmAnimation, rifleAnimation, meleeAnimation, Submerged);
+        playerAnimationController.interpolateRigWeights();
 
     }
     public bool sidearmAnimation = false;
@@ -238,7 +240,10 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     {
         if (!IsLocalPlayer) return;
         if (input && !Submerged)
+        {
+            playerCombatController.OnAttackUp();
             playerCCMotor.jump();
+        }
     }
 
 

@@ -11,5 +11,6 @@ public struct DamageContext
     public Weapon damager;
     public Vector3 hitpoint;
     public Vector3 hitnormal;
+    public float hitforce;
     public ulong damagingPlayerID;
 }

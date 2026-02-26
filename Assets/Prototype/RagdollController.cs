@@ -56,7 +56,7 @@ public class RagdollController : MonoBehaviour, IDamageable
 
         Vector3 force = -ctx.hitnormal * 25f; // Increase this if needed
 
-        closest.AddForceAtPosition(force, ctx.hitpoint, ForceMode.Impulse);
+        closest.AddForceAtPosition(force, ctx.hitpoint * ctx.hitforce, ForceMode.Impulse);
     }
 
     Rigidbody GetClosestBody(Vector3 point)

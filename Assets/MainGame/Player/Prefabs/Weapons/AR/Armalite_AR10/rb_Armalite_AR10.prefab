@@ -157,6 +157,7 @@ MonoBehaviour:
   muzzleFlash: {fileID: 0}
   currentFiremode: 0
   firemodeindex: 0
+  currentShot: 0
 --- !u!33 &2160750265928916764
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -247,14 +248,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1581545186
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 1092094972
+  InScenePlacedSourceGlobalObjectIdHash: 1581545186
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
@@ -285,7 +286,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 14
   m_CollisionDetection: 0
 --- !u!1 &8861280356411017524
 GameObject:

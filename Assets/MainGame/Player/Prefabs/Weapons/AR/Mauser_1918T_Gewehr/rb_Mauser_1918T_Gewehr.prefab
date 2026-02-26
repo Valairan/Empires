@@ -79,6 +79,10 @@ GameObject:
   - component: {fileID: 6593328815731029801}
   - component: {fileID: -8259143359370304407}
   - component: {fileID: -978915799800559096}
+  - component: {fileID: 270153780605324667}
+  - component: {fileID: 6951800352843781369}
+  - component: {fileID: 5316905863634809761}
+  - component: {fileID: 6088857910352181736}
   m_Layer: 8
   m_Name: rb_Mauser_1918T_Gewehr
   m_TagString: Untagged
@@ -188,6 +192,7 @@ MonoBehaviour:
   muzzleFlash: {fileID: 0}
   currentFiremode: 0
   firemodeindex: 0
+  currentShot: 0
 --- !u!33 &5395398717627877695
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -264,8 +269,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.68, y: 0.16912013, z: 0.36636257}
-  m_Center: {x: 0.012578368, y: -0.028608091, z: -0.117311984}
+  m_Size: {x: 0.6521683, y: 0.086196505, z: 0.103591084}
+  m_Center: {x: 0.14280155, y: 0, z: 0.009422883}
 --- !u!114 &-8259143359370304407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,14 +283,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2776885246
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 3773838566
+  InScenePlacedSourceGlobalObjectIdHash: 2776885246
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
@@ -318,3 +323,87 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &270153780605324667
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3748555075666476651}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.38707113, y: 0.08, z: 0.1477741}
+  m_Center: {x: 0.65904284, y: 0, z: -0.056851313}
+--- !u!65 &6951800352843781369
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3748555075666476651}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.6428666, y: 0.089814946, z: 0.06405919}
+  m_Center: {x: -0.50598836, y: 0, z: 0.033839736}
+--- !u!65 &5316905863634809761
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3748555075666476651}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.036770582, y: 0.116880864, z: 0.36636263}
+  m_Center: {x: -0.1662701, y: 0, z: -0.117311984}
+--- !u!65 &6088857910352181736
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3748555075666476651}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.06982258, y: 0.16912025, z: 0.36636263}
+  m_Center: {x: 0.43722594, y: -0.02860856, z: -0.117311984}

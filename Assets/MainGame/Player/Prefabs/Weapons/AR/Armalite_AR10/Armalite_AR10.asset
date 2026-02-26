@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
   m_Name: Armalite_AR10
   m_EditorClassIdentifier: Items::RangedWeapon
-  ItemIcon: {fileID: 0}
+  ItemIcon: {fileID: 21300000, guid: 8149467372fb9b94b95e416b6c64c680, type: 3}
   ItemName: Armalite_AR10
   ItemDescription: 'Fires 20 rounds at 550 rounds per minute. '
   stack: 0
@@ -30,18 +30,19 @@ MonoBehaviour:
   isAutomatic: 1
   weaponPrefab_rb: {fileID: 7415949268801490463, guid: ae4be5bf2dc5c424baae678de1327e63, type: 3}
   weaponPrefab_onplayer: {fileID: 1131335323555071650, guid: bf3455601212f3b4f8e4a39fac0604b5, type: 3}
-  position: {x: 0, y: 0, z: 0}
-  rotation: {x: 0, y: 0, z: 0}
+  position: {x: -0.0743, y: 0.1562, z: 0.0203}
+  rotation: {x: 0, y: -90, z: -90}
   scale: {x: 1, y: 1, z: 1}
   storedPosition: {x: 0, y: 0, z: 0}
   storedRotation: {x: 0, y: 0, z: 0}
   storedScale: {x: 1, y: 1, z: 1}
   firemodes: 01000000
+  shellsize: 0
   fireRate: 550
   magSize: 20
   pelletCount: 1
   recoil: 1
   scopeTexture: {fileID: 0}
-  scopeZoom: 0
+  scopeZoom: 1
   bulletSpread: 1.02
   recoilPattern: {x: 0, y: 0}

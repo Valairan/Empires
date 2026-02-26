@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
   m_Name: HK33
   m_EditorClassIdentifier: Items::RangedWeapon
-  ItemIcon: {fileID: 0}
+  ItemIcon: {fileID: 21300000, guid: 7f1f43b2e945fa044b6480eede1dc008, type: 3}
   ItemName: HK33
   ItemDescription: 'Fires 30 rounds at 750 rounds per minute. '
   stack: 0
@@ -30,18 +30,21 @@ MonoBehaviour:
   isAutomatic: 1
   weaponPrefab_rb: {fileID: 7855947176950401471, guid: 8c6007076b8834541adeae09b695083c, type: 3}
   weaponPrefab_onplayer: {fileID: 1008726109578890462, guid: e3796d8f2f033f647a9b529495d3e26a, type: 3}
-  position: {x: 0, y: 0, z: 0}
-  rotation: {x: 0, y: 0, z: 0}
+  position: {x: -0.085, y: 0.1893, z: 0.0265}
+  rotation: {x: 0, y: -90, z: -90}
   scale: {x: 1, y: 1, z: 1}
   storedPosition: {x: 0, y: 0, z: 0}
   storedRotation: {x: 0, y: 0, z: 0}
   storedScale: {x: 1, y: 1, z: 1}
   firemodes: 01000000
+  shellsize: 1
   fireRate: 750
   magSize: 30
   pelletCount: 1
   recoil: 1
-  scopeTexture: {fileID: 0}
-  scopeZoom: 0
   bulletSpread: 1.02
   recoilPattern: {x: 0, y: 0}
+  scopeTexture: {fileID: 0}
+  scopeZoom: 1
+  shotSound: {fileID: 8300000, guid: 3424e9f7e902c2240b3b0d5c82bba3ab, type: 3}
+  reloadSound: {fileID: 0}

@@ -33,7 +33,7 @@ public class GameManager : NetworkBehaviour
         if (!IsServer) return;
 
         NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value = UnityEngine.Random.Range(0, 2000);
-        GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
+        //GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
 
         int count = 0;
         foreach (ulong client in NetworkManager.ConnectedClientsIds)

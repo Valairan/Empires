@@ -6,7 +6,7 @@ public class MeleeEventHandler : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        controller = animator.GetComponent<CombatController>();
+        controller = animator.transform.parent.GetComponent<CombatController>();
         animator.SetBool("Attacking", true);
 
     }

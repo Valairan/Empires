@@ -172,7 +172,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 923021729009554532}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3c430f382484144e925c097c2d33cfe, type: 3}
   m_Name: 
@@ -568,6 +568,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   cameraTransform: {fileID: 0}
   currentWeapon: {fileID: 0}
+  controller: {fileID: 0}
   lookingAtPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &2933855248979656309
 MonoBehaviour:
@@ -752,12 +753,20 @@ MonoBehaviour:
   leftHandGrabTransform: {fileID: 0}
   leftHandHintTransform: {fileID: 0}
   parentRig: {fileID: 5362183546413300734}
+  parentRigWeight: 0
   meleeRig: {fileID: 5720058874231683317}
+  meleeRigWeight: 0
   rifleRig: {fileID: 8431372455799742376}
+  rifleRigWeight: 0
   leftHandConstraint: {fileID: 1017443267429866546}
+  leftHandConstraintWeight: 0
   leftHandRig: {fileID: 4473905830225279887}
+  leftHandRigWeight: 0
   pistolRig: {fileID: 8073488623601671917}
+  pistolRigWeight: 0
   throwableRig: {fileID: 8057647416888942590}
+  throwableRigWeight: 0
+  lerpFactor: 20
 --- !u!114 &4720122550096299429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1266,7 +1275,7 @@ Transform:
   m_GameObject: {fileID: 6392717263452255731}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: 1.5, z: 0.2}
+  m_LocalPosition: {x: 0.6, y: 1.5, z: 0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

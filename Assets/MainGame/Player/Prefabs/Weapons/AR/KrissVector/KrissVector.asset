@@ -33,8 +33,8 @@ MonoBehaviour:
   position: {x: -0.0743, y: 0.1562, z: 0.0203}
   rotation: {x: 0, y: -90, z: -90}
   scale: {x: 1, y: 1, z: 1}
-  storedPosition: {x: 0, y: 0, z: 0}
-  storedRotation: {x: 0, y: 0, z: 0}
+  storedPosition: {x: -0.128, y: 0.014, z: 0.063}
+  storedRotation: {x: 292.0066, y: 322.63327, z: 301.35464}
   storedScale: {x: 1, y: 1, z: 1}
   firemodes: 01000000
   shellsize: 1
@@ -42,7 +42,9 @@ MonoBehaviour:
   magSize: 25
   pelletCount: 1
   recoil: 1
-  scopeTexture: {fileID: 0}
-  scopeZoom: 1
   bulletSpread: 1
   recoilPattern: {x: 0, y: 0}
+  scopeTexture: {fileID: 0}
+  scopeZoom: 1
+  shotSound: {fileID: 0}
+  reloadSound: {fileID: 0}

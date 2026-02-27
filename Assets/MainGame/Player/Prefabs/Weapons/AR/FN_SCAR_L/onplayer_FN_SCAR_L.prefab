@@ -175,12 +175,12 @@ MonoBehaviour:
   state: 0
   ik_target: {fileID: 2386018764090114456}
   ik_hint: {fileID: 8137807404796251635}
-  muzzleStartPoint: {fileID: 8137807404796251635}
+  muzzleStartPoint: {fileID: 3417313465393917814}
   muzzleFlash: {fileID: 0}
   currentFiremode: 0
   firemodeindex: 0
   currentShot: 0
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 1152258194205044914}
 --- !u!33 &1672026691082730824
 MeshFilter:
   m_ObjectHideFlags: 0

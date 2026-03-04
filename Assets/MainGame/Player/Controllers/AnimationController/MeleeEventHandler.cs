@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 
 public class MeleeEventHandler : StateMachineBehaviour
 {
     CombatController controller;
+    public float startAttackTime;
+    public float endAttackTime;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -13,9 +16,9 @@ public class MeleeEventHandler : StateMachineBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (stateInfo.normalizedTime > 0.35f)
+        if (stateInfo.normalizedTime > startAttackTime)
             controller.OnAttackAnimationStarted();
-        if (stateInfo.normalizedTime > 0.70f)
+        if (stateInfo.normalizedTime > endAttackTime)
             controller.OnAttackAnimationFinished();
 
     }

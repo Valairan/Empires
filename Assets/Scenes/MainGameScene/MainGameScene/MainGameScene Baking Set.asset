@@ -118,7 +118,7 @@ MonoBehaviour:
   skyOcclusionAverageAlbedo: 0.6
   skyOcclusionBackFaceCulling: 0
   skyOcclusionShadingDirection: 0
-  useRenderingLayers: 1
+  useRenderingLayers: 0
   renderingLayerMasks: []
   m_SceneBakeData:
     m_Keys:

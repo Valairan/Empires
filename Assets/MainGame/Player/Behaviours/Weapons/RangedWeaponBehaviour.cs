@@ -6,7 +6,7 @@ using UnityEngine.Audio;
 public class RangedWeaponBehaviour
     : WeaponBehaviour<RangedWeapon>, IWeaponTriggerable, IWeaponUpdatable
 {
-    
+
     public RangedWeapon baseitem
     {
         get => (RangedWeapon)base.baseitem;
@@ -95,6 +95,7 @@ public class RangedWeaponBehaviour
         lastShotTime = Time.time;
         Attack_ServerRpc(aimPoint);
         currentShot++;
+
     }
 
     [ServerRpc]

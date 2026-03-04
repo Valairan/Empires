@@ -3,6 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 public class GameManager : NetworkBehaviour
 {
+    [SerializeField] bool generateTerrain;
     [SerializeField] Transform[] playerSpawnPositions;
     [SerializeField] Transform playerCanvas;
     [SerializeField] WorldGenerator worldGenerator;
@@ -33,7 +34,7 @@ public class GameManager : NetworkBehaviour
         if (!IsServer) return;
 
         NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value = UnityEngine.Random.Range(0, 2000);
-        //GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
+        if (generateTerrain) GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
 
         int count = 0;
         foreach (ulong client in NetworkManager.ConnectedClientsIds)

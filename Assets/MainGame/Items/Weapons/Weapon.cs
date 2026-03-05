@@ -13,7 +13,6 @@ public class Weapon : Item
     public float legDamage;
     // Flags
     public bool hasAreaEffect = false;
-    public bool isAutomatic = true;
     public GameObject weaponPrefab_rb;
     public GameObject weaponPrefab_onplayer;
     [Header("Parented Position")]

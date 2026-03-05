@@ -409,7 +409,7 @@ GameObject:
   m_Layer: 3
   m_Name: GroundCheck
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -496,7 +496,7 @@ MonoBehaviour:
   GlobalObjectIdHash: 618126814
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
-  Ownership: 7
+  Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -765,7 +765,7 @@ MonoBehaviour:
   Capsule: {fileID: -6025938488391799064}
   CapsuleRadius: 0.15
   CapsuleHeight: 1.8
-  CapsuleYOffset: 0.95
+  CapsuleYOffset: 0.925
   CapsulePhysicsMaterial: {fileID: 0}
   GroundDetectionExtraDistance: 0.2
   MaxStableSlopeAngle: 60
@@ -814,7 +814,7 @@ CapsuleCollider:
   m_Radius: 0.15
   m_Height: 1.8
   m_Direction: 1
-  m_Center: {x: 0, y: 0.95, z: 0}
+  m_Center: {x: 0, y: 0.925, z: 0}
 --- !u!114 &6703637815125287513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -847,7 +847,7 @@ MonoBehaviour:
   inWorldStorageForDiscarding: {fileID: 9075446933818923442}
   handParent: {fileID: 1095795210186910342}
   meleeStorageParent: {fileID: 556699573524758202}
-  primaryStorageParent: {fileID: 678996228152389030}
+  primaryStorageParent: {fileID: 4247362120570137797}
   sideArmStorageParent: {fileID: 3290583839393080141}
   storage: []
 --- !u!114 &7014954875726692685
@@ -1701,6 +1701,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -203856693384778745, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 556699573524758202}
+    - targetCorrespondingSourceObject: {fileID: -3542885339558904099, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4247362120570137797}
     - targetCorrespondingSourceObject: {fileID: -6370085079684087283, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 678996228152389030}
@@ -1733,6 +1736,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -3480699329000672020, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
   m_PrefabInstance: {fileID: 5021628752541941873}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &821146290510397100 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -3542885339558904099, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
+  m_PrefabInstance: {fileID: 5021628752541941873}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4247362120570137797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 821146290510397100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e6132ed1ce53ab4181a0606f3a619c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkParent
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!4 &1038786766126286606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5465940246521907071, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}

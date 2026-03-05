@@ -28,13 +28,13 @@ MonoBehaviour:
   legDamage: 15
   hasAreaEffect: 0
   isAutomatic: 1
-  weaponPrefab_rb: {fileID: 3025788877338979636, guid: 780625a9861be8a43b987b33c2502bf3, type: 3}
-  weaponPrefab_onplayer: {fileID: 4035233648418874724, guid: 824141d35ac5ab14f91f4b15c45b0300, type: 3}
+  weaponPrefab_rb: {fileID: 705250156812247684, guid: fba0aed4823402440b6c8317f984011c, type: 3}
+  weaponPrefab_onplayer: {fileID: 702981979328864868, guid: d4c46a6f945e6b249864b492959c44d1, type: 3}
   position: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0}
   scale: {x: 1, y: 1, z: 1}
-  storedPosition: {x: 0.0941, y: 0.0716, z: 0.0561}
-  storedRotation: {x: 13.53561, y: 347.3494, z: 89.11571}
+  storedPosition: {x: 0.1115, y: 0.0001, z: 0.0005}
+  storedRotation: {x: 0, y: 0, z: 90}
   storedScale: {x: 1, y: 1, z: 1}
   firemodes: 0000000001000000
   shellsize: 0

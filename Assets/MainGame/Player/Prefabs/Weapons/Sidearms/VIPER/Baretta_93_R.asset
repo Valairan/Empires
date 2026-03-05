@@ -33,8 +33,8 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0}
   scale: {x: 1, y: 1, z: 1}
-  storedPosition: {x: 0.0941, y: 0.0716, z: 0.0561}
-  storedRotation: {x: 13.53561, y: 347.3494, z: 89.11571}
+  storedPosition: {x: 0.1115, y: 0.0001, z: 0.0005}
+  storedRotation: {x: 0, y: 0, z: 90}
   storedScale: {x: 1, y: 1, z: 1}
   firemodes: 00000000
   shellsize: 0

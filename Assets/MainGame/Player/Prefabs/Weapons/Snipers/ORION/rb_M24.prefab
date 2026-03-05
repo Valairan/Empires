@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -4301393399378321111}
   - component: {fileID: -8748482911706883698}
   - component: {fileID: -6583388586919306265}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: rb_M24
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
   GlobalObjectIdHash: 3782469455
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 3575738743
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0

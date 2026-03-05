@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8040615383507231723}
-  - component: {fileID: -8927484906788304277}
+  - component: {fileID: 2555950897103200619}
   - component: {fileID: 1189828583418735652}
   - component: {fileID: 3856935891982539170}
   - component: {fileID: 5435820855665772929}
@@ -72,7 +72,7 @@ Transform:
   - {fileID: 844785409386168281}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-8927484906788304277
+--- !u!114 &2555950897103200619
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -84,8 +84,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2560870060
-  InScenePlacedSourceGlobalObjectIdHash: 3575738743
+  GlobalObjectIdHash: 2612960841
+  InScenePlacedSourceGlobalObjectIdHash: 3333409030
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
@@ -286,7 +286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 0
+  UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
 --- !u!1 &8124379443389093561

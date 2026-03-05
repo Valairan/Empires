@@ -10,6 +10,5 @@ public class MeleeWeapon : Weapon
     void Awake()
     {
         WeaponType = WeaponType.melee;
-        isAutomatic = false;        // Melee attacks are manual
     }
 }

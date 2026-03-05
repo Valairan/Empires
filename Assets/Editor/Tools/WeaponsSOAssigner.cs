@@ -151,7 +151,6 @@ public class WeaponsSOAssigner : EditorWindow
             weaponSO.bodyDamage = weapon.bodyDamage;
             weaponSO.legDamage = weapon.legDamage;
             weaponSO.hasAreaEffect = weapon.hasAreaEffect;
-            weaponSO.isAutomatic = weapon.isAutomatic;
             weaponSO.position = weapon.position;
             weaponSO.rotation = weapon.rotation;
             weaponSO.scale = weapon.scale;

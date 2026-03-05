@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7340405947282878164}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ik_hint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1077067570785046395}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mossberg_500_SWAT_muzzleStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -79,7 +79,7 @@ GameObject:
   - component: {fileID: -4085601849166218929}
   - component: {fileID: -7835350609901418039}
   - component: {fileID: -6021102863929071029}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: rb_Mossberg_500_SWAT
   m_TagString: Untagged
   m_Icon: {fileID: 0}

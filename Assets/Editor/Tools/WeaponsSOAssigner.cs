@@ -90,7 +90,10 @@ public class WeaponsSOAssigner : EditorWindow
     new WeaponData { name="2MM_Kalibri", weaponType=WeaponType.sidearm, treeDamage=0f, oreDamage=0f, headDamage=8f, bodyDamage=5f, legDamage=3f, isThrowable=false, hasAreaEffect=false, fireRate=150, magSize=1, pelletCount=1, weaponPrefab_rb="2mm_RB", weaponPrefab_onplayer="2mm_OnPlayer" },
     new WeaponData { name="Mikor_MGL", weaponType=WeaponType.rifle, treeDamage=0f, oreDamage=0f, headDamage=140f, bodyDamage=120f, legDamage=80f, isThrowable=false, hasAreaEffect=true, fireRate=60, magSize=6, pelletCount=1, weaponPrefab_rb="MGL_RB", weaponPrefab_onplayer="MGL_OnPlayer" },
     new WeaponData { name="Tarran_Tactical", weaponType=WeaponType.melee, treeDamage=15f, oreDamage=6f, headDamage=50f, bodyDamage=42f, legDamage=28f, isThrowable=false, hasAreaEffect=false, fireRate=1, magSize=0, pelletCount=1, weaponPrefab_rb="Tarran_RB", weaponPrefab_onplayer="Tarran_OnPlayer" },
-}; // Your WeaponData list
+    new WeaponData {name="URSA",weaponType=WeaponType.rifle,treeDamage=0f,oreDamage=0f,headDamage=120f,bodyDamage=95f,legDamage=70f,isThrowable=false,hasAreaEffect=false,fireRate=45, magSize=5,pelletCount=1,weaponPrefab_rb="M200_RB",weaponPrefab_onplayer="M200_OnPlayer"},
+    new WeaponData {name="M24",weaponType=WeaponType.rifle,treeDamage=0f,oreDamage=0f,headDamage=110f,bodyDamage=85f,legDamage=60f,isThrowable=false,hasAreaEffect=false,fireRate=50,magSize=5,pelletCount=1,weaponPrefab_rb="M24_RB",weaponPrefab_onplayer="M24_OnPlayer"
+}
+};
 
     public string weaponsRootPath = "Assets/MainGame/Player/Prefabs/Weapons"; // Root folder containing all weapon folders
     public string weaponsIconPath = "Assets/MainGame/Player/Prefabs/Weapons/WeaponIcons"; // Root folder containing all weapon icons

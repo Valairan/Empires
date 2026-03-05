@@ -60,7 +60,7 @@ public class UiController : MonoBehaviour
         if (item != null)
         {
             currentlyLookingAtParent.SetActive(true);
-            currentlyLookingAtLabel.text = item.name;
+            currentlyLookingAtLabel.text = item.ItemName;
             currentlyLookingAtDescription.text = item.ItemDescription;
             InteractionPrompt.rectTransform.position = Camera.main.WorldToScreenPoint(itemPosition);
         }

@@ -26,20 +26,12 @@ MonoBehaviour:
   headDamage: 40
   bodyDamage: 30
   legDamage: 10
-  fireRate: 1
-  magSize: 1
-  pelletCount: 1
-  accuracy: 1
-  recoil: 1
-  range: 50
-  isThrowable: 0
   hasAreaEffect: 0
   isAutomatic: 0
-  isStackable: 0
   weaponPrefab_rb: {fileID: 6751512441510544877, guid: 163a8d21a6102b64e8ed3cdba1f9e62c, type: 3}
   weaponPrefab_onplayer: {fileID: 6751512441510544877, guid: a52169ed7e61bf642b6f9f6f2303d5de, type: 3}
   position: {x: -0.016, y: 0.0586, z: 0.0107}
-  rotation: {x: 0, y: 0, z: 0}
+  rotation: {x: 180, y: 0, z: 0}
   scale: {x: 1, y: 1, z: 1}
   storedPosition: {x: 0, y: 0, z: 0}
   storedRotation: {x: 0, y: 0, z: 0}

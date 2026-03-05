@@ -4,6 +4,7 @@ using Unity.Netcode;
 public class CombatController : MonoBehaviour
 {
     [Header("References")]
+    public float maximumdistance;
     public Transform cameraTransform;
     public WeaponBehaviour currentWeapon;
     public PlayerController controller;
@@ -26,7 +27,7 @@ public class CombatController : MonoBehaviour
         }
         else
         {
-            lookingAtPoint = cameraTransform.position + cameraTransform.forward * 500f;
+            lookingAtPoint = cameraTransform.position + (cameraTransform.forward * maximumdistance);
         }
 
         return lookingAtPoint;

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 761095484246212180}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ik_hint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4423182270173385136}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Maverick_88_muzzleStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -79,7 +79,7 @@ GameObject:
   - component: {fileID: 4446063817130497527}
   - component: {fileID: -3447374923808224621}
   - component: {fileID: -5295612309074497472}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: rb_Maverick_88
   m_TagString: Untagged
   m_Icon: {fileID: 0}

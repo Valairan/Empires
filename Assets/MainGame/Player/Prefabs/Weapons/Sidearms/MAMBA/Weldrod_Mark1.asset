@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: Weldrod_Mark1
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 21300000, guid: f95a8da3606fddb4f9ac0632b60ab54d, type: 3}
+  ItemName: MAMBA
+  ItemDescription: 'Fires 6 rounds at 120 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 1
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 35
+  bodyDamage: 25
+  legDamage: 15
+  hasAreaEffect: 0
+  isAutomatic: 1
+  weaponPrefab_rb: {fileID: 3025788877338979636, guid: 780625a9861be8a43b987b33c2502bf3, type: 3}
+  weaponPrefab_onplayer: {fileID: 4035233648418874724, guid: 824141d35ac5ab14f91f4b15c45b0300, type: 3}
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  storedPosition: {x: 0.0941, y: 0.0716, z: 0.0561}
+  storedRotation: {x: 13.53561, y: 347.3494, z: 89.11571}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes: 00000000
+  shellsize: 0
+  fireRate: 120
+  magSize: 6
+  pelletCount: 1
+  recoil: 1
+  bulletSpread: 1.02
+  recoilPattern: {x: 0, y: 0}
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0
+  shotSound: {fileID: 0}
+  reloadSound: {fileID: 0}

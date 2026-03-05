@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8857756625508694622}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Remington870_Mesh_muzzleStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8139375299009242215}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ik_hint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,7 +80,7 @@ GameObject:
   - component: {fileID: 8293106471227190808}
   - component: {fileID: 7890650604745557656}
   - component: {fileID: -6114975671878935347}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: rb_Remington870_Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}

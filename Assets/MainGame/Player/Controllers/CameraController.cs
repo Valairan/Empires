@@ -11,8 +11,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float verticalSensitivity = 10f;
     [SerializeField] private float rotationInterpolationFactor = 10000f;
     [SerializeField] private float followInterpolationFactor = 10000f;
-    [SerializeField] private float minimumAngle = -90f;
-    [SerializeField] private float maximumAngle = 90f;
+    [SerializeField] private float minimumAngle = -80f;
+    [SerializeField] private float maximumAngle = 80f;
     [SerializeField] private float defaultAngle = 20f;
     [SerializeField] private LayerMask cameraBlockers;
     [SerializeField] public Transform cameraFollowTarget;

@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamageable
 {
@@ -166,6 +167,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerAnimationController.interpolateRigWeights();
 
     }
+
     public bool sidearmAnimation = false;
     public bool rifleAnimation = false;
     public bool meleeAnimation = false;

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2398322695678951790}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ik_target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24,13 +24,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4206796775053146592}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.29926857, y: 0.6852458, z: -0.2613326, w: -0.6103948}
+  m_LocalPosition: {x: -0.0297, y: 0.316, z: 0.1079}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4533849616363444312}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.412, y: 263.20898, z: 46.819}
 --- !u!1 &5923790415326706970
 GameObject:
   m_ObjectHideFlags: 0
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 1591495613639888545}
   - component: {fileID: 9067715679067359268}
   - component: {fileID: 2358576211540026913}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: onplayer_Benelli_M2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +185,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 994287855994151855}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ik_hint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -201,7 +201,7 @@ Transform:
   m_GameObject: {fileID: 6502965950467251597}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.113, y: 0.2958, z: -0.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -216,7 +216,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2628265952738557838}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Benelli_M2_muzzleStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -289,6 +289,10 @@ PrefabInstance:
     - target: {fileID: 3748671886457656185, guid: e68c32679a1a67a41a8d90fffd5b72d7, type: 3}
       propertyPath: m_Name
       value: MuzzleFlash_shotgun_vfx
+      objectReference: {fileID: 0}
+    - target: {fileID: 3748671886457656185, guid: e68c32679a1a67a41a8d90fffd5b72d7, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

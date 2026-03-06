@@ -12,6 +12,7 @@ public class Weapon : Item
     public float bodyDamage;
     public float legDamage;
     // Flags
+    public bool canADS = false;
     public bool hasAreaEffect = false;
     public GameObject weaponPrefab_rb;
     public GameObject weaponPrefab_onplayer;

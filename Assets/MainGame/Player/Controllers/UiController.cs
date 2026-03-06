@@ -24,7 +24,9 @@ public class UiController : MonoBehaviour
     [SerializeField] GameObject BaseInGame;
     [SerializeField] GameObject ScopedIn;
     [SerializeField] Image ScopedInTexture;
-    [SerializeField] Image currentlyEquipped;
+    [SerializeField] Image MeleeWeaponIcon;
+    [SerializeField] Image PrimaryWeaponIcon;
+    [SerializeField] Image SidearmWeaponIcon;
     [SerializeField] GameObject ammoInTotal;
     [SerializeField] GameObject ammoInGun;
     [Header("Pause Display")]
@@ -121,12 +123,24 @@ public class UiController : MonoBehaviour
     {
         switch (weapon.WeaponType)
         {
-            case WeaponType.melee: ammoInGun.SetActive(false); ammoInTotal.SetActive(false); break;
-            case WeaponType.rifle: case WeaponType.sidearm: ammoInGun.SetActive(true); ammoInTotal.SetActive(true); ; break;
+            case WeaponType.melee:
+                {
+                    MeleeWeaponIcon.sprite = weapon.ItemIcon;
+                    ammoInGun.SetActive(false); ammoInTotal.SetActive(false); break;
+                }
+            case WeaponType.rifle:
+                {
+                    PrimaryWeaponIcon.sprite = weapon.ItemIcon;
+                    ScopedInTexture.sprite = ((RangedWeapon)weapon).scopeTexture;
+                    ammoInGun.SetActive(true); ammoInTotal.SetActive(true); break;
+                }
+            case WeaponType.sidearm:
+                {
+                    SidearmWeaponIcon.sprite = weapon.ItemIcon;
+                    ammoInGun.SetActive(true); ammoInTotal.SetActive(true); break;
+                }
         }
-        currentlyEquipped.sprite = weapon.ItemIcon;
-        if (weapon.WeaponType != WeaponType.melee)
-            ScopedInTexture.sprite = ((RangedWeapon)weapon).scopeTexture;
+
     }
     public void firerateAndMagazineChanged()
     {

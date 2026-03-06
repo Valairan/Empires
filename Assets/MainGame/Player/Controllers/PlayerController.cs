@@ -105,7 +105,6 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         UiController.Singleton.currentPlayerBuildHandler = playerBuildHandler;
         onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
         onWeaponChanged += UiController.Singleton.weaponChanged;
-        playerInputHandler.Aim += UiController.Singleton.onAim;
         UiController.Singleton.init();
 
     }
@@ -205,6 +204,8 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     void OnAim(bool pressed)
     {
         if (!IsLocalPlayer) return;
+        if (playerCombatController.currentWeapon == null) return;
+        if (!playerCombatController.currentWeapon.baseitem.canADS) return;
         if (playerInventoryController.current.WeaponType == WeaponType.melee || playerInventoryController.current.WeaponType == WeaponType.throwable) return;
         if (pressed)
         {
@@ -213,6 +214,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
             {
                 mesh.enabled = false;
             }
+            UiController.Singleton.onAim(pressed);
             //playerInventoryController.currentGO.transform = camera
         }
         else
@@ -222,6 +224,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
             {
                 mesh.enabled = true;
             }
+            UiController.Singleton.onAim(pressed);
         }
         aiming = pressed;
 

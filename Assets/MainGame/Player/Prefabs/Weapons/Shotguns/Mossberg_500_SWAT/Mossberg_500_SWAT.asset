@@ -26,8 +26,8 @@ MonoBehaviour:
   headDamage: 60
   bodyDamage: 45
   legDamage: 25
+  canADS: 0
   hasAreaEffect: 1
-  isAutomatic: 1
   weaponPrefab_rb: {fileID: 5667669601905457420, guid: 0dbd67300915e514d9def0fc5d0dfb9c, type: 3}
   weaponPrefab_onplayer: {fileID: 4159927586690759151, guid: 536fbb01b3b3abd409b67800c396cafd, type: 3}
   position: {x: -0.0194, y: 0.0611, z: 0.0284}
@@ -36,7 +36,7 @@ MonoBehaviour:
   storedPosition: {x: -0.1083, y: 0.0042, z: -0.1115}
   storedRotation: {x: 347.04675, y: 108.236015, z: 261.61993}
   storedScale: {x: 1, y: 1, z: 1}
-  firemodes: 
+  firemodes: 00000000
   shellsize: 0
   fireRate: 80
   magSize: 8

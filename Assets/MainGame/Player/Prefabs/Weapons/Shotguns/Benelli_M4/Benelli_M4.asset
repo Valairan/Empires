@@ -20,7 +20,7 @@ MonoBehaviour:
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  WeaponType: 2
+  WeaponType: 0
   treeDamage: 0
   oreDamage: 0
   headDamage: 65

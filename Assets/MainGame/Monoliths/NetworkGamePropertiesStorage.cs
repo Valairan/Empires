@@ -35,7 +35,7 @@ public class NetworkGamePropertiesStorage : NetworkBehaviour
         tellServerSceneLoadHasCompleted_ServerRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void tellServerSceneLoadHasCompleted_ServerRpc()
     {
         GameManager.Singleton.sceneLoadComplete.Invoke();

@@ -183,7 +183,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Animation_Cutoff: 100
+    - Animation_Cutoff: 20
     - Distance_Fade_End: 40
     - Distance_Fade_Start: 30
     - Vector1_593c5cea6c4a42e993ed03ced4685732: 0.6
@@ -192,9 +192,9 @@ Material:
     - Vector1_a6983181c8dc4691ba6a28a34c4223a6: 1
     - Wind_Blast: 0.05
     - Wind_Intensity: 0.1
-    - Wind_Ripples: 0.05
+    - Wind_Ripples: 0.1
     - Wind_Speed: 5
-    - Wind_Turbulence: 0
+    - Wind_Turbulence: 1
     - Wind_Wavelength: 10
     - Wind_Yaw: 180
     - _AORemapMax: 1
@@ -326,7 +326,7 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - Fade_Color: {r: 0.3529412, g: 0.53333336, b: 0.16470589, a: 1}
+    - Fade_Color: {r: 0.35294104, g: 0.5294118, b: 0.16470572, a: 1}
     - _BaseColor: {r: 0.6776141, g: 1, b: 0, a: 1}
     - _Color: {r: 0.6776141, g: 1, b: 0, a: 1}
     - _DiffusionProfileAsset: {r: -6.6581504e+12, g: -0.00000016772259, b: 59.747776, a: -3.1901394e-19}

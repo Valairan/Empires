@@ -493,7 +493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 618126814
+  GlobalObjectIdHash: 1520680668
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -828,21 +828,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   ShowTopMostFoldoutHeaderGroup: 1
-  current: {fileID: 0}
-  primary: {fileID: 0}
-  sidearm: {fileID: 0}
-  melee: {fileID: 0}
+  weaponStorage: []
+  currentWeaponIndex: -1
   coins: 0
   timber: 0
   iron: 0
   stone: 0
-  inworldPrimary_prefab: {fileID: 0}
-  inworldSidearm_prefab: {fileID: 0}
-  inworldMelee_prefab: {fileID: 0}
-  currentGO: {fileID: 0}
-  primaryGO: {fileID: 0}
-  sidearamGO: {fileID: 0}
-  meleeGO: {fileID: 0}
   networkObjectRoot: {fileID: 7014954875726692685}
   inWorldStorageForDiscarding: {fileID: 9075446933818923442}
   handParent: {fileID: 1095795210186910342}

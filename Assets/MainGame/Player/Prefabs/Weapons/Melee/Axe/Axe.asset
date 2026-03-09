@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05f416e9ba242a048aaf8af342f46ff9, type: 3}
   m_Name: Axe
   m_EditorClassIdentifier: Items::MeleeWeapon
-  ItemIcon: {fileID: 21300000, guid: 93ee68e27290b55409ff23a31c30ddd5, type: 3}
+  ItemIcon: {fileID: 21300000, guid: 2df22b9f19cb75049b36a5a3542289b0, type: 3}
   ItemName: Axe
   ItemDescription: 
   stack: 0
@@ -26,8 +26,8 @@ MonoBehaviour:
   headDamage: 40
   bodyDamage: 30
   legDamage: 10
+  canADS: 0
   hasAreaEffect: 0
-  isAutomatic: 0
   weaponPrefab_rb: {fileID: 1481613028642245804, guid: 3f1c3ce63f4f24f46ad98ef60d5abf09, type: 3}
   weaponPrefab_onplayer: {fileID: 4142902528102744861, guid: b8d9d69a144955e409bb7e34c75c9660, type: 3}
   position: {x: -0.0307, y: 0.0579, z: 0.0189}

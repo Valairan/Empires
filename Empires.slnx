@@ -25,6 +25,7 @@
   <Project Path="Unity.VisualScripting.Flow.Editor.csproj" />
   <Project Path="Unity.Animation.Rigging.csproj" />
   <Project Path="Unity.Netcode.Runtime.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.VisualStudio.Editor.csproj" />
   <Project Path="Unity.Services.Authentication.csproj" />
   <Project Path="Unity.InputSystem.csproj" />
@@ -58,7 +59,6 @@
   <Project Path="Unity.Rider.Editor.csproj" />
   <Project Path="Unity.VisualScripting.State.csproj" />
   <Project Path="Unity.RenderPipelines.HighDefinition.Editor.Tests.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.Performance.Profile-Analyzer.Editor.csproj" />
   <Project Path="UnityEditor.UI.csproj" />
   <Project Path="Unity.Netcode.Editor.csproj" />

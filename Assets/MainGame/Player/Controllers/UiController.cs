@@ -24,11 +24,12 @@ public class UiController : MonoBehaviour
     [SerializeField] GameObject BaseInGame;
     [SerializeField] GameObject ScopedIn;
     [SerializeField] Image ScopedInTexture;
-    [SerializeField] Image MeleeWeaponIcon;
-    [SerializeField] Image PrimaryWeaponIcon;
-    [SerializeField] Image SidearmWeaponIcon;
+    [SerializeField] Image[] InventoryIcons;
+    [SerializeField] TMP_Text[] InventoryNames;
     [SerializeField] GameObject ammoInTotal;
     [SerializeField] GameObject ammoInGun;
+    [Header("Inventory Display")]
+    [SerializeField] GameObject Inventory;
     [Header("Pause Display")]
     [SerializeField] GameObject PauseMenu;
 
@@ -85,7 +86,6 @@ public class UiController : MonoBehaviour
     }
     public void displayInteractIcon(bool display, Vector3 worldPosition)
     {
-
         InteractionPrompt.gameObject.SetActive(display);
         InteractionPrompt.rectTransform.position = Camera.main.WorldToScreenPoint(worldPosition);
     }
@@ -95,12 +95,18 @@ public class UiController : MonoBehaviour
         buildableName.text = item.name;
         buildableDescription.text = item.ItemDescription;
     }
+    public void toggleInventory()
+    {
+        toggleInGameUI();
+        Inventory.SetActive(!Inventory.activeSelf);
+    }
     public void toggleInGameUI()
     {
-        InGame.SetActive(!buildMenu.activeSelf);
+        InGame.SetActive(!InGame.activeSelf);
     }
     public void toggleBuildMenu()
     {
+        toggleInGameUI();
         buildMenu.SetActive(!buildMenu.activeSelf);
     }
     public void setCurrentBuildable(Machine machine)
@@ -112,6 +118,7 @@ public class UiController : MonoBehaviour
     public void purchaseWeapon(Weapon weapon)
     {
         //weapon.OnBuy(NetworkManager.Singleton.LocalClientId);
+        toggleInGameUI();
         toggleWeaponSelector();
     }
 
@@ -119,27 +126,55 @@ public class UiController : MonoBehaviour
     {
 
     }
+
+    public void updateInventoryDisplay()
+    {
+        bool hasRifle = false;
+        bool hasSidearm = false;
+        bool hasMelee = false;
+
+        foreach (var slot in currentPlayerInventoryHandler.weaponStorage)
+        {
+            var weapon = slot.weapon;
+
+            switch (weapon.WeaponType)
+            {
+                case WeaponType.rifle:
+                    InventoryIcons[0].sprite = weapon.ItemIcon;
+                    InventoryNames[0].text = weapon.ItemName;
+                    InventoryIcons[0].gameObject.SetActive(true);
+                    hasRifle = true;
+                    break;
+
+                case WeaponType.sidearm:
+                    InventoryIcons[1].sprite = weapon.ItemIcon;
+                    InventoryNames[1].text = weapon.ItemName;
+                    InventoryIcons[1].gameObject.SetActive(true);
+                    hasSidearm = true;
+                    break;
+
+                case WeaponType.melee:
+                    InventoryIcons[2].sprite = weapon.ItemIcon;
+                    InventoryNames[2].text = weapon.ItemName;
+                    InventoryIcons[2].gameObject.SetActive(true);
+                    hasMelee = true;
+                    break;
+            }
+        }
+
+        if (!hasRifle)
+            InventoryIcons[0].gameObject.SetActive(false);
+
+        if (!hasSidearm)
+            InventoryIcons[1].gameObject.SetActive(false);
+
+        if (!hasMelee)
+            InventoryIcons[2].gameObject.SetActive(false);
+    }
+
+
     public void weaponChanged(Weapon weapon)
     {
-        switch (weapon.WeaponType)
-        {
-            case WeaponType.melee:
-                {
-                    MeleeWeaponIcon.sprite = weapon.ItemIcon;
-                    ammoInGun.SetActive(false); ammoInTotal.SetActive(false); break;
-                }
-            case WeaponType.rifle:
-                {
-                    PrimaryWeaponIcon.sprite = weapon.ItemIcon;
-                    ScopedInTexture.sprite = ((RangedWeapon)weapon).scopeTexture;
-                    ammoInGun.SetActive(true); ammoInTotal.SetActive(true); break;
-                }
-            case WeaponType.sidearm:
-                {
-                    SidearmWeaponIcon.sprite = weapon.ItemIcon;
-                    ammoInGun.SetActive(true); ammoInTotal.SetActive(true); break;
-                }
-        }
 
     }
     public void firerateAndMagazineChanged()

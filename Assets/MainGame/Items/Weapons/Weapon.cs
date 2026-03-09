@@ -32,7 +32,7 @@ public class Weapon : Item
 
     public override void OnPickup(ItemPickupContext ctx)
     {
-        ctx.inventory.EquipWeapon(this, ctx.inworld);
+        ctx.inventory.PickupWeapon(this, ctx.inworld);
     }
 
     public override void OnBuy(ItemPickupContext ctx)
@@ -46,9 +46,9 @@ public class Weapon : Item
 
 public enum WeaponType
 {
-    melee,
-    sidearm,
     rifle,
+    sidearm,
+    melee,
     throwable,
 
 }

@@ -16,24 +16,25 @@ MonoBehaviour:
   ItemName: ORION
   ItemDescription: 
   stack: 0
-  Type: 0
+  Type: 2
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  WeaponType: 2
+  WeaponType: 0
   treeDamage: 0
   oreDamage: 0
   headDamage: 110
   bodyDamage: 85
   legDamage: 60
+  canADS: 1
   hasAreaEffect: 0
   weaponPrefab_rb: {fileID: 4111884394379372380, guid: d940809bc58031545813e46f91d78491, type: 3}
   weaponPrefab_onplayer: {fileID: 1501265182433335250, guid: c5f299352cc593b41a85e33b7350a96a, type: 3}
   position: {x: -0.0323, y: 0.1176, z: 0.025}
   rotation: {x: 0, y: 270, z: 270}
   scale: {x: 1, y: 1, z: 1}
-  storedPosition: {x: 0.014, y: 0.273, z: -0.117}
-  storedRotation: {x: 357.615, y: 359.96173, z: 284.67773}
+  storedPosition: {x: -0.1083, y: 0.0042, z: -0.1115}
+  storedRotation: {x: 347.04675, y: 108.236015, z: 261.61993}
   storedScale: {x: 1, y: 1, z: 1}
   firemodes: 00000000
   shellsize: 4.5

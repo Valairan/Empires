@@ -20,20 +20,21 @@ MonoBehaviour:
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  WeaponType: 2
+  WeaponType: 0
   treeDamage: 0
   oreDamage: 0
   headDamage: 110
   bodyDamage: 85
   legDamage: 55
+  canADS: 1
   hasAreaEffect: 0
   weaponPrefab_rb: {fileID: 3593866612996558699, guid: 1925524c8f761104ba3553881d457f87, type: 3}
   weaponPrefab_onplayer: {fileID: 8594973906520803777, guid: 511ea87962aa30a49a8494ac41365f80, type: 3}
   position: {x: -0.0763, y: 0.2072, z: 0.025}
   rotation: {x: 0, y: 270, z: 270}
   scale: {x: 1, y: 1, z: 1}
-  storedPosition: {x: 0.014, y: 0.273, z: -0.117}
-  storedRotation: {x: 357.615, y: 359.96173, z: 284.67773}
+  storedPosition: {x: -0.1083, y: 0.0042, z: -0.1115}
+  storedRotation: {x: 347.04675, y: 108.236015, z: 261.61993}
   storedScale: {x: 1, y: 1, z: 1}
   firemodes: 00000000
   shellsize: 5

@@ -72,7 +72,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInventoryController.init();
         playerCombatController.init();
         playerCombatController.controller = this;
-        onWeaponChanged += setCurrentAnimatorWeapon;
+        BindComponents();
         base.OnNetworkDespawn();
     }
 
@@ -103,10 +103,19 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     public void BindUI()
     {
         UiController.Singleton.currentPlayerBuildHandler = playerBuildHandler;
+        UiController.Singleton.currentPlayerInventoryHandler = playerInventoryController;
+
         onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
         onWeaponChanged += UiController.Singleton.weaponChanged;
+        playerInventoryController.InventoryUpdated += UiController.Singleton.updateInventoryDisplay;
         UiController.Singleton.init();
 
+    }
+
+    public void BindComponents()
+    {
+        playerInventoryController.InventoryUpdated += OnWeaponUpdated;
+        playerBuildHandler.locationValidityChange += UiController.Singleton.buildableLocationValid;
     }
 
     public void BindInputs()
@@ -118,12 +127,17 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Look += ctx => LookInput = ctx;
         playerInputHandler.Attack += Attack;
         playerInputHandler.Sneak += ctx => sneaking = ctx;
-        playerInputHandler.Previous += equipPreviousItem;
-        playerInputHandler.Next += equipNextItem;
+        playerInputHandler.Previous += EquipPreviousItem;
+        playerInputHandler.Next += EquipNextItem;
         playerInputHandler.Jump += jump;
+
+        playerInputHandler.Inventory += UiController.Singleton.toggleInventory;
+
+        playerInputHandler.Equip += EquipSpecificItem;
+        playerInputHandler.Stash += playerInventoryController.StashCurrentWeapon_ServerRpc;
+        playerInputHandler.Drop += playerInventoryController.DropCurrentWeapon;
         playerInputHandler.Interact += OnInteract;
         playerInputHandler.Aim += OnAim;
-
 
         playerInputHandler.Build += buildButtonPressed;
         playerInputHandler.Rotate += playerBuildHandler.rotateButtonPressed;
@@ -162,37 +176,11 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerCombatController.UpdateWeapon();
         lookTargetTransform.position = currentlyLookingAtPoint;
         //playerCCMotor.Move(finalMove * Time.deltaTime);
-        playerAnimationController.updateAnimationParams(MoveInput, Grounded, sidearmAnimation, rifleAnimation, meleeAnimation, Submerged);
-        playerAnimationController.interpolateRigWeights();
+        playerAnimationController.updateAnimationParams(MoveInput, Grounded, Submerged);
 
     }
 
-    public bool sidearmAnimation = false;
-    public bool rifleAnimation = false;
-    public bool meleeAnimation = false;
 
-    public void setCurrentAnimatorWeapon(Weapon weapon)
-    {
-        if (weapon)
-            switch (weapon.WeaponType)
-            {
-                case WeaponType.melee:
-                    meleeAnimation = true;
-                    sidearmAnimation = false;
-                    rifleAnimation = false;
-                    break;
-                case WeaponType.sidearm:
-                    meleeAnimation = false;
-                    sidearmAnimation = true;
-                    rifleAnimation = false;
-                    break;
-                case WeaponType.rifle:
-                    meleeAnimation = false;
-                    sidearmAnimation = false;
-                    rifleAnimation = true;
-                    break;
-            }
-    }
     public void LateUpdate()
     {
         if (!IsLocalPlayer) return;
@@ -200,16 +188,18 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerCamera.transform.rotation = playerCamerasMotor.HandleRotation(playerCamera.transform.rotation, Time.deltaTime, LookInput);
         playerCamera.transform.position = playerCamerasMotor.HandlePosition(Time.deltaTime, aiming, playerCamera.transform.rotation, playerCamera.transform.position);
 
+        playerAnimationController.interpolateRigWeights();
+
     }
     void OnAim(bool pressed)
     {
         if (!IsLocalPlayer) return;
         if (playerCombatController.currentWeapon == null) return;
         if (!playerCombatController.currentWeapon.baseitem.canADS) return;
-        if (playerInventoryController.current.WeaponType == WeaponType.melee || playerInventoryController.current.WeaponType == WeaponType.throwable) return;
+        if (playerCombatController.currentWeapon.baseitem.WeaponType == WeaponType.melee || playerCombatController.currentWeapon.baseitem.WeaponType == WeaponType.throwable) return;
         if (pressed)
         {
-            playerCamera.fieldOfView = 60 * ((RangedWeapon)playerInventoryController.current).scopeZoom;
+            playerCamera.fieldOfView = 60 * ((RangedWeapon)playerCombatController.currentWeapon.baseitem).scopeZoom;
             foreach (SkinnedMeshRenderer mesh in playerMeshes)
             {
                 mesh.enabled = false;
@@ -227,9 +217,8 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
             UiController.Singleton.onAim(pressed);
         }
         aiming = pressed;
-
-
     }
+
     void OnInteract(bool pressed)
     {
         if (!IsLocalPlayer) return;
@@ -251,6 +240,24 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         }
     }
 
+    public void OnWeaponUpdated()
+    {
+        int index = playerInventoryController.currentWeaponIndex;
+
+        if (index == -1)
+        {
+            playerCombatController.currentWeapon = null;
+            playerAnimationController.dropCurrentWeapon();
+            return;
+        }
+
+        WeaponStorageSlot slot = playerInventoryController.weaponStorage[index];
+
+        playerCombatController.currentWeapon = slot.onplayer_behaviour;
+
+        playerAnimationController.SetWeapon(slot.weapon.WeaponType);
+        playerAnimationController.SetWeaponIK(slot.onplayer_behaviour);
+    }
 
 
     public void buildButtonPressed()
@@ -264,17 +271,17 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         return baseitem;
     }
 
-    public void equipNextItem()
+    public void EquipSpecificItem(int index)
     {
-
+        playerInventoryController.EquipWeapon_ServerRpc(index);
     }
-    public void equipPreviousItem()
+    public void EquipNextItem()
     {
-
+        playerInventoryController.NextWeapon_ServerRpc();
     }
-    public void dropItem()
+    public void EquipPreviousItem()
     {
-        //playerInventoryController.DropWeapon(playerInventoryController.current);
+        playerInventoryController.PreviousWeapon_ServerRpc();
     }
 
     public void Attack(bool input)
@@ -304,3 +311,5 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
 
 }
+
+

@@ -12,23 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc387b6be4786e547affad47be060354, type: 3}
   m_Name: Army Tent
   m_EditorClassIdentifier: Assembly-CSharp::Machine
-  ItemIcon: {fileID: 21300000, guid: e9441dd8cb7b3954bb633ebad78d6691, type: 3}
-  ItemName: Army Tent
+  ItemIcon: {fileID: 21300000, guid: d992e384882ac454ebacf6c0e4defdde, type: 3}
+  ItemName: Barracks
   ItemDescription: Houses upto five soldiers
   stack: 0
   Type: 1
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  position: {x: 0, y: 0, z: 0}
-  rotation: {x: 0, y: 0, z: 0}
-  scale: {x: 0, y: 0, z: 0}
-  machinePrefab: {fileID: 5427025111592353190, guid: 3f58b98c61e0be0449fb6e6deea540e3, type: 3}
-  preview: {fileID: 5516832999227762447, guid: 910b228b6dab9aa44a4ee6538d4a3eeb, type: 3}
+  machinePrefab: {fileID: 8062165046013275980, guid: 45b55455043945741a4b2f147703d69a, type: 3}
+  preview: {fileID: 8171806277142321998, guid: 54eb16e6a237604419374fd35c2bf230, type: 3}
   canManufacture: []
   buildableLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   blockingLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128

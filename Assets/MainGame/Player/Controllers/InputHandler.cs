@@ -20,6 +20,9 @@ public class InputHandler : NetworkBehaviour
     public Action Previous;
     public Action Next;
     public Action Drop;
+    public Action<int> Equip;
+    public Action Stash;
+    public Action Inventory;
 
     public override void OnNetworkSpawn()
     {
@@ -32,6 +35,7 @@ public class InputHandler : NetworkBehaviour
         ingameInputActions.Player.Aim.performed += ctx => Aim.Invoke(true);
         ingameInputActions.Player.Aim.canceled += ctx => Aim.Invoke(false);
 
+        ingameInputActions.Player.Inventory.performed += ctx => Inventory?.Invoke();
 
         ingameInputActions.Player.Attack.performed += ctx => Attack?.Invoke(true);
         ingameInputActions.Player.Attack.canceled += ctx => Attack?.Invoke(false);
@@ -44,8 +48,17 @@ public class InputHandler : NetworkBehaviour
 
         ingameInputActions.Player.Sneak.performed += ctx => Sneak?.Invoke(true);
         ingameInputActions.Player.Sneak.canceled += ctx => Sneak?.Invoke(false);
-        ingameInputActions.Player.Previous.started += ctx => Previous?.Invoke();
-        ingameInputActions.Player.Next.started += ctx => Next?.Invoke();
+
+        ingameInputActions.Player.CycleItems.performed += ctx =>
+        {
+            if (ctx.ReadValue<Vector2>().y < 0) Next.Invoke(); else Previous.Invoke();
+        };
+
+        ingameInputActions.Player.One.performed += ctx => Equip?.Invoke(0);
+        ingameInputActions.Player.Two.performed += ctx => Equip?.Invoke(1);
+        ingameInputActions.Player.Three.performed += ctx => Equip?.Invoke(2);
+
+        ingameInputActions.Player.Four.performed += ctx => Stash?.Invoke();
         ingameInputActions.Player.Drop.performed += ctx => Drop?.Invoke();
 
         ingameInputActions.Player.Build.performed += _ => Build.Invoke();

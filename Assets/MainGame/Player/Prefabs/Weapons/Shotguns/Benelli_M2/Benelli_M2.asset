@@ -20,7 +20,7 @@ MonoBehaviour:
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  WeaponType: 2
+  WeaponType: 0
   treeDamage: 0
   oreDamage: 0
   headDamage: 60
@@ -37,7 +37,7 @@ MonoBehaviour:
   storedRotation: {x: 347.04675, y: 108.236015, z: 261.61993}
   storedScale: {x: 1, y: 1, z: 1}
   firemodes: 00000000
-  shellsize: 0
+  shellsize: 2
   fireRate: 85
   magSize: 7
   pelletCount: 8

@@ -39,6 +39,16 @@ public class SettingsManager : MonoBehaviour
         );
     }
 
+    void ApplyGrassRenderDistance()
+    {
+        
+    }
+
+    void ApplyFullScreen()
+    {
+        
+    }
+
     public void quitApplication()
     {
         Application.Quit();

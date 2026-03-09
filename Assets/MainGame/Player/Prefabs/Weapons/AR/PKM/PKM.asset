@@ -20,14 +20,14 @@ MonoBehaviour:
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  WeaponType: 2
+  WeaponType: 0
   treeDamage: 0
   oreDamage: 0
   headDamage: 42
   bodyDamage: 30
   legDamage: 18
+  canADS: 0
   hasAreaEffect: 0
-  isAutomatic: 1
   weaponPrefab_rb: {fileID: 947801632806932562, guid: a966e79b502757249b4e0fa9be734d20, type: 3}
   weaponPrefab_onplayer: {fileID: 905080284561060411, guid: c1c464de5c44f9d4dae088a4268a06a7, type: 3}
   position: {x: -0.0707, y: 0.2577, z: 0.02}

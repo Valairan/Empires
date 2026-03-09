@@ -45,6 +45,11 @@ public static class MeshGenerator
                 lodGroup.RecalculateBounds();
                 lodGroup.fadeMode = LODFadeMode.CrossFade;
                 lodGroup.animateCrossFading = true;
+
+                parent.isStatic = true;
+                lod2.isStatic = true;
+                lod1.isStatic = true;
+                lod0.isStatic = true;
             }
 
         }
@@ -62,7 +67,7 @@ public static class MeshGenerator
         MeshRenderer meshRenderer = terrain.AddComponent<MeshRenderer>();
         MeshCollider meshCollider = terrain.AddComponent<MeshCollider>();
 
-        meshRenderer.material = meshMaterial;
+        meshRenderer.sharedMaterial = meshMaterial;
         meshRenderer.shadowCastingMode = shadowCastingMode;
         meshRenderer.staticShadowCaster = true;
         Mesh mesh = new Mesh();

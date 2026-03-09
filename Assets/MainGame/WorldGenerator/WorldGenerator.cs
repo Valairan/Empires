@@ -1,6 +1,8 @@
 using System;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -26,23 +28,26 @@ public class WorldGenerator : MonoBehaviour
 
     public void StartGameLocal()
     {
-        TerrainSettings settings = new TerrainSettings();
-        settings.mapWidth = 1000;
-        settings.mapHeight = 1000;
-        settings.seed = 10;
-        settings.scale = 32;
-        settings.octaves = 4;
-        settings.persistance = 4;
-        settings.lacunarity = 0;
-        settings.multiplier = 5;
-        settings.offset = Vector2.zero;
-        settings.falloffHeight = 20;
-        settings.falloffDistance = 5;
+        TerrainSettings settings = new TerrainSettings
+        {
+            mapWidth = 1000,
+            mapHeight = 1000,
+            seed = 10,
+            scale = 32,
+            octaves = 4,
+            persistance = 4,
+            lacunarity = 0,
+            multiplier = 5,
+            offset = Vector2.zero,
+            falloffHeight = 20,
+            falloffDistance = 5
+        };
         GenerateTerrain(settings);
     }
 
     void Start()
     {
+
         //StartGameLocal();
     }
 
@@ -77,18 +82,15 @@ public class WorldGenerator : MonoBehaviour
 
     }
 
-    Matrix4x4[] visibleMatrices = new Matrix4x4[1023]; // max batch size
+    Matrix4x4[] visibleMatrices = new Matrix4x4[1023]; 
     int maxInstances = 1023;
-    Plane[] planes;
-
-    const float chunkWorldSize = 5f;
+    private Plane[] planes = new Plane[6];
 
     void Update()
     {
         if (!generationComplete) return;
-
+        planes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
         Vector3 camPos = mainCamera.transform.position;
-        Vector3 camForward = mainCamera.transform.forward;
 
         int positionX = (int)Math.Clamp(camPos.x, 0, mapWidth) / 5;
         int positionZ = (int)Math.Clamp(camPos.z, 0, mapHeight) / 5;
@@ -111,23 +113,10 @@ public class WorldGenerator : MonoBehaviour
 
                     // -------- Directional chunk culling --------
 
-                    Vector3 chunkCenter = new Vector3(
-                        chunkX * chunkWorldSize + chunkWorldSize * 0.5f,
-                        camPos.y,
-                        chunkZ * chunkWorldSize + chunkWorldSize * 0.5f
-                    );
-
-                    float halfFov = mainCamera.fieldOfView * 0.5f;
-                    float cosThreshold = Mathf.Cos(halfFov * Mathf.Deg2Rad);
-                    Vector3 toChunk = chunkCenter - camPos;
-                    // How far behind camera this chunk is (in chunks)
-                    float behindChunks = -Vector3.Dot(camForward, toChunk) / chunkWorldSize;
-
                     // HARD reject:
                     // - not in forward cone
                     // - AND more than N chunks behind
                     VegetationChunk chunk = totaleVegetationChunks[k][chunkX, chunkZ];
-                    planes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
 
                     if (!GeometryUtility.TestPlanesAABB(planes, chunk.bounds))
                     {
@@ -169,6 +158,7 @@ public class WorldGenerator : MonoBehaviour
                     leftover
                 );
             }
+
         }
     }
 

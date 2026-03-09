@@ -25,6 +25,11 @@ public class SettingsMenu : MonoBehaviour
         grassDistanceText.text = "Grass Render Distance: " + grassDistanceSlider.value.ToString("F0");
         PlayerPrefs.SetInt("GrassDistance", (int)grassDistanceSlider.value);
     }
+
+    public void SetFullscreen(bool isFullscreen)
+    {
+        Screen.fullScreen = isFullscreen;
+    }
     void SetupResolutions()
     {
         resolutions = Screen.resolutions;

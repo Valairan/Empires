@@ -45,7 +45,7 @@ public class InteractionHandler : MonoBehaviour
 
     public void checkForRaycasts(Transform startPosition)
     {
-        if (Physics.SphereCast(startPosition.position, 1f, startPosition.forward, out RaycastHit hit, 50f, whatToInclude))
+        if (Physics.SphereCast(startPosition.position, 1f, startPosition.forward, out RaycastHit hit, 5f, whatToInclude))
         {
             if (hit.transform.TryGetComponent(out IRaycastResponder responder))
             {

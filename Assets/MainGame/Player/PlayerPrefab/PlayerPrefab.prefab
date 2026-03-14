@@ -428,6 +428,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7954618169800756930}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2914770489541632027
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5255323205747991042}
+  m_Layer: 0
+  m_Name: CameraBlockerStart
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5255323205747991042
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2914770489541632027}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7954618169800756930}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3549461418572006148
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,6 +510,7 @@ Transform:
   - {fileID: 1795218282399508059}
   - {fileID: 8809673452571775717}
   - {fileID: 2196578551122818929}
+  - {fileID: 5255323205747991042}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6843195079078213907
@@ -493,7 +525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1520680668
+  GlobalObjectIdHash: 618126814
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -583,6 +615,13 @@ MonoBehaviour:
     TransitionDuration: 0.04545474
     TriggerNameHash: 1080829965
     TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: -438948933
+    DestinationState: -1907200461
+    TransitionDuration: 0.04545474
+    TriggerNameHash: 1080829965
+    TransitionIndex: 0
   AnimatorParameterEntries:
     ParameterEntries:
     - name: Horizontal
@@ -593,18 +632,6 @@ MonoBehaviour:
       NameHash: 1358960330
       Synchronize: 1
       ParameterType: 1
-    - name: SideArm
-      NameHash: -1615706852
-      Synchronize: 1
-      ParameterType: 4
-    - name: Rifle
-      NameHash: 2048251345
-      Synchronize: 1
-      ParameterType: 4
-    - name: Melee
-      NameHash: 237393061
-      Synchronize: 1
-      ParameterType: 4
     - name: Attack
       NameHash: 1080829965
       Synchronize: 1
@@ -621,6 +648,10 @@ MonoBehaviour:
       NameHash: -2123461723
       Synchronize: 1
       ParameterType: 4
+    - name: Weapon
+      NameHash: 1855955664
+      Synchronize: 1
+      ParameterType: 3
   AnimatorParametersExpanded: 0
 --- !u!114 &531750188607022820
 MonoBehaviour:
@@ -648,6 +679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildHandler
   allAvailableMachines: []
+  ThingsIveBuilt: []
 --- !u!114 &5430121383282861059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -662,6 +694,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   ShowTopMostFoldoutHeaderGroup: 1
   amount: 100
+  currentHealth:
+    m_InternalValue: 100
+  maxHealth: 100
 --- !u!114 &3213553562105768937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -742,7 +777,7 @@ MonoBehaviour:
   followInterpolationFactor: 10000
   minimumAngle: -80
   maximumAngle: 60
-  defaultAngle: 0
+  defaultAngle: 40
   cameraBlockers:
     serializedVersion: 2
     m_Bits: 2263
@@ -750,6 +785,7 @@ MonoBehaviour:
   currentFollowPosition: {x: 0, y: 0, z: 0}
   cameraForward: {x: 0, y: 0, z: 0}
   targetAngle: 0
+  cameraBlockerRaycastStart: {fileID: 5255323205747991042}
 --- !u!114 &1142106596359738240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -934,9 +970,6 @@ MonoBehaviour:
   aiming: 0
   sneaking: 0
   interacting: 0
-  sidearmAnimation: 0
-  rifleAnimation: 0
-  meleeAnimation: 0
 --- !u!1 &3767362694314663729
 GameObject:
   m_ObjectHideFlags: 0

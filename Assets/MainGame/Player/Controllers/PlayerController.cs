@@ -71,7 +71,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerCCMotor.init();
         playerInventoryController.init();
         playerCombatController.init();
-        playerCombatController.controller = this;
+        //playerCombatController.controller = this;
         BindComponents();
         base.OnNetworkDespawn();
     }
@@ -160,7 +160,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         if (!IsLocalPlayer) return;
         Submerged = checkIfInWater();
         playerBuildHandler.previewBuild(playerCamera.transform.position, playerCamera.transform.forward);
-        playerInteractionHandler.checkForRaycasts(playerCamera.transform);
+        playerInteractionHandler.checkForRaycasts(OwnerClientId ,playerCamera.transform);
         playerInteractionHandler.HandleTimedInteraction(NetworkManager.Singleton.LocalClientId);
         playerInteractionHandler.interacting = interacting;
         PlayerInputs inputs = new PlayerInputs
@@ -266,7 +266,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerBuildHandler.buildButtonPressed();
     }
 
-    public Item respondToRaycast()
+    public Item respondToRaycast(   )
     {
         return baseitem;
     }
@@ -309,7 +309,9 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         return false;
     }
 
-
+    public Item respondToRaycast(ulong interactor)
+    {
+        throw new NotImplementedException();
+    }
 }
-
 

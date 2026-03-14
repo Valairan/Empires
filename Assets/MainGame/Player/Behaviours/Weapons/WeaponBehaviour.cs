@@ -13,6 +13,7 @@ public abstract class WeaponBehaviour
     public WeaponState state;
     public Transform ik_target;
     public Transform ik_hint;
+    public Action onAttack;
 
     public float InteractionDuration => 1f;
 
@@ -20,6 +21,7 @@ public abstract class WeaponBehaviour
     {
         if (!IsOwner)
             enabled = false;
+        
     }
 
     public virtual void store()
@@ -55,10 +57,11 @@ public abstract class WeaponBehaviour
         return baseitem;
     }
 
-    public Item respondToRaycast()
+    public Item respondToRaycast(ulong interactor)
     {
         return baseitem;
     }
+
 
     [ServerRpc(RequireOwnership = false)]
     void attemptToInteract_ServerRpc(ulong interactingPlayerId, ulong interactee)

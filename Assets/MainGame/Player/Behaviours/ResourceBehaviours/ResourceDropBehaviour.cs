@@ -18,7 +18,7 @@ public class ResourceDropBehaviour : ItemBehaviour<ResourceDrop>, IRaycastRespon
         // }
     }
 
-    public Item respondToRaycast()
+    public Item respondToRaycast(ulong interactor)
     {
         return baseitem;
     }

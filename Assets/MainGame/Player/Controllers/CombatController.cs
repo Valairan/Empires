@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
+using System;
 
 public class CombatController : MonoBehaviour
 {
@@ -7,8 +8,6 @@ public class CombatController : MonoBehaviour
     public float maximumdistance;
     public Transform cameraTransform;
     public WeaponBehaviour currentWeapon;
-    public PlayerController controller;
-
     [HideInInspector] public Vector3 lookingAtPoint;
 
     private bool isAttacking;
@@ -43,7 +42,6 @@ public class CombatController : MonoBehaviour
             triggerable.TriggerPressed(lookingAtPoint);
         }
 
-        controller.playerAnimationController.attack();
     }
 
     public void OnAttackUp()
@@ -77,4 +75,6 @@ public class CombatController : MonoBehaviour
         if (currentWeapon != null)
             currentWeapon.isAttacking = false;
     }
+
+
 }

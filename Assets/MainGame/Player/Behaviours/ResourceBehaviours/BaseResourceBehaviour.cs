@@ -7,7 +7,7 @@ public class BaseResourceBehaviour : ItemBehaviour<BaseResource>, IDamageable, I
     public int yCoordinate;
     public Health health;
 
-    public virtual Item respondToRaycast()
+    public virtual Item respondToRaycast(ulong interactor)
     {
         return baseitem;
     }

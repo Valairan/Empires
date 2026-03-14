@@ -28,8 +28,8 @@ MonoBehaviour:
   legDamage: 50
   canADS: 1
   hasAreaEffect: 0
-  weaponPrefab_rb: {fileID: 6994640053698274836, guid: 04f61bc4d29c9ca4c8f6db253acd59c4, type: 3}
-  weaponPrefab_onplayer: {fileID: 6818256650436280622, guid: 3901e6fad1b4fc541af119b8a0622623, type: 3}
+  weaponPrefab_rb: {fileID: 656335666210874549, guid: aa9a3b2fb7083e6409dd28102f33668d, type: 3}
+  weaponPrefab_onplayer: {fileID: 1173633059841461461, guid: c8e5c6062d621e946a7aae257755284f, type: 3}
   position: {x: -0.0763, y: 0.2072, z: 0.025}
   rotation: {x: 0, y: 270, z: 270}
   scale: {x: 1, y: 1, z: 1}
@@ -41,10 +41,13 @@ MonoBehaviour:
   fireRate: 40
   magSize: 5
   pelletCount: 1
-  recoil: 1
-  bulletSpread: 1.02
-  recoilPattern: {x: 0, y: 0}
   scopeTexture: {fileID: 21300000, guid: 102dcd76e03287b4fa82343c981712da, type: 3}
   scopeZoom: 0.3
   shotSound: {fileID: 0}
   reloadSound: {fileID: 0}
+  recoil: 1
+  recoilPattern: {x: 0, y: 30}
+  maxRecoilPitch: 180
+  maxRecoilYaw: 180
+  recoilRecovery: 2
+  bulletSpread: 1

@@ -485,7 +485,17 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   baseitem: {fileID: 11400000, guid: c2ad1cc88349dad4ea60507117e7e361, type: 2}
   health: {fileID: 4042011217670322888}
-  placementPoints: []
+  state: 0
+  placementPoints:
+  - {fileID: 1850544492567231206}
+  - {fileID: 8041568906766934543}
+  - {fileID: 8155773921548013083}
+  - {fileID: 8903407686042138658}
+  - {fileID: 3422007420804301691}
+  - {fileID: 8869407188130263962}
+  - {fileID: 5686862055918575756}
+  - {fileID: 3677622990777742477}
+  - {fileID: 2325417935773674067}
 --- !u!114 &4042011217670322888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -500,3 +510,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: behaviours::Health
   ShowTopMostFoldoutHeaderGroup: 1
   amount: 300
+  currentHealth:
+    m_InternalValue: 100
+  maxHealth: 100

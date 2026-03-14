@@ -41,10 +41,13 @@ MonoBehaviour:
   fireRate: 720
   magSize: 30
   pelletCount: 1
-  recoil: 1
-  bulletSpread: 1.02
-  recoilPattern: {x: 0, y: 0}
   scopeTexture: {fileID: 0}
   scopeZoom: 1
   shotSound: {fileID: 0}
   reloadSound: {fileID: 0}
+  recoil: 2
+  recoilPattern: {x: 0.6, y: 0.6}
+  maxRecoilPitch: 90
+  maxRecoilYaw: 30
+  recoilRecovery: 0
+  bulletSpread: 0.999

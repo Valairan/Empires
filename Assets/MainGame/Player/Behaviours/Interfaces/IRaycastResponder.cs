@@ -1,4 +1,4 @@
 public interface IRaycastResponder
 {
-    public Item respondToRaycast();
+    public Item respondToRaycast(ulong interactor);
 }

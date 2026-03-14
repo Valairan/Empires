@@ -52,7 +52,8 @@ public class UiController : MonoBehaviour
     public void onAim(bool pressed)
     {
         BaseInGame.SetActive(!pressed);
-        ScopedIn.SetActive(pressed);
+        if (ScopedInTexture.sprite)
+            ScopedIn.SetActive(pressed);
     }
 
     public void init()
@@ -175,7 +176,14 @@ public class UiController : MonoBehaviour
 
     public void weaponChanged(Weapon weapon)
     {
-
+        if (weapon is RangedWeapon rangedWeapon)
+        {
+            ScopedInTexture.sprite = rangedWeapon.scopeTexture;
+        }
+        else
+        {
+            ScopedInTexture = null;
+        }
     }
     public void firerateAndMagazineChanged()
     {

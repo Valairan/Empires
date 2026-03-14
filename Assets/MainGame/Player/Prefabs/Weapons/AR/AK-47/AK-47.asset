@@ -26,7 +26,7 @@ MonoBehaviour:
   headDamage: 35
   bodyDamage: 25
   legDamage: 15
-  canADS: 0
+  canADS: 1
   hasAreaEffect: 0
   weaponPrefab_rb: {fileID: 260881921318493846, guid: fa6a30c1972c36f469a93b4365e3694b, type: 3}
   weaponPrefab_onplayer: {fileID: 5384119829369097778, guid: e6f36dff62c61de40a00b75d280a559e, type: 3}
@@ -41,10 +41,13 @@ MonoBehaviour:
   fireRate: 600
   magSize: 30
   pelletCount: 1
-  recoil: 1
-  bulletSpread: 0.995
-  recoilPattern: {x: 0, y: 0}
   scopeTexture: {fileID: 0}
   scopeZoom: 1
   shotSound: {fileID: 8300000, guid: ec6e72701e366284e87813dcebe9e990, type: 3}
   reloadSound: {fileID: 0}
+  recoil: 1
+  recoilPattern: {x: 1, y: 2}
+  maxRecoilPitch: 30
+  maxRecoilYaw: 45
+  recoilRecovery: 2
+  bulletSpread: 0.98

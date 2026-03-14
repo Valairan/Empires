@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class WearableBehaviour : ItemBehaviour<Wearable>, IRaycastResponder, IDamageable
 {
-    public Item respondToRaycast()
+    public Item respondToRaycast(ulong interactor)
     {
         return baseitem;
     }

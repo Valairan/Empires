@@ -43,13 +43,13 @@ public class InteractionHandler : MonoBehaviour
         }
     }
 
-    public void checkForRaycasts(Transform startPosition)
+    public void checkForRaycasts(ulong interactor, Transform startPosition)
     {
         if (Physics.SphereCast(startPosition.position, 1f, startPosition.forward, out RaycastHit hit, 5f, whatToInclude))
         {
             if (hit.transform.TryGetComponent(out IRaycastResponder responder))
             {
-                Item item = responder.respondToRaycast();
+                Item item = responder.respondToRaycast(interactor);
                 if (item != currentlyLookingAt)
                 {
                     currentlyLookingAt = item;

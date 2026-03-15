@@ -93,9 +93,8 @@ public class RangedWeaponBehaviour
 
         lastShotTime = Time.time;
         Attack_ServerRpc(aimPoint);
-        onAttack?.Invoke();
         currentShot++;
-
+        onAttack?.Invoke();
     }
 
     [ServerRpc]

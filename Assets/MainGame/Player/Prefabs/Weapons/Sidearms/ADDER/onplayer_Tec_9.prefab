@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4095650415
+  GlobalObjectIdHash: 4217699366
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -167,8 +167,8 @@ MonoBehaviour:
   baseitem: {fileID: 11400000, guid: 98bad3f4364f9b244ad8c297c9a6fa36, type: 2}
   isAttacking: 0
   state: 0
-  ik_target: {fileID: 0}
-  ik_hint: {fileID: 0}
+  ik_target: {fileID: 3591618379773673827}
+  ik_hint: {fileID: 4587590707625920277}
   muzzleStartPoint: {fileID: 0}
   muzzleFlash: {fileID: 0}
   currentFiremode: 0

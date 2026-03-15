@@ -49,6 +49,7 @@ public enum WeaponType
     rifle,
     sidearm,
     melee,
+    overtheshoulder,
     throwable,
 
 }

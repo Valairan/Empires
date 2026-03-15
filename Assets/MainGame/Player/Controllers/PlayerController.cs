@@ -65,13 +65,16 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         UiController.Singleton.toggleInGameUI();
 
         playerCamera = Camera.main;
-        BindUI();
-        BindInputs();
-        playerCamerasMotor.setFollowTransform(playerCamerasMotor.cameraFollowTarget);
+        //playerCamerasMotor.ca = playerCamera;
+        //playerCamerasMotor.Init();
+        playerCombatController.cameraTransform = playerCamera.transform;
         playerCCMotor.init();
+        playerAnimationController.init();
         playerInventoryController.init();
         playerCombatController.init();
-        //playerCombatController.controller = this;
+        BindUI();
+        BindInputs();
+
         BindComponents();
         base.OnNetworkDespawn();
     }
@@ -160,7 +163,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         if (!IsLocalPlayer) return;
         Submerged = checkIfInWater();
         playerBuildHandler.previewBuild(playerCamera.transform.position, playerCamera.transform.forward);
-        playerInteractionHandler.checkForRaycasts(OwnerClientId ,playerCamera.transform);
+        playerInteractionHandler.checkForRaycasts(OwnerClientId, playerCamera.transform);
         playerInteractionHandler.HandleTimedInteraction(NetworkManager.Singleton.LocalClientId);
         playerInteractionHandler.interacting = interacting;
         PlayerInputs inputs = new PlayerInputs
@@ -172,14 +175,15 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerCCMotor.setInputs(ref inputs);
         Grounded = playerCCMotor.motor.GroundingStatus.IsStableOnGround;
 
+
         currentlyLookingAtPoint = playerCombatController.RaycastFromCamera();
         playerCombatController.UpdateWeapon();
         lookTargetTransform.position = currentlyLookingAtPoint;
+        //playerCamerasMotor.Tick(LookInput, Time.deltaTime);
         //playerCCMotor.Move(finalMove * Time.deltaTime);
-        playerAnimationController.updateAnimationParams(MoveInput, Grounded, Submerged);
+        playerAnimationController.updateMovemementParams(MoveInput, Grounded, Submerged);
 
     }
-
 
     public void LateUpdate()
     {
@@ -188,8 +192,11 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerCamera.transform.rotation = playerCamerasMotor.HandleRotation(playerCamera.transform.rotation, Time.deltaTime, LookInput);
         playerCamera.transform.position = playerCamerasMotor.HandlePosition(Time.deltaTime, aiming, playerCamera.transform.rotation, playerCamera.transform.position);
 
-        playerAnimationController.interpolateRigWeights();
+        // Update the camera using the new staged system
+        //playerCamerasMotor.LateTick();
 
+        // Continue updating animations
+        playerAnimationController.LateTick();
     }
     void OnAim(bool pressed)
     {
@@ -240,23 +247,57 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         }
     }
 
+    RecoilStage currentWeaponRecoilStage;
     public void OnWeaponUpdated()
     {
         int index = playerInventoryController.currentWeaponIndex;
 
-        if (index == -1)
+        if (index == -1) // No weapon equipped
         {
+            if (playerCombatController.currentWeapon != null)
+                if (playerCombatController.currentWeapon.onAttack != null)
+                    playerCombatController.currentWeapon.onAttack -= playerAnimationController.attack;
+
             playerCombatController.currentWeapon = null;
-            playerAnimationController.dropCurrentWeapon();
+            playerAnimationController.transition(
+                playerAnimationController.availableStates[states.Unarmed]);
             return;
         }
 
         WeaponStorageSlot slot = playerInventoryController.weaponStorage[index];
+        WeaponBehaviour weapon = slot.onplayer_behaviour;
+        playerAnimationController.updateCurrentWeapon(weapon);
+        playerCombatController.currentWeapon = weapon;
 
-        playerCombatController.currentWeapon = slot.onplayer_behaviour;
+        switch (slot.weapon.WeaponType)
+        {
+            case WeaponType.rifle:
+                playerAnimationController.transition(
+                    playerAnimationController.availableStates[states.Rifle]);
+                break;
 
-        playerAnimationController.SetWeapon(slot.weapon.WeaponType);
-        playerAnimationController.SetWeaponIK(slot.onplayer_behaviour);
+            case WeaponType.sidearm:
+                playerAnimationController.transition(
+                    playerAnimationController.availableStates[states.Sidearm]);
+                break;
+
+            case WeaponType.melee:
+                playerAnimationController.transition(
+                    playerAnimationController.availableStates[states.Melee]);
+                break;
+
+            case WeaponType.throwable:
+                playerAnimationController.transition(
+                    playerAnimationController.availableStates[states.Throwable]);
+                break;
+            case WeaponType.overtheshoulder:
+                playerAnimationController.transition(
+                    playerAnimationController.availableStates[states.OverTheShoulder]);
+                break;
+        }
+
+        playerCombatController.currentWeapon.onAttack += playerAnimationController.attack;
+
     }
 
 
@@ -266,7 +307,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerBuildHandler.buildButtonPressed();
     }
 
-    public Item respondToRaycast(   )
+    public Item respondToRaycast()
     {
         return baseitem;
     }

@@ -82,35 +82,32 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     [ServerRpc]
     public void NextWeapon_ServerRpc()
     {
-        if (weaponStorage.Count < 2) return;
 
-        int nextIndex = currentWeaponIndex;
-        nextIndex--;
+        int nextIndex = currentWeaponIndex - 1;
 
         if (nextIndex < 0)
             nextIndex = weaponStorage.Count - 1;
 
         StashCurrentWeapon();
         EquipWeapon(nextIndex);
-        updateWeaponOn_ClientRpc(currentWeaponIndex, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
+        currentWeaponIndex = nextIndex;
+        updateWeaponOn_ClientRpc(nextIndex, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
 
     }
 
     [ServerRpc]
     public void PreviousWeapon_ServerRpc()
     {
-        if (weaponStorage.Count < 2) return;
 
-        int prevIndex = currentWeaponIndex;
-        prevIndex++;
+        int prevIndex = currentWeaponIndex + 1;
 
         if (prevIndex > weaponStorage.Count)
             prevIndex = 0;
 
         StashCurrentWeapon();
         EquipWeapon(prevIndex);
-
-        updateWeaponOn_ClientRpc(currentWeaponIndex, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
+        currentWeaponIndex = prevIndex;
+        updateWeaponOn_ClientRpc(prevIndex, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
 
     }
 
@@ -153,7 +150,6 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     {
         //if (!IsServer) return;
         if (index < 0 || index >= weaponStorage.Count) return;
-        currentWeaponIndex = index;
         networkObjectRoot.TryToParentNetworkObject((NetworkObjectReference)weaponStorage[index].onplayer_instance, handParent);
         equipWeaponOnAllPlayersVisually_ClientRpc((NetworkObjectReference)weaponStorage[index].onplayer_instance);
         //StashCurrentWeapon();
@@ -187,7 +183,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     {
         if (weaponStorage.Count < 1) return;
         if (currentWeaponIndex < 0) return;
-
+        Debug.Log($"{currentWeaponIndex} is index");
         switch (weaponStorage[currentWeaponIndex].weapon.WeaponType)
         {
             case WeaponType.melee:

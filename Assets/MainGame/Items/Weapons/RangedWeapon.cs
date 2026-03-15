@@ -20,6 +20,7 @@ public class RangedWeapon : Weapon
     public Vector2 recoilPattern;     // Optional
     public float maxRecoilPitch = 20f;
     public float maxRecoilYaw = 10f;
+    public bool returnToCenter = false;
     public float recoilRecovery = 8f;
     public float bulletSpread = 0f;  // Degrees
     protected void OnCreate()

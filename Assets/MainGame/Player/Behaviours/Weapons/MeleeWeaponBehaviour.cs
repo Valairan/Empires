@@ -1,13 +1,29 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class MeleeWeaponBehaviour : WeaponBehaviour<MeleeWeapon>
+public class MeleeWeaponBehaviour : WeaponBehaviour<MeleeWeapon>, IWeaponTriggerable
 {
 
     [ServerRpc]
     public override void Attack_ServerRpc(Vector3 point)
     {
 
+    }
+
+    public bool CanFire()
+    {
+        //throw new System.NotImplementedException();
+        return false;
+    }
+
+    public void TriggerPressed(Vector3 aimPoint)
+    {
+        onAttack?.Invoke();
+    }
+
+    public void TriggerReleased()
+    {
+        //throw new System.NotImplementedException();
     }
 
     void OnTriggerEnter(Collider collision)

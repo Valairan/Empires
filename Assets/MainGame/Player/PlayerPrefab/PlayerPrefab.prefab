@@ -177,14 +177,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c430f382484144e925c097c2d33cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Animation.Rigging::UnityEngine.Animations.Rigging.MultiAimConstraint
-  m_Weight: 1
+  m_Weight: 0
   m_Data:
     m_ConstrainedObject: {fileID: 6630922032832675769}
     m_SourceObjects:
       m_Length: 1
       m_Item0:
         transform: {fileID: 2196578551122818929}
-        weight: 1
+        weight: 0
       m_Item1:
         transform: {fileID: 0}
         weight: 0
@@ -511,6 +511,7 @@ Transform:
   - {fileID: 8809673452571775717}
   - {fileID: 2196578551122818929}
   - {fileID: 5255323205747991042}
+  - {fileID: 907612121876195103}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6843195079078213907
@@ -615,6 +616,13 @@ MonoBehaviour:
     TransitionDuration: 0.04545474
     TriggerNameHash: 1080829965
     TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: -151370449
+    DestinationState: -151370449
+    TransitionDuration: 0
+    TriggerNameHash: 1080829965
+    TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 1
     OriginatingState: -438948933
@@ -730,7 +738,6 @@ MonoBehaviour:
   maximumdistance: 20
   cameraTransform: {fileID: 0}
   currentWeapon: {fileID: 0}
-  controller: {fileID: 0}
   lookingAtPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &2933855248979656309
 MonoBehaviour:
@@ -763,29 +770,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 3549461418572006148}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f1a5df49e0357a4d9150bcc485ed302, type: 3}
+  m_Script: {fileID: 11500000, guid: 95993a8163792b142bb7df3c81ac14e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   defaultDistance: 2
-  minimumDistance: 0
-  cameraDefaultDistance: 2
+  minimumDistance: 2
+  cameraDefaultDistance: 3
   distanceMovementSpeed: 200
   movementInterpolationFactor: 100
-  horizontalSensitivity: 0.3
-  verticalSensitivity: 0.3
+  horizontalSensitivity: 0.2
+  verticalSensitivity: 0.2
   rotationInterpolationFactor: 10000
   followInterpolationFactor: 10000
   minimumAngle: -80
-  maximumAngle: 60
-  defaultAngle: 40
+  maximumAngle: 80
+  defaultAngle: 20
   cameraBlockers:
     serializedVersion: 2
-    m_Bits: 2263
-  cameraFollowTarget: {fileID: 1795218282399508059}
+    m_Bits: 464
+  cameraFollowTarget: {fileID: 907612121876195103}
   currentFollowPosition: {x: 0, y: 0, z: 0}
   cameraForward: {x: 0, y: 0, z: 0}
   targetAngle: 0
-  cameraBlockerRaycastStart: {fileID: 5255323205747991042}
 --- !u!114 &1142106596359738240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -920,7 +926,7 @@ MonoBehaviour:
   pistolRigWeight: 0
   throwableRig: {fileID: 8057647416888942590}
   throwableRigWeight: 0
-  lerpFactor: 20
+  lerpFactor: 2
 --- !u!114 &4720122550096299429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1314,6 +1320,37 @@ MonoBehaviour:
       x: 1
       y: 1
       z: 1
+--- !u!1 &5230843760208570899
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 907612121876195103}
+  m_Layer: 3
+  m_Name: CameraFollowTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &907612121876195103
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5230843760208570899}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.4, y: 1.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7954618169800756930}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5670471318454649827
 GameObject:
   m_ObjectHideFlags: 0
@@ -1684,6 +1721,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 03698e80041b67843b3ed912b2ba84b1, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
+      propertyPath: m_WarningMessage
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0

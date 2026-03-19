@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TestDamageable : MonoBehaviour, IDamageable
 {
-    [SerializeField] ParticleSystem damageParticles;
+    [SerializeField] UnityEngine.VFX.VisualEffect damageParticles;
     [SerializeField] materialType type;
     [SerializeField] AudioSource source;
     [SerializeField] AudioClip damageSound;

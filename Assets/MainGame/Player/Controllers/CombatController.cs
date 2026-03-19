@@ -20,7 +20,7 @@ public class CombatController : MonoBehaviour
 
     public Vector3 RaycastFromCamera()
     {
-        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, 500f))
+        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, 500f, ~0, QueryTriggerInteraction.Ignore))
         {
             lookingAtPoint = hit.point;
         }

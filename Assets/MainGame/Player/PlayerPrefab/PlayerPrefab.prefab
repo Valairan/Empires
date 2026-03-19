@@ -509,7 +509,6 @@ Transform:
   - {fileID: 5022791218057121337}
   - {fileID: 1795218282399508059}
   - {fileID: 8809673452571775717}
-  - {fileID: 2196578551122818929}
   - {fileID: 5255323205747991042}
   - {fileID: 907612121876195103}
   m_Father: {fileID: 0}
@@ -1185,7 +1184,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7954618169800756930}
+  m_Father: {fileID: 4772357394285717402}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4735565349310305987
 GameObject:
@@ -1753,6 +1752,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2832219926043705459}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2196578551122818929}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
       insertIndex: -1

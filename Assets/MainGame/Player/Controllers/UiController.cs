@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using TMPro;
 using Unity.Netcode;
@@ -128,7 +129,7 @@ public class UiController : MonoBehaviour
 
     }
 
-    public void updateInventoryDisplay()
+    public void updateInventoryDisplay(int currentlyEquipped)
     {
         bool hasRifle = false;
         bool hasSidearm = false;
@@ -205,5 +206,10 @@ public class UiController : MonoBehaviour
     {
         PauseMenu.SetActive(!PauseMenu.activeSelf);
 
+    }
+
+    internal void updateInventoryDisplay(int previousValue, int newValue)
+    {
+        updateInventoryDisplay(newValue);
     }
 }

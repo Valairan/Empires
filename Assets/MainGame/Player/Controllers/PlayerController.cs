@@ -110,14 +110,14 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
         onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
         onWeaponChanged += UiController.Singleton.weaponChanged;
-        playerInventoryController.InventoryUpdated += UiController.Singleton.updateInventoryDisplay;
+        playerInventoryController.currentWeaponIndex.OnValueChanged += UiController.Singleton.updateInventoryDisplay;
         UiController.Singleton.init();
 
     }
 
     public void BindComponents()
     {
-        playerInventoryController.InventoryUpdated += OnWeaponUpdated;
+        playerInventoryController.currentWeaponIndex.OnValueChanged += OnWeaponUpdated;
         playerBuildHandler.locationValidityChange += UiController.Singleton.buildableLocationValid;
     }
 
@@ -137,8 +137,8 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Inventory += UiController.Singleton.toggleInventory;
 
         playerInputHandler.Equip += EquipSpecificItem;
-        playerInputHandler.Stash += playerInventoryController.StashCurrentWeapon_ServerRpc;
-        playerInputHandler.Drop += playerInventoryController.DropCurrentWeapon;
+        playerInputHandler.Stash += storeCurrentWeapon;
+        playerInputHandler.Drop += dropCurrentWeapon;
         playerInputHandler.Interact += OnInteract;
         playerInputHandler.Aim += OnAim;
 
@@ -248,11 +248,16 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     }
 
     RecoilStage currentWeaponRecoilStage;
-    public void OnWeaponUpdated()
-    {
-        int index = playerInventoryController.currentWeaponIndex;
 
-        if (index == -1) // No weapon equipped
+    public void OnWeaponUpdated(int previousValue, int newValue)
+    {
+        OnWeaponUpdated(newValue);
+    }
+
+    public void OnWeaponUpdated(int currentlyEquipped)
+    {
+
+        if (currentlyEquipped == -1) // No weapon equipped
         {
             if (playerCombatController.currentWeapon != null)
                 if (playerCombatController.currentWeapon.onAttack != null)
@@ -264,7 +269,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
             return;
         }
 
-        WeaponStorageSlot slot = playerInventoryController.weaponStorage[index];
+        WeaponStorageSlot slot = playerInventoryController.weaponStorage[currentlyEquipped];
         WeaponBehaviour weapon = slot.onplayer_behaviour;
         playerAnimationController.updateCurrentWeapon(weapon);
         playerCombatController.currentWeapon = weapon;
@@ -323,6 +328,14 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     public void EquipPreviousItem()
     {
         playerInventoryController.PreviousWeapon_ServerRpc();
+    }
+    public void storeCurrentWeapon()
+    {
+        playerInventoryController.StashCurrentWeapon_ServerRpc();
+    }
+    public void dropCurrentWeapon()
+    {
+        playerInventoryController.DropCurrentWeapon_ServerRpc();
     }
 
     public void Attack(bool input)

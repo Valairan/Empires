@@ -11,11 +11,10 @@ public class InventoryHandler : NetworkBehaviour, IInventory
 
     public List<WeaponStorageSlot> weaponStorage = new();
     [SerializeField]
-    public int currentWeaponIndex = -1;
+    public NetworkVariable<int> currentWeaponIndex = new NetworkVariable<int>(-1);
     public int coins, timber, iron, stone;
 
-    public Action InventoryUpdated;
-    public bool HasWeaponEquipped => currentWeaponIndex >= 0;
+    public bool HasWeaponEquipped => currentWeaponIndex.Value >= 0;
     [SerializeField] public NetworkParentCentre networkObjectRoot;
     [SerializeField] public NetworkParent inWorldStorageForDiscarding; //attach the inworld prefab to this and set active to false, enable and unparent for discarding
     [SerializeField] public NetworkParent handParent; //equpped weapon parent
@@ -27,7 +26,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
 
     public void init()
     {
-
+        currentWeaponIndex.OnValueChanged += OnWeaponChangedOnServer;
     }
 
 
@@ -74,49 +73,35 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         }
         inworld.NetworkObject.TrySetParent(transform);
         inworld.transform.position = Vector3.zero;
-        StashWeaponOnAllPlayersVisually_ClientRpc(slot.onplayer_instance);
         toggleInWorldWeaponOnAllPlayers_ClientRpc(inworld.NetworkObject);
-        updateWeaponOn_ClientRpc(currentWeaponIndex, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
 
     }
     [ServerRpc]
     public void NextWeapon_ServerRpc()
     {
-
-        int nextIndex = currentWeaponIndex - 1;
-
+        if (weaponStorage.Count == 0) return;
+        int nextIndex = currentWeaponIndex.Value - 1;
         if (nextIndex < 0)
             nextIndex = weaponStorage.Count - 1;
 
         StashCurrentWeapon();
         EquipWeapon(nextIndex);
-        currentWeaponIndex = nextIndex;
-        updateWeaponOn_ClientRpc(nextIndex, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
-
     }
 
     [ServerRpc]
     public void PreviousWeapon_ServerRpc()
     {
-
-        int prevIndex = currentWeaponIndex + 1;
-
-        if (prevIndex > weaponStorage.Count)
+        if (weaponStorage.Count == 0) return;
+        int prevIndex = currentWeaponIndex.Value + 1;
+        if (prevIndex >= weaponStorage.Count)
             prevIndex = 0;
 
         StashCurrentWeapon();
         EquipWeapon(prevIndex);
-        currentWeaponIndex = prevIndex;
-        updateWeaponOn_ClientRpc(prevIndex, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
-
     }
 
 
-    public void DropCurrentWeapon()
-    {
-        if (currentWeaponIndex < 0) return;
-        DropWeapon_ServerRpc(currentWeaponIndex);
-    }
+
     public void dropWeapon(int weaponIndex)
     {
         if (weaponIndex >= weaponStorage.Count || weaponIndex < 0) return;
@@ -125,17 +110,21 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         weaponStorage[weaponIndex].rb_instance.GetComponent<NetworkObject>().TrySetParent((Transform)null);
         weaponStorage[weaponIndex].rb_instance.transform.position = inWorldStorageForDiscarding.transform.position;
         toggleInWorldWeaponOnAllPlayers_ClientRpc((NetworkObjectReference)weaponStorage[weaponIndex].rb_instance.GetComponent<NetworkObject>());
+        RemoveFromInventory_ClientRpc((int)weaponStorage[weaponIndex].weapon.WeaponType, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
         weaponStorage.RemoveAt(weaponIndex);
+        currentWeaponIndex.Value = weaponIndex == currentWeaponIndex.Value ? -1 : currentWeaponIndex.Value;
+
     }
 
     [ServerRpc]
+    public void DropCurrentWeapon_ServerRpc()
+    {
+        dropWeapon(currentWeaponIndex.Value);
+    }
+    [ServerRpc]
     public void DropWeapon_ServerRpc(int weaponIndex)
     {
-        int temp = (int)weaponStorage[weaponIndex].weapon.WeaponType;
         dropWeapon(weaponIndex);
-        RemoveFromInventory_ClientRpc(temp, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
-        currentWeaponIndex = -1;
-        updateWeaponOn_ClientRpc(currentWeaponIndex, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
     }
 
     [ServerRpc]
@@ -143,7 +132,6 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     {
         StashCurrentWeapon();
         EquipWeapon(index);
-        updateWeaponOn_ClientRpc(currentWeaponIndex, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
 
     }
     public void EquipWeapon(int index)
@@ -151,63 +139,62 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         //if (!IsServer) return;
         if (index < 0 || index >= weaponStorage.Count) return;
         networkObjectRoot.TryToParentNetworkObject((NetworkObjectReference)weaponStorage[index].onplayer_instance, handParent);
-        equipWeaponOnAllPlayersVisually_ClientRpc((NetworkObjectReference)weaponStorage[index].onplayer_instance);
-        //StashCurrentWeapon();
+        currentWeaponIndex.Value = index;
     }
-    [ClientRpc]
-    public void equipWeaponOnAllPlayersVisually_ClientRpc(NetworkObjectReference networkObjectReference)
-    {
-        NetworkObject networkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectReference.NetworkObjectId];
-        networkObject.TryGetComponent(out WeaponBehaviour wb);
-        if (wb) wb.equip(networkObject.OwnerClientId);
-    }
+
 
 
     [ServerRpc]
     public void StashCurrentWeapon_ServerRpc()
     {
-        if (currentWeaponIndex < 0) return;
+        if (currentWeaponIndex.Value < 0) return;
 
         StashCurrentWeapon();
-        currentWeaponIndex = -1;
 
-        updateWeaponOn_ClientRpc(currentWeaponIndex, new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { OwnerClientId }
-            }
-        });
     }
     public void StashCurrentWeapon()
     {
         if (weaponStorage.Count < 1) return;
-        if (currentWeaponIndex < 0) return;
-        Debug.Log($"{currentWeaponIndex} is index");
-        switch (weaponStorage[currentWeaponIndex].weapon.WeaponType)
+        if (currentWeaponIndex.Value < 0) return;
+
+        int temp = currentWeaponIndex.Value;
+
+        switch (weaponStorage[temp].weapon.WeaponType)
         {
             case WeaponType.melee:
                 {
-                    networkObjectRoot.TryToParentNetworkObject(weaponStorage[currentWeaponIndex].onplayer_instance, meleeStorageParent);
+                    networkObjectRoot.TryToParentNetworkObject(weaponStorage[temp].onplayer_instance, meleeStorageParent);
                     break;
                 }
             case WeaponType.rifle:
                 {
-                    networkObjectRoot.TryToParentNetworkObject(weaponStorage[currentWeaponIndex].onplayer_instance, primaryStorageParent);
+                    networkObjectRoot.TryToParentNetworkObject(weaponStorage[temp].onplayer_instance, primaryStorageParent);
                     break;
                 }
             case WeaponType.sidearm:
                 {
-                    networkObjectRoot.TryToParentNetworkObject(weaponStorage[currentWeaponIndex].onplayer_instance, sideArmStorageParent);
+                    networkObjectRoot.TryToParentNetworkObject(weaponStorage[temp].onplayer_instance, sideArmStorageParent);
                     break;
                 }
         }
-        StashWeaponOnAllPlayersVisually_ClientRpc(weaponStorage[currentWeaponIndex].onplayer_instance);
+        currentWeaponIndex.Value = -1;
+    }
+    void OnWeaponChangedOnServer(int previous, int current)
+    {
+        if (!IsServer) return;
+        OnWeaponChanged_ClientRpc(previous, current);
+    }
+    [ClientRpc]
+    void OnWeaponChanged_ClientRpc(int previous, int current)
+    {
+        if (weaponStorage[previous].onplayer_behaviour.TryGetComponent(out WeaponBehaviour wb))
+            wb.store();
+
+
 
     }
-
-
-    [ClientRpc]
+    /*
+        [ClientRpc]
     public void StashWeaponOnAllPlayersVisually_ClientRpc(NetworkObjectReference networkObjectReference)
     {
         NetworkObject networkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectReference.NetworkObjectId];
@@ -222,12 +209,23 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         networkObject.TryGetComponent(out WeaponBehaviour wb);
         if (wb) wb.gameObject.SetActive(!wb.gameObject.activeSelf);
     }
+    */
+
+    [ClientRpc]
+    public void toggleInWorldWeaponOnAllPlayers_ClientRpc(NetworkObjectReference networkObjectReference)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects
+            .TryGetValue(networkObjectReference.NetworkObjectId, out var networkObject))
+            return;
+        networkObject.TryGetComponent(out WeaponBehaviour wb);
+        if (wb) wb.gameObject.SetActive(!wb.gameObject.activeSelf);
+    }
 
 
     [ClientRpc]
     public void RemoveFromInventory_ClientRpc(int type, ClientRpcParams _ = default)
     {
-        if (IsHost) return;
+        if (IsServer) return;
         int index = weaponStorage.FindIndex(
             x => (int)x.weapon.WeaponType == type
         );
@@ -255,12 +253,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
 
     }
 
-    [ClientRpc]
-    public void updateWeaponOn_ClientRpc(int currentWeaponIndex, ClientRpcParams _ = default)
-    {
-        this.currentWeaponIndex = currentWeaponIndex;
-        InventoryUpdated?.Invoke();
-    }
+
     public void BuyItem(Weapon weapon)
     {
     }

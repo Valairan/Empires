@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Palmmedia.ReportGenerator.Core;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -16,7 +17,7 @@ public struct VegetationChunk
 }
 public static class VegetationPlanter
 {
-    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, int probability, float[,] availableSpots)
+    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[,] availableSpots, float[,] biomeNoise)
     {
         int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
 
@@ -38,7 +39,46 @@ public static class VegetationPlanter
                     scaleRangeMin,
                     scaleRangeMax,
                     probability,
-                    availableSpots
+                    availableSpots,
+                    biomeNoise
+                );
+            }
+        }
+
+        return chunkGrid;
+    }
+    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[,] availableSpots)
+    {
+        int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
+
+        int chunkCountY = Mathf.CeilToInt((float)settings.mapHeight / grassChunkSize);
+        VegetationChunk[,] chunkGrid = new VegetationChunk[chunkCountX, chunkCountY];
+        float[,] biomeMap = new float[settings.biomeWidth, settings.biomeHeight];
+
+        for (int x = 0; x < settings.biomeWidth; x++)
+        {
+            for (int y = 0; y < settings.biomeHeight; y++)
+            {
+                biomeMap[x, y] = 1;
+            }
+        }
+        for (int cy = 0; cy < chunkCountY; cy++)
+        {
+            for (int cx = 0; cx < chunkCountX; cx++)
+            {
+                chunkGrid[cx, cy] = GenerateGrassChunk(
+                    cx,
+                    cy,
+                    settings,
+                    grassChunkSize,
+                    grassPerCell,
+                    isWaterPlant,
+                    seed,
+                    scaleRangeMin,
+                    scaleRangeMax,
+                    probability,
+                    availableSpots,
+                    biomeMap
                 );
             }
         }
@@ -134,38 +174,8 @@ public static class VegetationPlanter
 
         return offset;
     }
-    public static VegetationChunk[,] scatterVegetationInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, int probability, float[,] availableSpots)
-    {
-        int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
 
-        int chunkCountY = Mathf.CeilToInt((float)settings.mapHeight / grassChunkSize);
-        VegetationChunk[,] chunkGrid = new VegetationChunk[chunkCountX, chunkCountY];
-
-        for (int cy = 0; cy < chunkCountY; cy++)
-        {
-            for (int cx = 0; cx < chunkCountX; cx++)
-            {
-                chunkGrid[cx, cy] = GenerateGrassChunk(
-                    cx,
-                    cy,
-                    settings,
-                    grassChunkSize,
-                    grassPerCell,
-                    isWaterPlant,
-                    seed,
-                    scaleRangeMin,
-                    scaleRangeMax,
-                    probability,
-                    availableSpots
-                );
-            }
-        }
-
-        return chunkGrid;
-    }
-
-
-    public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, int probability, float[,] availableSpots)
+    public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[,] availableSpots, float[,] biomeMap)
     {
         int chunkSize = grassChunkSize;
 
@@ -195,7 +205,30 @@ public static class VegetationPlanter
             for (int y = startY; y <= endY; y++)
             {
 
-                if (rng.NextInt(0, 101) >= probability) continue;
+                float u = (x + 0.5f) / settings.mapWidth;
+                float v = (y + 0.5f) / settings.mapHeight;
+
+                int biomeX = Mathf.Clamp(
+                    (int)(u * settings.biomeWidth),
+                    0, settings.biomeWidth - 1
+                );
+
+                int biomeY = Mathf.Clamp(
+                    (int)(v * settings.biomeHeight),
+                    0, settings.biomeHeight - 1
+                );
+
+                //float biome = biomeMap[biomeX, biomeY];
+
+                if (x % 100 == 0)
+                {
+                    Debug.Log(biomeX);
+                    Debug.Log(biomeY);
+                }
+
+                float finalProbability = probability;
+                if (rng.Hash(x, y) >= finalProbability) continue;
+
                 float height = availableSpots[x, y];
                 if (height < 4) continue;
                 if (x > 0 && x < settings.mapWidth - 1 && y > 0 && y < settings.mapHeight - 1)
@@ -316,7 +349,21 @@ public static class VegetationPlanter
         //StaticBatchingUtility.Combine(grassParentSub);
         //StaticBatchingUtility.Combine(treeParentSub);
     }
+    public static (int x2, int y2) RemapIndex(
+        int x1, int y1,
+        int width1, int height1,
+        int width2, int height2)
+    {
+        // Normalize coordinates (0 → 1 range)
+        float u = (float)x1 / (width1 - 1);
+        float v = (float)y1 / (height1 - 1);
 
+        // Scale to new resolution
+        int x2 = Mathf.RoundToInt(u * (width2 - 1));
+        int y2 = Mathf.RoundToInt(v * (height2 - 1));
+
+        return (x2, y2);
+    }
 
 }
 

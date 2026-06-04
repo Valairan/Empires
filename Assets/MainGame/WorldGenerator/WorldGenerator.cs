@@ -30,8 +30,10 @@ public class WorldGenerator : MonoBehaviour
     {
         TerrainSettings settings = new TerrainSettings
         {
-            mapWidth = 1000,
-            mapHeight = 1000,
+            mapWidth = 250,
+            mapHeight = 250,
+            biomeWidth = 50,
+            biomeHeight = 50,
             seed = 10,
             scale = 32,
             octaves = 4,
@@ -57,16 +59,18 @@ public class WorldGenerator : MonoBehaviour
         mapWidth = settings.mapWidth;
         totaleVegetationChunks = new VegetationChunk[vegetation.Length][,];
         terrainNoise = NoiseGenerator.GenerateSteppedNoiseMap(settings.mapWidth, settings.mapHeight, settings.seed, settings.scale, settings.octaves, settings.persistance, settings.lacunarity, settings.multiplier, settings.offset, settings.falloffHeight, settings.falloffDistance);
-        biomeNoise = NoiseGenerator.GenerateNoiseMap(250, 250, 20, 32, 4, 16f, 16f, 1f, Vector2.zero, 0, 0);
+        biomeNoise = NoiseGenerator.GenerateNoiseMap(settings.biomeWidth, settings.biomeHeight, 20, 32, 4, 16f, 16f, 1f, Vector2.zero, 0, 0);
         weatherNoise = NoiseGenerator.GenerateNoiseMap(100, 100, 10, 4, 4, 16f, 16f, 1f, Vector2.zero, 0, 0);
 
         MeshGenerator.GenerateTerrainMesh(settings.mapWidth, settings.mapHeight, 100, terrainMaterial, 6, terrainNoise);
         MeshGenerator.GenerateSquareMesh(settings.mapWidth, settings.mapHeight, 25, oceanMaterial, 4);
 
         placedTrees = VegetationPlanter.ScatterDecoration(settings.mapWidth, settings.mapHeight, 100, TreesToPlace, terrainNoise, 5, biomeNoise);
-        for (int i = 0; i < vegetation.Length; i++)
+
+        totaleVegetationChunks[0] = VegetationPlanter.scatterGrassInChunks(settings, 5, vegetation[0].density, vegetation[0].isWaterPlant, vegetation[0].seed, vegetation[0].scaleRangeMin, vegetation[0].scaleRangeMax, vegetation[0].probability, terrainNoise);
+        for (int i = 1; i < vegetation.Length; i++)
         {
-            totaleVegetationChunks[i] = VegetationPlanter.scatterGrassInChunks(settings, 5, vegetation[i].density, vegetation[i].isWaterPlant, vegetation[i].seed, vegetation[i].scaleRangeMin, vegetation[i].scaleRangeMax, vegetation[i].probability, terrainNoise);
+            totaleVegetationChunks[i] = VegetationPlanter.scatterGrassInChunks(settings, 5, vegetation[i].density, vegetation[i].isWaterPlant, vegetation[i].seed, vegetation[i].scaleRangeMin, vegetation[i].scaleRangeMax, vegetation[i].probability, terrainNoise, biomeNoise);
         }
 
         renderParams = new RenderParams(grassMaterial)
@@ -82,7 +86,7 @@ public class WorldGenerator : MonoBehaviour
 
     }
 
-    Matrix4x4[] visibleMatrices = new Matrix4x4[1023]; 
+    Matrix4x4[] visibleMatrices = new Matrix4x4[1023];
     int maxInstances = 1023;
     private Plane[] planes = new Plane[6];
 
@@ -176,8 +180,8 @@ public struct VegetationType
     public float scaleRangeMax;
     public Mesh mesh;
     public int submesh;
-    [Range(0, 100)]
-    public int probability;
+    [Range(0, 1)]
+    public float probability;
 }
 
 
@@ -190,6 +194,8 @@ public struct TerrainSettings
 {
     public int mapWidth;
     public int mapHeight;
+    public int biomeWidth;
+    public int biomeHeight;
     public int seed;
     public float scale;
     public int octaves;

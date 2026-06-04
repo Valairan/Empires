@@ -331,6 +331,7 @@ Material:
     - Fade_Color: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorVariation: {r: 0, g: 0, b: 0, a: 0}
     - _DiffusionProfileAsset: {r: -694.41174, g: -2.8006413e+22, b: 2.7147835e-26, a: 3.4189296e+30}
     - _Diffusion_Profile_Asset: {r: 4.850136e-22, g: 2.7887351e-36, b: 2.7755116e-36, a: -6.4239144e-24}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
@@ -339,6 +340,7 @@ Material:
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
+    - _NoiseOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _ThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _Thickness_Remap: {r: 0.65, g: 1, b: 0, a: 0}

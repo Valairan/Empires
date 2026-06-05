@@ -6311,6 +6311,7 @@ GameObject:
   - component: {fileID: 78056783}
   - component: {fileID: 78056784}
   - component: {fileID: 78056785}
+  - component: {fileID: 78056786}
   m_Layer: 8
   m_Name: GameManager
   m_TagString: Untagged
@@ -6383,6 +6384,7 @@ MonoBehaviour:
   - {fileID: 399065730}
   playerCanvas: {fileID: 0}
   worldGenerator: {fileID: 1587058056}
+  dayLengthInSeconds: 150
 --- !u!114 &78056785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6396,6 +6398,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: behaviours::ResourcesManager
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &78056786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78056781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed21495155ad7b34f85b44f21c13a739, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  ShowTopMostFoldoutHeaderGroup: 1
+  sunLight: {fileID: 683952284}
+  moonLight: {fileID: 1378279257}
+  maxSunIntensity: 80000
+  maxMoonIntensity: 1000
+  dayVolume: {fileID: 1454251807}
+  nightVolume: {fileID: 1475789021}
+  dayVolumeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &78535444
 GameObject:
   m_ObjectHideFlags: 0
@@ -58580,7 +58625,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &683952283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58626,7 +58671,7 @@ MonoBehaviour:
   m_IncludeForPathTracing: 1
   m_AreaLightShadowCone: 120
   m_UseScreenSpaceShadows: 0
-  m_InteractsWithSky: 1
+  m_InteractsWithSky: 0
   m_AngularDiameter: 0.5
   diameterMultiplerMode: 0
   diameterMultiplier: 1
@@ -58796,13 +58841,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 683952282}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &684680903
 GameObject:
   m_ObjectHideFlags: 0
@@ -137031,7 +137076,7 @@ Light:
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 0.97828084, b: 0.7877358, a: 1}
-  m_Intensity: 5000
+  m_Intensity: 1000
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -137093,13 +137138,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378279255}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1380595387
 GameObject:
   m_ObjectHideFlags: 0
@@ -142281,7 +142326,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1454251807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142297,8 +142342,8 @@ MonoBehaviour:
   m_IsGlobal: 1
   priority: 0
   blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: 754e77390c665204d98d2cdb7a087f5d, type: 2}
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: af624ea3fabc0ad428bae81c361b3cde, type: 2}
 --- !u!4 &1454251808
 Transform:
   m_ObjectHideFlags: 0

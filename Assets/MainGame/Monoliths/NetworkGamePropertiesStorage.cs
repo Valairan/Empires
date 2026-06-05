@@ -14,6 +14,11 @@ public class NetworkGamePropertiesStorage : NetworkBehaviour
     public NetworkList<PlayerData> connectedPlayerData;
     public NetworkVariable<int> readyState;
     public NetworkVariable<int> WorldGenerationSeed;
+    public NetworkVariable<float> CurrentTime = new NetworkVariable<float>(
+            0.25f, // Starts at 6:00 AM
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
     public string myname;
 
     private string[] names = { "Avocado", "Potato", "Tomato", "Radish", "Carrot", "Bamboo", "Bean", "Cabbage" };

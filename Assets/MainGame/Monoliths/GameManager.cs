@@ -1,16 +1,22 @@
 using System;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 public class GameManager : NetworkBehaviour
 {
     [SerializeField] bool generateTerrain;
     [SerializeField] Transform[] playerSpawnPositions;
     [SerializeField] Transform playerCanvas;
     [SerializeField] WorldGenerator worldGenerator;
-
     public Action sceneLoadComplete;
     public static GameManager Singleton;
     float loaderProgress = 0;
+
+    [Header("Clock")]
+    private bool GameStarted = false;
+    [SerializeField] private float dayLengthInSeconds = 1200f;
+
 
     void Awake()
     {
@@ -28,7 +34,23 @@ public class GameManager : NetworkBehaviour
         sceneLoadComplete -= init;
     }
 
+    void Update()
+    {
+        if (!IsServer) return;
+        if (!GameStarted) return;
+        UpdateNetworkClock();
+    }
+    private void UpdateNetworkClock()
+    {
+        if (NetworkGamePropertiesStorage.Singleton == null) return;
 
+        // Calculate normalized time delta based on frame time
+        float timeDelta = Time.deltaTime / dayLengthInSeconds;
+
+        // Increment, wrapping seamlessly between 0.0f and 1.0f
+        float newTime = (NetworkGamePropertiesStorage.Singleton.CurrentTime.Value + timeDelta) % 1.0f;
+        NetworkGamePropertiesStorage.Singleton.CurrentTime.Value = newTime;
+    }
     public void init()
     {
         if (!IsServer) return;
@@ -37,7 +59,7 @@ public class GameManager : NetworkBehaviour
         if (generateTerrain) GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
         else
         {
-            
+
         }
         int count = 0;
         foreach (ulong client in NetworkManager.ConnectedClientsIds)
@@ -53,8 +75,10 @@ public class GameManager : NetworkBehaviour
             SetLoader_ClientRpc(loaderProgress);
         }
         DisableLoader_ClientRpc();
+        GameStarted = true;
 
     }
+
     public Vector3 GetSpawnPointForClient(ulong clientID)
     {
         return playerSpawnPositions[(int)clientID % 8].position;
@@ -68,12 +92,22 @@ public class GameManager : NetworkBehaviour
 
 
 
+    [ClientRpc]
+    public void StartGame_ClientRpc()
+    {
+        Loader.Singelton.gameObject.SetActive(false);
+        GameStarted = true;
+        // You can use this space on the client if you need to run specific initialization 
+        // that must occur the exact moment the loading screen fades away.
+        Debug.Log("Game active! Local mechanics initialized.");
+    }
 
     [ClientRpc]
     public void DisableLoader_ClientRpc()
     {
         Loader.Singelton.gameObject.SetActive(false);
     }
+
 
     [ClientRpc]
     public void GenerateTerrain_ClientRpc(int seed)

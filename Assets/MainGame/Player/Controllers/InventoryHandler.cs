@@ -57,7 +57,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         {
             case WeaponType.melee:
                 {
-                    networkObjectRoot.TryToParentNetworkObject(netref, meleeStorageParent);
+                    networkObjectRoot.TryToParentNetworgkObject(netref, meleeStorageParent);
                     break;
                 }
             case WeaponType.rifle:
@@ -134,14 +134,36 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         EquipWeapon(index);
 
     }
+    [ClientRpc]
+    public void EquipWeapon_ClientRpc(int index)
+    {
+        if (index < 0 || index >= weaponStorage.Count) return;
+        weaponStorage[index].onplayer_instance.transform.localPosition = weaponStorage[index].weapon.position;
+        weaponStorage[index].onplayer_instance.transform.localRotation = Quaternion.Euler(weaponStorage[index].weapon.rotation);
+        weaponStorage[index].onplayer_instance.transform.localScale = weaponStorage[index].weapon.scale;
+    }
     public void EquipWeapon(int index)
     {
         //if (!IsServer) return;
         if (index < 0 || index >= weaponStorage.Count) return;
-        networkObjectRoot.TryToParentNetworkObject((NetworkObjectReference)weaponStorage[index].onplayer_instance, handParent);
+        if (!networkObjectRoot.TryToParentNetworkObject((NetworkObjectReference)weaponStorage[index].onplayer_instance, handParent)) return;
+        setWeaponToEquippedPosition(index);
+        EquipWeapon_ClientRpc(index);
         currentWeaponIndex.Value = index;
     }
 
+    void setWeaponToEquippedPosition(int index)
+    {
+        weaponStorage[index].onplayer_instance.transform.localPosition = weaponStorage[index].weapon.position;
+        weaponStorage[index].onplayer_instance.transform.localRotation = Quaternion.Euler(weaponStorage[index].weapon.rotation);
+        weaponStorage[index].onplayer_instance.transform.localScale = weaponStorage[index].weapon.scale;
+    }
+    void setWeaponToStoredPosition(int index)
+    {
+        weaponStorage[index].onplayer_instance.transform.localPosition = weaponStorage[index].weapon.storedPosition;
+        weaponStorage[index].onplayer_instance.transform.localRotation = Quaternion.Euler(weaponStorage[index].weapon.storedRotation);
+        weaponStorage[index].onplayer_instance.transform.localScale = weaponStorage[index].weapon.storedScale;
+    }
 
 
     [ServerRpc]
@@ -177,6 +199,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
                     break;
                 }
         }
+        setWeaponToStoredPosition(temp);
         currentWeaponIndex.Value = -1;
     }
     void OnWeaponChangedOnServer(int previous, int current)

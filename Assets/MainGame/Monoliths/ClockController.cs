@@ -7,12 +7,11 @@ public class ClockController : NetworkBehaviour
     [Header("Lighting References")]
     [SerializeField] private Light sunLight;
     [SerializeField] private Light moonLight;
-    [SerializeField] private float maxSunIntensity = 100000f; // Lux for HDRP
-    [SerializeField] private float maxMoonIntensity = 20000f;
+    [SerializeField] private float maxSunIntensity = 90000; // Lux for HDRP
+    [SerializeField] private float maxMoonIntensity = 1000f;
 
     [Header("HDRP Volume References")]
     [SerializeField] private Volume dayVolume;
-    [SerializeField] private Volume nightVolume;
 
     [Header("Visual Blending Profile")]
     [Tooltip("X-Axis: Time of day (0 to 1). Y-Axis: Day Volume weight (0 = Night, 1 = Day).")]
@@ -38,19 +37,7 @@ public class ClockController : NetworkBehaviour
         // 2. Evaluate Continuous Volume Weights
         float dayWeight = dayVolumeCurve.Evaluate(time);
         dayVolume.weight = dayWeight;
-        nightVolume.weight = 1.0f - dayWeight;
 
-        // 3. Calculate target intensities using dot products
-        float sunDot = Vector3.Dot(sunLight.transform.forward, Vector3.down);
-        float moonDot = Vector3.Dot(moonLight.transform.forward, Vector3.down);
-
-        // Compute smooth target intensities based on horizon position
-        float targetSunIntensity = (sunDot > 0) ? Mathf.Clamp01(sunDot * 5f) * maxSunIntensity : 0f;
-        float targetMoonIntensity = (moonDot > 0) ? Mathf.Clamp01(moonDot * 5f) * maxMoonIntensity : 0f;
-
-        // 4. Safely apply intensities and toggle component states
-        ManageLightComponent(sunLight, targetSunIntensity);
-        ManageLightComponent(moonLight, targetMoonIntensity);
     }
 
     /// <summary>

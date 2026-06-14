@@ -9,47 +9,52 @@ public class SettingsManager : MonoBehaviour
 
     void Awake()
     {
-        // Singleton
-        if (Instance == null) Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Keeps settings alive across scenes
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         ApplySettings();
     }
 
     public void ApplySettings()
     {
-        ApplyResolution();
+        ApplyResolutionAndFullscreen();
+        ApplyGrassRenderDistance();
     }
 
-    void ApplyResolution()
+    void ApplyResolutionAndFullscreen()
     {
-        if (!PlayerPrefs.HasKey("ResolutionIndex"))
-            return;
+        // Default to current native resolution if nothing is saved yet
+        int width = PlayerPrefs.GetInt("PrefWidth", Screen.currentResolution.width);
+        int height = PlayerPrefs.GetInt("PrefHeight", Screen.currentResolution.height);
+        
+        // Default to fullscreen enabled (1)
+        bool isFullscreen = PlayerPrefs.GetInt("Fullscreen", 1) == 1; 
 
-        Resolution[] resolutions = Screen.resolutions;
-        int index = PlayerPrefs.GetInt("ResolutionIndex");
+        FullScreenMode mode = isFullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
 
-        if (index < 0 || index >= resolutions.Length)
-            return;
-
-        Resolution r = resolutions[index];
-        Screen.SetResolution(
-            r.width,
-            r.height,
-            FullScreenMode.FullScreenWindow
-        );
+        Screen.SetResolution(width, height, mode);
     }
 
     void ApplyGrassRenderDistance()
     {
+        float distance = PlayerPrefs.GetFloat("GrassDistance", defaultGrassDistance);
+
+        // TODO: Apply this value to your terrain or third-party grass solution.
+        // Example for Unity Terrain:
+        // if (Terrain.activeTerrain != null) { Terrain.activeTerrain.detailObjectDistance = distance; }
         
+        Debug.Log($"Applied Grass Distance: {distance}");
     }
 
-    void ApplyFullScreen()
-    {
-        
-    }
-
-    public void quitApplication()
+    public void QuitApplication()
     {
         Application.Quit();
     }

@@ -1,11 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
-using Palmmedia.ReportGenerator.Core;
-using Unity.VisualScripting;
+
 using UnityEngine;
-using UnityEngine.UIElements;
 public struct VegetationChunk
 {
     public Vector2Int coord;

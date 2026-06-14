@@ -5,6 +5,7 @@ public class JumpEventHandler : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        return;
         if (!animator.transform.parent.TryGetComponent(out PlayerController player)) return;
         player.playerAnimationController.meleeRigWeight = 0f;
         player.playerAnimationController.rifleRigWeight = 0f;

@@ -203,6 +203,7 @@ MonoBehaviour:
     m_RuntimeSettings:
       m_List:
       - rid: 8827055905194377216
+      - rid: 8827055905194377218
       - rid: 8827055905194377219
       - rid: 8827055905194377221
       - rid: 8827055905194377223
@@ -387,7 +388,7 @@ MonoBehaviour:
       type: {class: WaterSystemGlobalSettings, ns: UnityEngine.Rendering.HighDefinition, asm: Unity.RenderPipelines.HighDefinition.Runtime}
       data:
         m_Version: 1
-        m_EnableMaskAndCurrentWaterDecals: 0
+        m_EnableMaskAndCurrentWaterDecals: 1
     - rid: 8827055905194377224
       type: {class: AnalyticDerivativeSettings, ns: UnityEngine.Rendering.HighDefinition, asm: Unity.RenderPipelines.HighDefinition.Runtime}
       data:

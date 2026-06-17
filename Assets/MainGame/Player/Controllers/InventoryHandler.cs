@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using Unity.Mathematics;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class InventoryHandler : NetworkBehaviour, IInventory
@@ -57,7 +55,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         {
             case WeaponType.melee:
                 {
-                    networkObjectRoot.TryToParentNetworgkObject(netref, meleeStorageParent);
+                    networkObjectRoot.TryToParentNetworkObject(netref, meleeStorageParent);
                     break;
                 }
             case WeaponType.rifle:
@@ -73,6 +71,8 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         }
         inworld.NetworkObject.TrySetParent(transform);
         inworld.transform.position = Vector3.zero;
+        setWeaponToStoredPosition(weaponStorage.Count - 1);
+        StashWeaponOnAll_ClientRpc(netref);
         toggleInWorldWeaponOnAllPlayers_ClientRpc(inworld.NetworkObject);
 
     }
@@ -135,12 +135,14 @@ public class InventoryHandler : NetworkBehaviour, IInventory
 
     }
     [ClientRpc]
-    public void EquipWeapon_ClientRpc(int index)
+    public void EquipWeaponOnAll_ClientRpc(NetworkObjectReference weapon)
     {
-        if (index < 0 || index >= weaponStorage.Count) return;
-        weaponStorage[index].onplayer_instance.transform.localPosition = weaponStorage[index].weapon.position;
-        weaponStorage[index].onplayer_instance.transform.localRotation = Quaternion.Euler(weaponStorage[index].weapon.rotation);
-        weaponStorage[index].onplayer_instance.transform.localScale = weaponStorage[index].weapon.scale;
+        NetworkObject networkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[weapon.NetworkObjectId];
+        if (networkObject == null) return;
+        if (!networkObject.TryGetComponent(out WeaponBehaviour weaponBehaviour)) return;
+        networkObject.transform.localPosition = weaponBehaviour.baseitem.position;
+        networkObject.transform.localRotation = Quaternion.Euler(weaponBehaviour.baseitem.rotation);
+        networkObject.transform.localScale = weaponBehaviour.baseitem.scale;
     }
     public void EquipWeapon(int index)
     {
@@ -148,7 +150,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         if (index < 0 || index >= weaponStorage.Count) return;
         if (!networkObjectRoot.TryToParentNetworkObject((NetworkObjectReference)weaponStorage[index].onplayer_instance, handParent)) return;
         setWeaponToEquippedPosition(index);
-        EquipWeapon_ClientRpc(index);
+        EquipWeaponOnAll_ClientRpc((NetworkObjectReference)weaponStorage[index].onplayer_instance);
         currentWeaponIndex.Value = index;
     }
 
@@ -170,9 +172,18 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     public void StashCurrentWeapon_ServerRpc()
     {
         if (currentWeaponIndex.Value < 0) return;
-
         StashCurrentWeapon();
 
+    }
+    [ClientRpc]
+    public void StashWeaponOnAll_ClientRpc(NetworkObjectReference weapon)
+    {
+        NetworkObject networkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[weapon.NetworkObjectId];
+        if (networkObject == null) return;
+        if (!networkObject.TryGetComponent(out WeaponBehaviour weaponBehaviour)) return;
+        networkObject.transform.localPosition = weaponBehaviour.baseitem.storedPosition;
+        networkObject.transform.localRotation = Quaternion.Euler(weaponBehaviour.baseitem.storedRotation);
+        networkObject.transform.localScale = weaponBehaviour.baseitem.storedScale;
     }
     public void StashCurrentWeapon()
     {
@@ -200,6 +211,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
                 }
         }
         setWeaponToStoredPosition(temp);
+        StashWeaponOnAll_ClientRpc((NetworkObjectReference)weaponStorage[temp].onplayer_instance);
         currentWeaponIndex.Value = -1;
     }
     void OnWeaponChangedOnServer(int previous, int current)

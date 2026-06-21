@@ -297,7 +297,7 @@ public static class VegetationPlanter
 
         return chunk;
     }
-    public static BaseResourceBehaviour[,] ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, float[,] availableSpots, int skip, float[,] biome)
+    public static BaseResourceBehaviour[,] ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, GameObject[] extras, ref float[,] availableSpots, int skip, float[,] biome)
     {
         GameObject treeParent = new GameObject("Tree Parent");
         BaseResourceBehaviour[,] placedTrees = new BaseResourceBehaviour[mapHeight, mapWidth];
@@ -330,6 +330,8 @@ public static class VegetationPlanter
                                 treeCount++;
                             }
                         }
+
+
 
 
                         //Loader.instance.setProgress(x / mapHeight);

@@ -1,8 +1,6 @@
 using System;
-using Unity.VisualScripting;
-using UnityEditor;
+using Codice.CM.Common.Tree.Partial;
 using UnityEngine;
-using UnityEngine.Profiling;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -44,7 +42,8 @@ public class WorldGenerator : MonoBehaviour
             falloffHeight = 20,
             falloffDistance = 5
         };
-        GenerateTerrain(settings);
+
+        //GenerateTerrain(settings);
     }
 
     void Start()
@@ -53,25 +52,34 @@ public class WorldGenerator : MonoBehaviour
         //StartGameLocal();
     }
 
-    public void GenerateTerrain(TerrainSettings settings)
+    public void GenerateTerrain(TerrainSettings settings, ref float progress)
     {
+        progress = 0f;
         mapHeight = settings.mapHeight;
         mapWidth = settings.mapWidth;
         totaleVegetationChunks = new VegetationChunk[vegetation.Length][,];
+        progress = .2f;
         terrainNoise = NoiseGenerator.GenerateSteppedNoiseMap(settings.mapWidth, settings.mapHeight, settings.seed, settings.scale, settings.octaves, settings.persistance, settings.lacunarity, settings.multiplier, settings.offset, settings.falloffHeight, settings.falloffDistance);
+        progress = .3f;
         biomeNoise = NoiseGenerator.GenerateNoiseMap(settings.biomeWidth, settings.biomeHeight, 20, 32, 4, 16f, 16f, 1f, Vector2.zero, 0, 0);
+        progress = .4f;
         weatherNoise = NoiseGenerator.GenerateNoiseMap(100, 100, 10, 4, 4, 16f, 16f, 1f, Vector2.zero, 0, 0);
+        progress = .5f;
 
+        
         MeshGenerator.GenerateTerrainMesh(settings.mapWidth, settings.mapHeight, 100, terrainMaterial, 6, terrainNoise);
+        progress = .6f;
         //MeshGenerator.GenerateSquareMesh(settings.mapWidth, settings.mapHeight, 25, oceanMaterial, 4);
 
-        placedTrees = VegetationPlanter.ScatterDecoration(settings.mapWidth, settings.mapHeight, 100, TreesToPlace, terrainNoise, 5, biomeNoise);
+        placedTrees = VegetationPlanter.ScatterDecoration(settings.mapWidth, settings.mapHeight, 100, TreesToPlace, DecorToPlace, ref terrainNoise, 5, biomeNoise);
+        progress = .7f;
 
         totaleVegetationChunks[0] = VegetationPlanter.scatterGrassInChunks(settings, 5, vegetation[0].density, vegetation[0].isWaterPlant, vegetation[0].seed, vegetation[0].scaleRangeMin, vegetation[0].scaleRangeMax, vegetation[0].probability, terrainNoise);
         for (int i = 1; i < vegetation.Length; i++)
         {
             totaleVegetationChunks[i] = VegetationPlanter.scatterGrassInChunks(settings, 5, vegetation[i].density, vegetation[i].isWaterPlant, vegetation[i].seed, vegetation[i].scaleRangeMin, vegetation[i].scaleRangeMax, vegetation[i].probability, terrainNoise, biomeNoise);
         }
+        progress = .8f;
 
         renderParams = new RenderParams(grassMaterial)
         {
@@ -79,7 +87,8 @@ public class WorldGenerator : MonoBehaviour
             shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off
         };
 
-
+        
+        progress = 1f;
         generationComplete = true;
         ResourcesManager.Singleton.placedTrees = placedTrees;
         mainCamera = Camera.main;

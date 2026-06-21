@@ -6586,6 +6586,7 @@ MonoBehaviour:
   - {fileID: 399065730}
   playerCanvas: {fileID: 0}
   worldGenerator: {fileID: 1587058056}
+  progress: 0
   dayLengthInSeconds: 150
 --- !u!114 &78056785
 MonoBehaviour:
@@ -58763,7 +58764,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
-    m_Type: 0
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -106418,15 +106419,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3694543990003838037, guid: 45b55455043945741a4b2f147703d69a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 51.999226
+      value: 50.330894
       objectReference: {fileID: 0}
     - target: {fileID: 3694543990003838037, guid: 45b55455043945741a4b2f147703d69a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0000006522205
+      value: -0.49999976
       objectReference: {fileID: 0}
     - target: {fileID: 3694543990003838037, guid: 45b55455043945741a4b2f147703d69a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 25.100815
+      value: 20.165667
       objectReference: {fileID: 0}
     - target: {fileID: 3694543990003838037, guid: 45b55455043945741a4b2f147703d69a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -124971,7 +124972,7 @@ GameObject:
   - component: {fileID: 1277705829}
   - component: {fileID: 1277705828}
   - component: {fileID: 1277705827}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TestStartPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157244,7 +157245,8 @@ MonoBehaviour:
   - {fileID: 7464185219406325303, guid: 56c8238bd56a9ec4080d5483959fcf44, type: 3}
   - {fileID: 4384010738306705430, guid: 836f8bf673cfc5740addefec1d2633e3, type: 3}
   - {fileID: 3525668008368911205, guid: 20407616c7b24304ea1403c499fc9aa9, type: 3}
-  DecorToPlace: []
+  DecorToPlace:
+  - {fileID: 7384927783429708200, guid: e34afac49082a9f49bc1b60b956f83d7, type: 3}
   vegetation:
   - isWaterPlant: 0
     seed: 1

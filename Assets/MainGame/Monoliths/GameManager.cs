@@ -1,17 +1,30 @@
 using System;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
 public class GameManager : NetworkBehaviour
 {
     [SerializeField] bool generateTerrain;
     [SerializeField] Transform[] playerSpawnPositions;
     [SerializeField] Transform playerCanvas;
     [SerializeField] WorldGenerator worldGenerator;
+    public float Progress
+    {
+    get { return progress; }
+    set
+    {
+        if (progress != value)
+        {
+            if(value > 1f) value = 1f;
+            progress = value;
+            Debug.Log(value);
+        }
+    }
+    }
+    [SerializeField] private float progress = 0;
+
+
     public Action sceneLoadComplete;
     public static GameManager Singleton;
-    float loaderProgress = 0;
 
     [Header("Clock")]
     private bool GameStarted = false;
@@ -71,8 +84,6 @@ public class GameManager : NetworkBehaviour
             NetworkGamePropertiesStorage.Singleton.spawnedPlayers.Add(client, player);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(client, true);
             count++;
-            loaderProgress = count / NetworkManager.Singleton.ConnectedClients.Count;
-            SetLoader_ClientRpc(loaderProgress);
         }
         DisableLoader_ClientRpc();
         GameStarted = true;
@@ -85,7 +96,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void SetLoader_ClientRpc(float value)
+    public void SetLoaderProgress_ClientRpc(float value)
     {
         Loader.Singelton.setProgress(value);
     }
@@ -109,6 +120,8 @@ public class GameManager : NetworkBehaviour
     }
 
 
+
+
     [ClientRpc]
     public void GenerateTerrain_ClientRpc(int seed)
     {
@@ -126,7 +139,7 @@ public class GameManager : NetworkBehaviour
             falloffHeight = 20,
             falloffDistance = 5
         };
-        worldGenerator.GenerateTerrain(settings);
+        worldGenerator.GenerateTerrain(settings, ref progress);
 
     }
 }

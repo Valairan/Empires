@@ -186,7 +186,7 @@ Material:
     - Animation_Cutoff: 20
     - Distance_Fade_End: 40
     - Distance_Fade_Start: 30
-    - Vector1_593c5cea6c4a42e993ed03ced4685732: 0.6
+    - Vector1_593c5cea6c4a42e993ed03ced4685732: 4
     - Vector1_8651797e3e304e108dbd25f9d5a426ba: 0
     - Vector1_a5b8b09028ce49a39f4d090894c89e22: 0.5
     - Vector1_a6983181c8dc4691ba6a28a34c4223a6: 1

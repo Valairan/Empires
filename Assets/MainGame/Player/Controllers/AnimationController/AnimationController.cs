@@ -15,8 +15,12 @@ public class AnimationController : MonoBehaviour
     public float parentRigWeight;
     public Rig meleeRig;
     public float meleeRigWeight;
+    public Rig TorsoRig;
+    public float torsoRigWeight;
     public Rig rifleRig;
     public float rifleRigWeight;
+    public TwoBoneIKConstraint RiflePositionConstraint;
+    public Transform RiflePositionConstraintTarget;
     public TwoBoneIKConstraint leftHandConstraint;
     public float leftHandConstraintWeight;
     public Rig leftHandRig;
@@ -170,6 +174,9 @@ public class RifleState : State
         controller.throwableRigWeight = 0;
         controller.leftHandConstraintWeight = 1f;
         controller.leftHandRigWeight = 1f;
+
+        controller.torsoRigWeight = 1f;
+
         controller.parentRig.Build();
 
     }
@@ -188,6 +195,9 @@ public class RifleState : State
         controller.throwableRig.weight = Mathf.Lerp(controller.throwableRig.weight, controller.throwableRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandRig.weight = Mathf.Lerp(controller.leftHandRig.weight, controller.leftHandRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandConstraint.weight = Mathf.Lerp(controller.leftHandConstraint.weight, controller.leftHandConstraintWeight, timeElapsed / controller.lerpFactor);
+        
+        controller.TorsoRig.weight = Mathf.Lerp(controller.TorsoRig.weight, controller.torsoRigWeight, timeElapsed / controller.lerpFactor);
+
         timeElapsed += Time.deltaTime;
     }
 }
@@ -269,6 +279,9 @@ public class ThrowableState : State
         controller.leftHandConstraintWeight = 0f;
         controller.leftHandRigWeight = 0f;
 
+        controller.torsoRigWeight = 1f;
+
+
     }
 
     public override void OnStateExit(AnimationController controller)
@@ -285,6 +298,9 @@ public class ThrowableState : State
         controller.throwableRig.weight = Mathf.Lerp(controller.throwableRig.weight, controller.throwableRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandRig.weight = Mathf.Lerp(controller.leftHandRig.weight, controller.leftHandRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandConstraint.weight = Mathf.Lerp(controller.leftHandConstraint.weight, controller.leftHandConstraintWeight, timeElapsed / controller.lerpFactor);
+
+        controller.TorsoRig.weight = Mathf.Lerp(controller.TorsoRig.weight, controller.torsoRigWeight, timeElapsed / controller.lerpFactor);
+
         timeElapsed += Time.deltaTime;
     }
 }
@@ -300,6 +316,9 @@ public class OverTheShoulderState : State
         controller.throwableRigWeight = 0;
         controller.leftHandConstraintWeight = 1f;
         controller.leftHandRigWeight = 1f;
+
+        controller.torsoRigWeight = 1f;
+
         controller.parentRig.Build();
 
     }
@@ -318,6 +337,9 @@ public class OverTheShoulderState : State
         controller.throwableRig.weight = Mathf.Lerp(controller.throwableRig.weight, controller.throwableRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandRig.weight = Mathf.Lerp(controller.leftHandRig.weight, controller.leftHandRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandConstraint.weight = Mathf.Lerp(controller.leftHandConstraint.weight, controller.leftHandConstraintWeight, timeElapsed / controller.lerpFactor);
+        
+        controller.TorsoRig.weight = Mathf.Lerp(controller.TorsoRig.weight, controller.torsoRigWeight, timeElapsed / controller.lerpFactor);
+        
         timeElapsed += Time.deltaTime;
     }
 }

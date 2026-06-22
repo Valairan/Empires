@@ -222,8 +222,11 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     [ClientRpc]
     void OnWeaponChanged_ClientRpc(int previous, int current)
     {
-        if (weaponStorage[previous].onplayer_behaviour.TryGetComponent(out WeaponBehaviour wb))
-            wb.store();
+        if (previous <= 0)
+        {
+            if (weaponStorage[previous].onplayer_behaviour.TryGetComponent(out WeaponBehaviour wb))
+                wb.store();
+        }
 
 
 

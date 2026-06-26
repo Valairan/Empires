@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
   m_Name: LVOA-C
   m_EditorClassIdentifier: Items::RangedWeapon
-  ItemIcon: {fileID: 21300000, guid: 61e937892047f994b9445468864a518c, type: 3}
+  ItemIcon: {fileID: 21300000, guid: efbcb9aff6ee4e9429390bf2daeb267b, type: 3}
   ItemName: HELIX
   ItemDescription: 'Fires 30 rounds at 720 rounds per minute. '
   stack: 0
@@ -33,6 +33,7 @@ MonoBehaviour:
   position: {x: -0.0813, y: 0.3236, z: 0.0238}
   rotation: {x: 0, y: -90, z: -90}
   scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: -0.306, y: 0.039, z: 0.005}
   storedPosition: {x: -0.1083, y: 0.0042, z: -0.1115}
   storedRotation: {x: 347.04675, y: 108.236015, z: 261.61993}
   storedScale: {x: 1, y: 1, z: 1}

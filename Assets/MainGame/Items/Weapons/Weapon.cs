@@ -21,6 +21,7 @@ public class Weapon : Item
     public Vector3 position;
     public Vector3 rotation;
     public Vector3 scale = Vector3.one;
+    public Vector3 forwardOffset;
     [Header("While stored on player")]
     public Vector3 storedPosition;
     public Vector3 storedRotation;

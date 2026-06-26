@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
   m_Name: HK_G3
   m_EditorClassIdentifier: Items::RangedWeapon
-  ItemIcon: {fileID: 21300000, guid: 79a20aade1caed14d958a4424f717f7a, type: 3}
+  ItemIcon: {fileID: 21300000, guid: 2c1ab75bb23e3bc4ea85d0bbb5492674, type: 3}
   ItemName: TIGER
   ItemDescription: 'Fires 20 rounds at 550 rounds per minute. '
   stack: 0
@@ -33,6 +33,7 @@ MonoBehaviour:
   position: {x: -0.089, y: 0.2882, z: 0.0196}
   rotation: {x: 0, y: -90, z: -90}
   scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: -0.279, y: 0.068, z: 0.038}
   storedPosition: {x: -0.1083, y: 0.0042, z: -0.1115}
   storedRotation: {x: 347.04675, y: 108.236015, z: 261.61993}
   storedScale: {x: 1, y: 1, z: 1}
@@ -41,10 +42,14 @@ MonoBehaviour:
   fireRate: 550
   magSize: 20
   pelletCount: 1
-  recoil: 1
-  bulletSpread: 1.02
-  recoilPattern: {x: 0, y: 0}
   scopeTexture: {fileID: 0}
   scopeZoom: 1
   shotSound: {fileID: 0}
   reloadSound: {fileID: 0}
+  recoil: 1
+  recoilPattern: {x: 0, y: 0}
+  maxRecoilPitch: 20
+  maxRecoilYaw: 10
+  returnToCenter: 0
+  recoilRecovery: 8
+  bulletSpread: 1.02

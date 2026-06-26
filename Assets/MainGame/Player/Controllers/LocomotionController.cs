@@ -6,6 +6,8 @@ public struct PlayerInputs
 {
     public float Horizontal;
     public float Vertical;
+    public float mouseHorizontal;
+    public float mouseVertical;
     public Quaternion transformRotation;
 
 }

@@ -111,6 +111,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
         onWeaponChanged += UiController.Singleton.weaponChanged;
         playerInventoryController.currentWeaponIndex.OnValueChanged += UiController.Singleton.updateInventoryDisplay;
+        //playerInventoryController.weaponStorage.CollectionChanged += UiController.Singleton.updateInventoryDisplay;
         UiController.Singleton.init();
 
     }
@@ -170,6 +171,8 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         {
             Horizontal = MoveInput.x,
             Vertical = MoveInput.y,
+            mouseHorizontal = LookInput.x,
+            mouseVertical = LookInput.y,
             transformRotation = playerCamera.transform.rotation
         };
         playerCCMotor.setInputs(ref inputs);
@@ -181,7 +184,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         lookTargetTransform.position = currentlyLookingAtPoint;
         //playerCamerasMotor.Tick(LookInput, Time.deltaTime);
         //playerCCMotor.Move(finalMove * Time.deltaTime);
-        playerAnimationController.updateMovemementParams(MoveInput, Grounded, Submerged);
+        playerAnimationController.updateMovemementParams(MoveInput.normalized, Grounded, Submerged);
 
     }
 

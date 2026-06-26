@@ -16,6 +16,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     [SerializeField] public NetworkParentCentre networkObjectRoot;
     [SerializeField] public NetworkParent inWorldStorageForDiscarding; //attach the inworld prefab to this and set active to false, enable and unparent for discarding
     [SerializeField] public NetworkParent handParent; //equpped weapon parent
+    [SerializeField] public Transform positionOffsetConstraint;
     [SerializeField] public NetworkParent meleeStorageParent;
     [SerializeField] public NetworkParent primaryStorageParent;
     [SerializeField] public NetworkParent sideArmStorageParent;
@@ -31,6 +32,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     public void PickupWeapon(Weapon weapon, NetworkBehaviour inworld)
     {
         if (!IsServer) return;
+
         NetworkObject nettemp = Instantiate(weapon.weaponPrefab_onplayer, inWorldStorageForDiscarding.transform.position, quaternion.identity).GetComponent<NetworkObject>();
         nettemp.Spawn();
         nettemp.ChangeOwnership(OwnerClientId);
@@ -72,10 +74,25 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         inworld.NetworkObject.TrySetParent(transform);
         inworld.transform.position = Vector3.zero;
         setWeaponToStoredPosition(weaponStorage.Count - 1);
-        StashWeaponOnAll_ClientRpc(netref);
+        stashWeaponOnAll_ClientRpc(netref);
         toggleInWorldWeaponOnAllPlayers_ClientRpc(inworld.NetworkObject);
+        ClientRpcParams rpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        };
+        updateUIOnPickup_ClientRpc(currentWeaponIndex.Value, rpcParams);
 
     }
+
+    [ClientRpc]
+    private void updateUIOnPickup_ClientRpc(int current, ClientRpcParams clientRpcParams = default)
+    {
+        UiController.Singleton.updateInventoryDisplay(current);
+    }
+
     [ServerRpc]
     public void NextWeapon_ServerRpc()
     {
@@ -84,7 +101,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         if (nextIndex < 0)
             nextIndex = weaponStorage.Count - 1;
 
-        StashCurrentWeapon();
+        stashCurrentWeapon();
         EquipWeapon(nextIndex);
     }
 
@@ -96,7 +113,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         if (prevIndex >= weaponStorage.Count)
             prevIndex = 0;
 
-        StashCurrentWeapon();
+        stashCurrentWeapon();
         EquipWeapon(prevIndex);
     }
 
@@ -130,7 +147,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     [ServerRpc]
     public void EquipWeapon_ServerRpc(int index)
     {
-        StashCurrentWeapon();
+        stashCurrentWeapon();
         EquipWeapon(index);
 
     }
@@ -156,6 +173,8 @@ public class InventoryHandler : NetworkBehaviour, IInventory
 
     void setWeaponToEquippedPosition(int index)
     {
+        positionOffsetConstraint.localPosition = weaponStorage[index].weapon.forwardOffset;
+
         weaponStorage[index].onplayer_instance.transform.localPosition = weaponStorage[index].weapon.position;
         weaponStorage[index].onplayer_instance.transform.localRotation = Quaternion.Euler(weaponStorage[index].weapon.rotation);
         weaponStorage[index].onplayer_instance.transform.localScale = weaponStorage[index].weapon.scale;
@@ -172,11 +191,11 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     public void StashCurrentWeapon_ServerRpc()
     {
         if (currentWeaponIndex.Value < 0) return;
-        StashCurrentWeapon();
+        stashCurrentWeapon();
 
     }
     [ClientRpc]
-    public void StashWeaponOnAll_ClientRpc(NetworkObjectReference weapon)
+    public void stashWeaponOnAll_ClientRpc(NetworkObjectReference weapon)
     {
         NetworkObject networkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[weapon.NetworkObjectId];
         if (networkObject == null) return;
@@ -185,7 +204,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         networkObject.transform.localRotation = Quaternion.Euler(weaponBehaviour.baseitem.storedRotation);
         networkObject.transform.localScale = weaponBehaviour.baseitem.storedScale;
     }
-    public void StashCurrentWeapon()
+    public void stashCurrentWeapon()
     {
         if (weaponStorage.Count < 1) return;
         if (currentWeaponIndex.Value < 0) return;
@@ -211,7 +230,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
                 }
         }
         setWeaponToStoredPosition(temp);
-        StashWeaponOnAll_ClientRpc((NetworkObjectReference)weaponStorage[temp].onplayer_instance);
+        stashWeaponOnAll_ClientRpc((NetworkObjectReference)weaponStorage[temp].onplayer_instance);
         currentWeaponIndex.Value = -1;
     }
     void OnWeaponChangedOnServer(int previous, int current)

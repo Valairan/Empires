@@ -745,6 +745,7 @@ GameObject:
   - component: {fileID: 2655157825016834110}
   - component: {fileID: 531750188607022820}
   - component: {fileID: 2240988776460454622}
+  - component: {fileID: 776470188443495978}
   - component: {fileID: 5430121383282861059}
   - component: {fileID: 3213553562105768937}
   - component: {fileID: 3911377783466050159}
@@ -960,6 +961,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildHandler
   allAvailableMachines: []
   ThingsIveBuilt: []
+--- !u!114 &776470188443495978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3549461418572006148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5c60da6c04b46b449495b14ad8a8ed2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: behaviours::Armor
+  ShowTopMostFoldoutHeaderGroup: 1
+  amount: 0
 --- !u!114 &5430121383282861059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1152,6 +1167,7 @@ MonoBehaviour:
   networkObjectRoot: {fileID: 7014954875726692685}
   inWorldStorageForDiscarding: {fileID: 9075446933818923442}
   handParent: {fileID: 1095795210186910342}
+  positionOffsetConstraint: {fileID: 1588064345331165669}
   meleeStorageParent: {fileID: 556699573524758202}
   primaryStorageParent: {fileID: 4247362120570137797}
   sideArmStorageParent: {fileID: 3290583839393080141}
@@ -1229,7 +1245,7 @@ MonoBehaviour:
   playerInteractionHandler: {fileID: 3213553562105768937}
   playerCamera: {fileID: 0}
   health: {fileID: 5430121383282861059}
-  armor: {fileID: 0}
+  armor: {fileID: 776470188443495978}
   playerMeshes:
   - {fileID: 1159640454961803845}
   - {fileID: 7554383353378802428}
@@ -3503,12 +3519,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 03698e80041b67843b3ed912b2ba84b1, type: 2}
     - target: {fileID: 5866666021909216657, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
       propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'mixamorig:Spine1'\n\tTransform 'mixamorig:RightArm'\n\tTransform
-        'mixamorig:Head'\n\tTransform 'mixamorig:RightHand'\n\tTransform 'mixamorig:RightShoulder'\n\tTransform
-        'mixamorig:Spine2'\n\tTransform 'mixamorig:RightForeArm'\n\tTransform 'mixamorig:Neck'\n\tTransform
-        'mixamorig:Spine'\n\tTransform 'mixamorig:Spine1'\n\tand more ..."
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
       propertyPath: m_ApplyRootMotion

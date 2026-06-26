@@ -30,9 +30,10 @@ MonoBehaviour:
   hasAreaEffect: 0
   weaponPrefab_rb: {fileID: 5595713960653442875, guid: 01c98fc9228089c4a9229a65fd6292db, type: 3}
   weaponPrefab_onplayer: {fileID: 6245818170477733019, guid: ddc5b5f94215a144c893c8df664fe339, type: 3}
-  position: {x: -0.0763, y: 0.2072, z: 0.025}
+  position: {x: -0.025, y: 0.1176, z: 0.025}
   rotation: {x: 0, y: 270, z: 270}
   scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: 0, y: 0, z: 0}
   storedPosition: {x: -0.1083, y: 0.0042, z: -0.1115}
   storedRotation: {x: 347.04675, y: 108.236015, z: 261.61993}
   storedScale: {x: 1, y: 1, z: 1}
@@ -49,5 +50,6 @@ MonoBehaviour:
   recoilPattern: {x: 32, y: 64}
   maxRecoilPitch: 45
   maxRecoilYaw: 65
+  returnToCenter: 0
   recoilRecovery: 0.5
   bulletSpread: 1.02

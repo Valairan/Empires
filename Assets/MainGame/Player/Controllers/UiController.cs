@@ -26,6 +26,7 @@ public class UiController : MonoBehaviour
     [SerializeField] GameObject ScopedIn;
     [SerializeField] Image ScopedInTexture;
     [SerializeField] Image[] InventoryIcons;
+    [SerializeField] CanvasGroup[] InventoryIconsOpacity;
     [SerializeField] TMP_Text[] InventoryNames;
     [SerializeField] GameObject ammoInTotal;
     [SerializeField] GameObject ammoInGun;
@@ -129,11 +130,11 @@ public class UiController : MonoBehaviour
 
     }
 
+    bool hasRifle = false;
+    bool hasSidearm = false;
+    bool hasMelee = false;
     public void updateInventoryDisplay(int currentlyEquipped)
     {
-        bool hasRifle = false;
-        bool hasSidearm = false;
-        bool hasMelee = false;
 
         foreach (var slot in currentPlayerInventoryHandler.weaponStorage)
         {
@@ -142,36 +143,41 @@ public class UiController : MonoBehaviour
             switch (weapon.WeaponType)
             {
                 case WeaponType.rifle:
+                    InventoryIconsOpacity[0].alpha = (currentlyEquipped == 0) ? 1f : .2f;
                     InventoryIcons[0].sprite = weapon.ItemIcon;
                     InventoryNames[0].text = weapon.ItemName;
-                    InventoryIcons[0].gameObject.SetActive(true);
+                    InventoryIcons[0].transform.parent.gameObject.SetActive(true);
                     hasRifle = true;
                     break;
 
                 case WeaponType.sidearm:
+                    InventoryIconsOpacity[1].alpha = (currentlyEquipped == 1) ? 1f : .2f;
                     InventoryIcons[1].sprite = weapon.ItemIcon;
                     InventoryNames[1].text = weapon.ItemName;
-                    InventoryIcons[1].gameObject.SetActive(true);
+                    InventoryIcons[1].transform.parent.gameObject.SetActive(true);
                     hasSidearm = true;
                     break;
 
                 case WeaponType.melee:
+                    InventoryIconsOpacity[2].alpha = (currentlyEquipped == 2) ? 1f : .2f;
                     InventoryIcons[2].sprite = weapon.ItemIcon;
                     InventoryNames[2].text = weapon.ItemName;
-                    InventoryIcons[2].gameObject.SetActive(true);
+                    InventoryIcons[2].transform.parent.gameObject.SetActive(true);
                     hasMelee = true;
                     break;
             }
         }
 
+        Debug.Log(currentlyEquipped);
+
         if (!hasRifle)
-            InventoryIcons[0].gameObject.SetActive(false);
+            InventoryIcons[0].transform.parent.gameObject.SetActive(false);
 
         if (!hasSidearm)
-            InventoryIcons[1].gameObject.SetActive(false);
+            InventoryIcons[1].transform.parent.gameObject.SetActive(false);
 
         if (!hasMelee)
-            InventoryIcons[2].gameObject.SetActive(false);
+            InventoryIcons[2].transform.parent.gameObject.SetActive(false);
     }
 
 

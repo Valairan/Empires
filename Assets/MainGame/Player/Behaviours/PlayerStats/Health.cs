@@ -11,6 +11,10 @@ public class Health : RangeStat
 
     public float maxHealth = 100f;
 
+    public override void init()
+    {
+    }
+
     public void ReduceHealth(float delta)
     {
         if (!IsServer) return; // Only server should change health
@@ -32,4 +36,8 @@ public class Health : RangeStat
 public class RangeStat : NetworkBehaviour
 {
     public float amount;
+    public virtual void init()
+    {
+
+    }
 }

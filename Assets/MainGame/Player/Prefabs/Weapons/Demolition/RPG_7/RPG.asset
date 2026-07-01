@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: RPG
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemIcon: {fileID: 21300000, guid: 8645403b30b6b3c4592b0100f66eb7a1, type: 3}
+  ItemName: RHINO
+  ItemDescription: 'Fires 100 rounds at 650 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 0
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 42
+  bodyDamage: 30
+  legDamage: 18
+  canADS: 0
+  hasAreaEffect: 0
+  weaponPrefab_rb: {fileID: 7199393036101668290, guid: 4dca0f4da4204544bb7ba2a20b06b1ee, type: 3}
+  weaponPrefab_onplayer: {fileID: 7199393036101668290, guid: bddb5386a0cf51545b475429c69a8d25, type: 3}
+  position: {x: 0.025, y: 0.082, z: 0.033}
+  rotation: {x: 14.781211, y: 179.95746, z: 270.0505}
+  scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: -0.429, y: 0.1153, z: -0.1717}
+  storedPosition: {x: -0.074934304, y: 0.21531025, z: -0.12166877}
+  storedRotation: {x: 2.5824432, y: 212.89407, z: 259.14185}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes: 00000000
+  shellsize: 12
+  fireRate: 650
+  magSize: 100
+  pelletCount: 1
+  scopeTexture: {fileID: 0}
+  scopeZoom: 1
+  shotSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  recoil: 1
+  recoilPattern: {x: 0, y: 0}
+  maxRecoilPitch: 20
+  maxRecoilYaw: 10
+  returnToCenter: 0
+  recoilRecovery: 8
+  bulletSpread: 1.02

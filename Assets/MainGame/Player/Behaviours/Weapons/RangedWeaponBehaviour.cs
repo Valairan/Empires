@@ -114,12 +114,12 @@ public class RangedWeaponBehaviour
                     DamageContext ctx = new DamageContext
                     {
                         damagingPlayerID = OwnerClientId,
+                        damager = TypedItem,
                         hitpoint = hit.point,
                         hitnormal = hit.normal,
                         hitforce = baseitem.shellsize,
-                        damager = TypedItem
+                        detectedLayer = hit.transform.gameObject.layer
                     };
-
                     damageable.takeDamage(ctx);
                 }
             }

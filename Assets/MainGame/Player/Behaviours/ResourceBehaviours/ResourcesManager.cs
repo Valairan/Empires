@@ -24,7 +24,7 @@ public class ResourcesManager : NetworkBehaviour
         if (damage <= 5) return;
         BaseResourceBehaviour currentTree = placedTrees[x, y];
         NetworkObject sender = NetworkManager.Singleton.ConnectedClients[rpcParams.Receive.SenderClientId].PlayerObject;
-        float health = currentTree.health.amount;
+        float health = currentTree.health.currentAmount.Value;
         if (Vector3.Distance(sender.transform.position, currentTree.transform.position) > 2)
             return;
         health -= damage;
@@ -46,13 +46,12 @@ public class ResourcesManager : NetworkBehaviour
                 }
             }
         }
-        if (currentTree.health.amount <= 0f)
+        if (currentTree.health.currentAmount.Value <= 0f)
         {
             killResource_ClientRpc(x, y);
             return;
         }
-        currentTree.health.amount = health;
-        updateResource_ClientRpc(x, y, health);
+        currentTree.health.currentAmount.Value = health;
 
     }
     [ServerRpc(RequireOwnership = false)]
@@ -64,7 +63,7 @@ public class ResourcesManager : NetworkBehaviour
         if (damage <= 5) return;
         BaseResourceBehaviour currentTree = placedTrees[x, y];
         NetworkObject sender = NetworkManager.Singleton.ConnectedClients[rpcParams.Receive.SenderClientId].PlayerObject;
-        float health = currentTree.health.amount;
+        float health = currentTree.health.currentAmount.Value;
         if (Vector3.Distance(sender.transform.position, currentTree.transform.position) > 2)
             return;
         health -= damage;
@@ -88,18 +87,12 @@ public class ResourcesManager : NetworkBehaviour
             killResource_ClientRpc(x, y);
             return;
         }
-        updateResource_ClientRpc(x, y, health);
 
     }
     [ClientRpc]
     public void playDamageEffect_ClientRpc(int x, int y, WeaponType type, Vector3 hitpoint, Vector3 hitnormal)
     {
         placedTrees[x, y].playEffect(hitpoint, hitnormal, type);
-    }
-    [ClientRpc]
-    public void updateResource_ClientRpc(int x, int y, float newHealth)
-    {
-        placedTrees[x, y].health.amount = newHealth;
     }
     [ClientRpc]
     public void killResource_ClientRpc(int x, int y)

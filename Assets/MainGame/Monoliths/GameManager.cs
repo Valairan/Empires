@@ -9,16 +9,15 @@ public class GameManager : NetworkBehaviour
     [SerializeField] WorldGenerator worldGenerator;
     public float Progress
     {
-    get { return progress; }
-    set
-    {
-        if (progress != value)
+        get { return progress; }
+        set
         {
-            if(value > 1f) value = 1f;
-            progress = value;
-            Debug.Log(value);
+            if (progress != value)
+            {
+                if (value > 1f) value = 1f;
+                progress = value;
+            }
         }
-    }
     }
     [SerializeField] private float progress = 0;
 
@@ -80,13 +79,18 @@ public class GameManager : NetworkBehaviour
             GameObject player = Instantiate(NetworkGamePropertiesStorage.Singleton.playerPrefab);
 
             PlayerController controller = player.GetComponent<PlayerController>();
+            NetworkPlayerManager.Singleton.connectedPlayerControllers[client] = controller;
+            
             controller.playerCCMotor.motor.SetPosition(GetSpawnPointForClient(client));
             NetworkGamePropertiesStorage.Singleton.spawnedPlayers.Add(client, player);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(client, true);
+
+
             count++;
         }
-        DisableLoader_ClientRpc();
         GameStarted = true;
+        NetworkPlayerManager.Singleton.startGame();
+        DisableLoader_ClientRpc();
 
     }
 

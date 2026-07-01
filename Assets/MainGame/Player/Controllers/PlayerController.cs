@@ -1,6 +1,6 @@
 using System;
+using System.Reflection;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamageable
 {
@@ -9,6 +9,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     [SerializeField] public AnimationController playerAnimationController;
     [SerializeField] public CameraController playerCamerasMotor;
     [SerializeField] public CombatController playerCombatController;
+    [SerializeField] public VfxController playerVfxController;
     [SerializeField] public InventoryHandler playerInventoryController;
     [SerializeField] public SkinnedMeshRenderer playerClothesParent;
     [SerializeField] public InputHandler playerInputHandler;
@@ -23,7 +24,20 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
     [Header("Locomotion Settings")]
     bool Grounded = true;
-    bool Submerged = false;
+    bool Submerged
+    {
+        get { return submerged; }
+        set
+        {
+            if (value && !submerged) submergedForVfx?.Invoke(value);
+
+            submerged = value;
+        }
+    }
+    bool submerged;
+    public Action<bool> groundedForVfx;
+    public Action<bool> submergedForVfx;
+
 
     [SerializeField] float runSpeed;
     [SerializeField] float walkSpeed;
@@ -38,9 +52,6 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     [SerializeField] LayerMask WhatIsWater;
     Vector3 velocity;
 
-
-    public Action<float> onHealthChanged;
-    public Action<float> onArmorChanged;
     public Action<Weapon> onWeaponChanged;
 
 
@@ -76,6 +87,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         BindInputs();
 
         BindComponents();
+        BindVfx();
         base.OnNetworkDespawn();
     }
 
@@ -108,10 +120,13 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         UiController.Singleton.currentPlayerBuildHandler = playerBuildHandler;
         UiController.Singleton.currentPlayerInventoryHandler = playerInventoryController;
 
-        onHealthChanged += UiController.Singleton != null ? UiController.Singleton.setHealth : null;
         onWeaponChanged += UiController.Singleton.weaponChanged;
         playerInventoryController.currentWeaponIndex.OnValueChanged += UiController.Singleton.updateInventoryDisplay;
         //playerInventoryController.weaponStorage.CollectionChanged += UiController.Singleton.updateInventoryDisplay;
+
+        health.currentAmount.OnValueChanged += onHealthChanged;
+        armor.currentAmount.OnValueChanged += onArmorChanged;
+
         UiController.Singleton.init();
 
     }
@@ -157,6 +172,10 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.disableInputs();
     }
 
+    public void BindVfx()
+    {
+        submergedForVfx += playerVfxController.playSplashParticles;
+    }
 
     Vector3 currentlyLookingAtPoint;
     public void Update()
@@ -356,8 +375,39 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         //health.amount = armor.amount < 0 ? health.amount + armor.amount : health.amount;
         ///armor.amount = armor.amount < 0 ? 0 : armor.amount;
         //onArmorChanged.Invoke(armor.amount);
-        onHealthChanged.Invoke(health.amount);
+        Debug.Log("take damage is called from: " + OwnerClientId);
+        DamagePlayerOn_ServerRpc(ctx);
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    //called from take damage
+    public void DamagePlayerOn_ServerRpc(DamageContext ctx, ServerRpcParams rpcParams = default)
+    {
+        if (!IsServer) return;
+        Debug.Log("rpc is called by: " + rpcParams.Receive.SenderClientId);
+        health.decreaseAmount(ctx.damager.headDamage);
+        switch (ctx.detectedLayer)
+        {
+            case int layer when layer == LayerMask.NameToLayer("Head"): health.decreaseAmount(ctx.damager.headDamage); break;
+            case int layer when layer == LayerMask.NameToLayer("Torso"): health.decreaseAmount(ctx.damager.bodyDamage); break;
+            case int layer when layer == LayerMask.NameToLayer("Legs"): health.decreaseAmount(ctx.damager.legDamage); break;
+        }
+    }
+    [ServerRpc]
+    void takeDamage_ServerRpc()
+    {
+
+    }
+
+    void onArmorChanged(float previous, float current)
+    {
+        //UiController.Singleton.(current);
+    }
+    void onHealthChanged(float previous, float current)
+    {
+        UiController.Singleton.setHealth(current);
+    }
+
 
     public bool checkIfInWater()
     {
@@ -370,5 +420,11 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     {
         throw new NotImplementedException();
     }
+
+    public void PlayVfx()
+    {
+
+    }
+
 }
 

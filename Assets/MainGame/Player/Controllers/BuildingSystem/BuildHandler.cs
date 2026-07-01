@@ -3,7 +3,7 @@ using Unity.Netcode;
 using System;
 using System.Collections.Generic;
 
-public partial class BuildHandler : MonoBehaviour, IInteractable, IDamageable, IRaycastResponder
+public partial class BuildHandler : MonoBehaviour, IInteractable, IRaycastResponder
 {
     [Header("Available Machines")]
     public Machine[] allAvailableMachines;
@@ -87,11 +87,6 @@ public partial class BuildHandler : MonoBehaviour, IInteractable, IDamageable, I
     public Item Interact(ulong interactor)
     {
         throw new NotImplementedException();
-    }
-
-    public void takeDamage(DamageContext ctx)
-    {
-
     }
 
     public Item respondToRaycast(ulong interactor)

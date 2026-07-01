@@ -81,7 +81,7 @@ public class UiController : MonoBehaviour
     }
     public void setHealth(float health)
     {
-        Health.fillAmount = health;
+        Health.fillAmount = health / 100;
     }
     public void setInteractionProgress(float interactionProgress)
     {

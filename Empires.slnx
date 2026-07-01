@@ -1,9 +1,9 @@
 ﻿<Solution>
   <Project Path="Unity.RenderPipelines.HighDefinition.Editor.csproj" />
   <Project Path="Unity.RenderPipelines.HighDefinition.Runtime.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="behaviours.csproj" />
   <Project Path="Unity.RenderPipelines.HighDefinition.Editor.Tests.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Items.csproj" />
   <Project Path="Unity.RenderPipelines.HighDefinition.Runtime.Tests.csproj" />
   <Project Path="worldgenerator.csproj" />

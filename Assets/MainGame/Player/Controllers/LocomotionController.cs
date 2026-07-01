@@ -71,7 +71,7 @@ public class LocomotionController : MonoBehaviour, ICharacterController
 
     public void OnDiscreteCollisionDetected(Collider hitCollider)
     {
-
+       //Debug.Log(hitCollider.name + " <---------");
     }
 
     public void OnGroundHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, ref HitStabilityReport hitStabilityReport)

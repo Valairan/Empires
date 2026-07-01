@@ -1,4 +1,3 @@
-using Unity.Netcode;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -34,7 +33,7 @@ public class HospitalBehaviour : MachineBehaviour
         if (state == MachineState.preview) return;
         foreach (var player in playersInRange)
         {
-            player.Heal(healPerSecond * Time.deltaTime);
+            player.increaseAmount(healPerSecond * Time.deltaTime);
         }
     }
 }

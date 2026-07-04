@@ -12,6 +12,11 @@ public class BaseResourceBehaviour : ItemBehaviour<BaseResource>, IDamageable, I
         return baseitem;
     }
 
+    public Item getDamageable()
+    {
+        return baseitem;
+    }
+
     public virtual void takeDamage(DamageContext ctx)
     {
 

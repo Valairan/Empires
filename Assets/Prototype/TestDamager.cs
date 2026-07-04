@@ -9,7 +9,6 @@ public class TestDamager : MonoBehaviour
         {
             DamageContext ctx = new DamageContext()
             {
-                damager = weapon,
                 detectedLayer = col.gameObject.layer
             };
             

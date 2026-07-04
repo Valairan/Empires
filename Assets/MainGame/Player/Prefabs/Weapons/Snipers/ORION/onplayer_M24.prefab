@@ -176,6 +176,9 @@ MonoBehaviour:
   currentFiremode: 0
   firemodeindex: 0
   currentShot: 0
+  raycastLayerMask:
+    serializedVersion: 2
+    m_Bits: 29136
   audioSource: {fileID: 0}
 --- !u!82 &4572058177272195901
 AudioSource:

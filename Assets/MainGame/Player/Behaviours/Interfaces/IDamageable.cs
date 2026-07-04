@@ -10,15 +10,17 @@ public interface IDamageable
 public struct DamageContext : INetworkSerializable
 {
     public ulong damagingPlayerID;
-    public Weapon damager;
     public Vector3 hitpoint;
     public Vector3 hitnormal;
+    public WeaponType type;
+    public float damage;
     public float hitforce;
     public int detectedLayer;
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         // Serialize primitive types and Unity structs
+        serializer.SerializeValue(ref damage);
         serializer.SerializeValue(ref damagingPlayerID);
         serializer.SerializeValue(ref hitpoint);
         serializer.SerializeValue(ref hitnormal);

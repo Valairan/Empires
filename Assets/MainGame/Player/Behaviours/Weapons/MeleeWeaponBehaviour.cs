@@ -36,7 +36,7 @@ public class MeleeWeaponBehaviour : WeaponBehaviour<MeleeWeapon>, IWeaponTrigger
             Vector3 hitnormal = (transform.position - hitpoint).normalized;
             DamageContext ctx = new DamageContext
             {
-                damager = baseitem,
+                damage = calculateDamage(),
                 damagingPlayerID = NetworkManager.Singleton.LocalClientId,
                 hitpoint = hitpoint,
                 hitnormal = hitnormal
@@ -45,4 +45,9 @@ public class MeleeWeaponBehaviour : WeaponBehaviour<MeleeWeapon>, IWeaponTrigger
         }
     }
 
+
+    public float calculateDamage()
+    {
+        return 25f;
+    }
 }

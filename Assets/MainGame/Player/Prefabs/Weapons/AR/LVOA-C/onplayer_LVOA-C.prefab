@@ -181,6 +181,9 @@ MonoBehaviour:
   currentFiremode: 1
   firemodeindex: 0
   currentShot: 0
+  raycastLayerMask:
+    serializedVersion: 2
+    m_Bits: 29136
   audioSource: {fileID: 4661878278604356686}
 --- !u!33 &2645380082379899245
 MeshFilter:

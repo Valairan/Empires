@@ -385,19 +385,10 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     {
         if (!IsServer) return;
         Debug.Log("rpc is called by: " + rpcParams.Receive.SenderClientId);
-        health.decreaseAmount(ctx.damager.headDamage);
-        switch (ctx.detectedLayer)
-        {
-            case int layer when layer == LayerMask.NameToLayer("Head"): health.decreaseAmount(ctx.damager.headDamage); break;
-            case int layer when layer == LayerMask.NameToLayer("Torso"): health.decreaseAmount(ctx.damager.bodyDamage); break;
-            case int layer when layer == LayerMask.NameToLayer("Legs"): health.decreaseAmount(ctx.damager.legDamage); break;
-        }
-    }
-    [ServerRpc]
-    void takeDamage_ServerRpc()
-    {
+        health.decreaseAmount(ctx.damage);
 
     }
+
 
     void onArmorChanged(float previous, float current)
     {

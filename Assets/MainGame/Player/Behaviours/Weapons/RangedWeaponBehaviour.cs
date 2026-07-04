@@ -23,13 +23,14 @@ public class RangedWeaponBehaviour
     private float lastShotTime;
     private float FireInterval => 60f / baseitem.fireRate;
     public int currentShot = 0;
-
+    public LayerMask raycastLayerMask;
     [Header("Audio")]
     [SerializeField] AudioSource audioSource;
 
     public override void OnNetworkSpawn()
     {
         currentFiremode = baseitem.firemodes[0];
+        raycastLayerMask = ~ (1 << 3);
     }
 
     public void TriggerPressed(Vector3 aimPoint)
@@ -107,14 +108,14 @@ public class RangedWeaponBehaviour
             Vector3 dir = (point - muzzleStartPoint.position).normalized;
             dir = ApplySpread(dir, TypedItem.bulletSpread);
 
-            if (Physics.Raycast(muzzleStartPoint.position, dir, out RaycastHit hit))
+            if (Physics.Raycast(muzzleStartPoint.position, dir, out RaycastHit hit, Mathf.Infinity, raycastLayerMask))
             {
                 if (hit.transform.TryGetComponent(out IDamageable damageable))
                 {
                     DamageContext ctx = new DamageContext
                     {
                         damagingPlayerID = OwnerClientId,
-                        damager = TypedItem,
+                        damage = calculateDamage(hit.transform),
                         hitpoint = hit.point,
                         hitnormal = hit.normal,
                         hitforce = baseitem.shellsize,
@@ -125,6 +126,21 @@ public class RangedWeaponBehaviour
             }
         }
 
+    }
+
+    public float calculateDamage(Transform victim)
+    {
+        switch (victim.transform.gameObject.layer)
+        {
+            case int layer when layer == LayerMask.NameToLayer("Head"): return baseitem.headDamage;
+            case int layer when layer == LayerMask.NameToLayer("Torso"): return baseitem.bodyDamage;
+            case int layer when layer == LayerMask.NameToLayer("Legs"): return baseitem.legDamage;
+        }
+        if (victim.root.TryGetComponent(out ItemBehaviour<Machine> machine)) { return baseitem.machineDamage; }
+        if (victim.root.TryGetComponent(out TreeResourceBehaviour tree)) { return baseitem.treeDamage; }
+        if (victim.root.TryGetComponent(out TreeResourceBehaviour ore)) { return baseitem.oreDamage; }
+        Debug.Log("The calculated damage is here: " + victim.transform.gameObject.layer);
+        return 5f;
     }
 
     private Vector3 ApplySpread(Vector3 direction, float accuracy)
@@ -144,7 +160,9 @@ public class RangedWeaponBehaviour
     {
         muzzleFlash.Play();
         audioSource.Play();
+        
     }
+    
 
     // Optional helper: CanFire for CombatController
 

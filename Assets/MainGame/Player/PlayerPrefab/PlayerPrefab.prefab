@@ -1109,9 +1109,9 @@ MonoBehaviour:
   StepHandling: 1
   MaxStepHeight: 0.7
   AllowSteppingWithoutStableGrounding: 0
-  MinRequiredStepDepth: 0.1
+  MinRequiredStepDepth: 0
   LedgeAndDenivelationHandling: 1
-  MaxStableDistanceFromLedge: 0.1
+  MaxStableDistanceFromLedge: 0
   MaxVelocityForLedgeSnap: 0
   MaxStableDenivelationAngle: 180
   InteractiveRigidbodyHandling: 1

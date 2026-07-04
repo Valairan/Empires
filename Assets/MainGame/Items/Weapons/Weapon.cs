@@ -11,6 +11,7 @@ public class Weapon : Item
     public float headDamage;
     public float bodyDamage;
     public float legDamage;
+    public float machineDamage;
     // Flags
     public bool canADS = false;
     public bool hasAreaEffect = false;

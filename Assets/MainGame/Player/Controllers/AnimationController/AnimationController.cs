@@ -61,10 +61,12 @@ public class AnimationController : MonoBehaviour
         currentState.OnStateLateUpdate(this);
     }
 
-    public void updateMovemementParams(Vector2 movement, bool grounded, bool inwater)
+    public void updateMovemementParams(Vector2 movement, bool grounded, bool climbing, bool inwater)
     {
         animator.SetBool("Grounded", grounded);
+        animator.SetBool("Climbing", climbing);
         animator.SetBool("Submerged", inwater);
+
         if (inwater)
         {
             animator.SetFloat("Horizontal", movement.sqrMagnitude);
@@ -195,7 +197,7 @@ public class RifleState : State
         controller.throwableRig.weight = Mathf.Lerp(controller.throwableRig.weight, controller.throwableRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandRig.weight = Mathf.Lerp(controller.leftHandRig.weight, controller.leftHandRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandConstraint.weight = Mathf.Lerp(controller.leftHandConstraint.weight, controller.leftHandConstraintWeight, timeElapsed / controller.lerpFactor);
-        
+
         //controller.TorsoRig.weight = Mathf.Lerp(controller.TorsoRig.weight, controller.torsoRigWeight, timeElapsed / controller.lerpFactor);
 
         timeElapsed += Time.deltaTime;
@@ -337,9 +339,9 @@ public class OverTheShoulderState : State
         controller.throwableRig.weight = Mathf.Lerp(controller.throwableRig.weight, controller.throwableRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandRig.weight = Mathf.Lerp(controller.leftHandRig.weight, controller.leftHandRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandConstraint.weight = Mathf.Lerp(controller.leftHandConstraint.weight, controller.leftHandConstraintWeight, timeElapsed / controller.lerpFactor);
-        
+
         //controller.TorsoRig.weight = Mathf.Lerp(controller.TorsoRig.weight, controller.torsoRigWeight, timeElapsed / controller.lerpFactor);
-        
+
         timeElapsed += Time.deltaTime;
     }
 }

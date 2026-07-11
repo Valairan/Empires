@@ -2,15 +2,7 @@
 using KinematicCharacterController;
 using UnityEngine;
 
-public struct PlayerInputs
-{
-    public float Horizontal;
-    public float Vertical;
-    public float mouseHorizontal;
-    public float mouseVertical;
-    public Quaternion transformRotation;
 
-}
 public class LocomotionController : MonoBehaviour, ICharacterController
 {
     [SerializeField] public KinematicCharacterMotor motor;
@@ -21,8 +13,11 @@ public class LocomotionController : MonoBehaviour, ICharacterController
     [SerializeField] private float stableRotationInterpolationFactor;
 
     [SerializeField] private LayerMask whatIsGround;
+    [SerializeField] private float ladderClimbSpeed = 3f;
 
+    bool climbing = false;
     Vector3 moveInput;
+    Vector3 ladderNormal = Vector3.up;
     Vector3 lookInput;
     public bool jumpRequested;
 
@@ -38,7 +33,7 @@ public class LocomotionController : MonoBehaviour, ICharacterController
     {
         jumpRequested = true;
     }
-    public void setInputs(ref PlayerInputs inputs)
+    public void setInputs(ref InputContext inputs)
     {
         Vector3 moveInputVector = Vector3.ClampMagnitude((new Vector3(inputs.Horizontal, 0f, inputs.Vertical)), 1f);
         Vector3 cameraForwardDirection = Vector3.ProjectOnPlane(inputs.transformRotation * Vector3.forward, motor.CharacterUp).normalized;
@@ -48,10 +43,11 @@ public class LocomotionController : MonoBehaviour, ICharacterController
         }
 
         Quaternion cameraForwardRotation = Quaternion.LookRotation(cameraForwardDirection, motor.CharacterUp);
-
         moveInput = cameraForwardRotation * moveInputVector;
         lookInput = moveInput.normalized;
+        climbing = inputs.climbing;
         cameraForward = inputs.transformRotation;
+        ladderNormal = inputs.ladderNormal;
 
     }
 
@@ -71,7 +67,7 @@ public class LocomotionController : MonoBehaviour, ICharacterController
 
     public void OnDiscreteCollisionDetected(Collider hitCollider)
     {
-       //Debug.Log(hitCollider.name + " <---------");
+        //Debug.Log(hitCollider.name + " <---------");
     }
 
     public void OnGroundHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, ref HitStabilityReport hitStabilityReport)
@@ -101,7 +97,53 @@ public class LocomotionController : MonoBehaviour, ICharacterController
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
-        if (motor.GroundingStatus.IsStableOnGround)
+
+
+        if (climbing)
+        {
+
+            // 1. Derive spatial vectors directly from your custom ladder's surface normal
+            Vector3 ladderRight = Vector3.Cross(ladderNormal, motor.CharacterUp).normalized;
+            Vector3 ladderUp = Vector3.Cross(ladderRight, ladderNormal).normalized;
+
+            // 2. Determine if the player's world direction is pushing into or pulling away from the ladder
+            float approachDirection = Vector3.Dot(moveInput.normalized, ladderNormal);
+
+            Vector3 targetLadderVelocity = Vector3.zero;
+
+            if (moveInput.sqrMagnitude > 0.01f)
+            {
+                if (approachDirection < -0.1f)
+                {
+                    // Moving TOWARD the ladder face -> Ascend
+                    targetLadderVelocity = ladderUp * ladderClimbSpeed;
+                }
+                else if (approachDirection > 0.1f)
+                {
+                    // Moving AWAY from the ladder face -> Descend
+                    targetLadderVelocity = -ladderUp * ladderClimbSpeed;
+                    if (motor.GroundingStatus.IsStableOnGround)
+                    {
+                        targetLadderVelocity = Vector3.zero;
+                    }
+                }
+                else
+                {
+                    // Strafe perfectly along the ladder horizontal rungs
+                    float strafeDirection = Vector3.Dot(moveInput.normalized, ladderRight);
+                    targetLadderVelocity = ladderRight * (strafeDirection * ladderClimbSpeed);
+                }
+            }
+
+            // 3. Apply the sticky force pushing back INTO the ladder (-ladderNormal)
+            // This stops the player from drifting out of the detection trigger box on angled slopes
+
+            // Combine your vertical climb velocity with the stabilizing snap force
+            motor.ForceUnground();
+            currentVelocity = targetLadderVelocity;
+
+        }
+        else if (motor.GroundingStatus.IsStableOnGround)
         {
             float currentVelocityMagnitude = currentVelocity.magnitude;
             Vector3 effectiveGroundNormal = motor.GroundingStatus.GroundNormal;
@@ -121,11 +163,21 @@ public class LocomotionController : MonoBehaviour, ICharacterController
             currentVelocity += gravity * deltaTime;
         }
 
-        if (jumpRequested && motor.GroundingStatus.IsStableOnGround)
+        if (jumpRequested)
         {
-            currentVelocity += (motor.CharacterUp * jumpForce) - Vector3.Project(currentVelocity, motor.CharacterUp);
-            motor.ForceUnground();
-            jumpRequested = false;
+            if (climbing)
+            {
+                // Push the player away from the ladder face, plus an upward kick
+                currentVelocity = ladderNormal * jumpForce * .5f;
+                motor.ForceUnground();
+                jumpRequested = false;
+            }
+            else if (motor.GroundingStatus.IsStableOnGround)
+            {
+                currentVelocity += (motor.CharacterUp * jumpForce) - Vector3.Project(currentVelocity, motor.CharacterUp);
+                motor.ForceUnground();
+                jumpRequested = false;
+            }
         }
     }
 

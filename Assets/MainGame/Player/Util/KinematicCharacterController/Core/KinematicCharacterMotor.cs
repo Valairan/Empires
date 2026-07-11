@@ -787,7 +787,7 @@ namespace KinematicCharacterController
             _rigidbodiesPushedThisMove.Clear();
 
             // Before update
-                CharacterController.BeforeCharacterUpdate(deltaTime);
+            CharacterController.BeforeCharacterUpdate(deltaTime);
 
             _transientPosition = _transform.position;
             TransientRotation = _transform.rotation;

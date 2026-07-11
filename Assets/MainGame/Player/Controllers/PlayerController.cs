@@ -24,6 +24,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
     [Header("Locomotion Settings")]
     bool Grounded = true;
+    bool Climbing;
     bool Submerged
     {
         get { return submerged; }
@@ -50,6 +51,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     [SerializeField] Transform GroundCheck;
     [SerializeField] LayerMask WhatIsGround;
     [SerializeField] LayerMask WhatIsWater;
+    [SerializeField] LayerMask WhatIsClimbable;
     Vector3 velocity;
 
     public Action<Weapon> onWeaponChanged;
@@ -182,17 +184,20 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     {
         if (!IsLocalPlayer) return;
         Submerged = checkIfInWater();
+        Climbing = checkIfInLadder();
         playerBuildHandler.previewBuild(playerCamera.transform.position, playerCamera.transform.forward);
         playerInteractionHandler.checkForRaycasts(OwnerClientId, playerCamera.transform);
         playerInteractionHandler.HandleTimedInteraction(NetworkManager.Singleton.LocalClientId);
         playerInteractionHandler.interacting = interacting;
-        PlayerInputs inputs = new PlayerInputs
+        InputContext inputs = new InputContext
         {
             Horizontal = MoveInput.x,
             Vertical = MoveInput.y,
+            climbing = Climbing,
             mouseHorizontal = LookInput.x,
             mouseVertical = LookInput.y,
-            transformRotation = playerCamera.transform.rotation
+            transformRotation = playerCamera.transform.rotation,
+            ladderNormal = currentLadderNormal
         };
         playerCCMotor.setInputs(ref inputs);
         Grounded = playerCCMotor.motor.GroundingStatus.IsStableOnGround;
@@ -203,7 +208,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         lookTargetTransform.position = currentlyLookingAtPoint;
         //playerCamerasMotor.Tick(LookInput, Time.deltaTime);
         //playerCCMotor.Move(finalMove * Time.deltaTime);
-        playerAnimationController.updateMovemementParams(MoveInput.normalized, Grounded, Submerged);
+        playerAnimationController.updateMovemementParams(MoveInput.normalized, Grounded, Climbing, Submerged);
 
     }
 
@@ -407,6 +412,29 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         return false;
     }
 
+    [SerializeField] Transform ladderCheck;
+    [SerializeField] Vector3 LadderDetectionBoxSize = new Vector3(0.2f, .2f, 0.2f);
+    private Vector3 currentLadderNormal = Vector3.up;
+
+    public bool checkIfInLadder()
+    {
+        Collider[] cols = Physics.OverlapBox(GroundCheck.position, LadderDetectionBoxSize, transform.rotation, WhatIsClimbable);
+        if (cols.Length > 0)
+        {
+            Debug.DrawRay(transform.position, (cols[0].transform.position - transform.position) * 2f, Color.red);
+            if (Physics.SphereCast(transform.position, 0.1f, transform.forward, out RaycastHit hit, 0.6f, WhatIsClimbable))
+            {
+                currentLadderNormal = hit.normal;
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+        return false;
+    }
+
     public Item respondToRaycast(ulong interactor)
     {
         throw new NotImplementedException();
@@ -415,6 +443,11 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     public void PlayVfx()
     {
 
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawCube(transform.position, LadderDetectionBoxSize * 2);
     }
 
 }

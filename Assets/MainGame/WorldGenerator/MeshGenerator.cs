@@ -1,7 +1,22 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public static class MeshGenerator
 {
+    private struct LodMeshData
+    {
+        public Vector3[] Vertices;
+        public int[] Triangles;
+        public Vector2[] Uvs;
+    }
+
+    private struct ChunkBuildResult
+    {
+        public int ChunkX;
+        public int ChunkY;
+        public LodMeshData[] LodMeshes;
+    }
 
     public static void GenerateSquareMesh(int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int layer)
     {
@@ -10,58 +25,143 @@ public static class MeshGenerator
     }
 
 
-    public static void GenerateTerrainMesh(int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int layer, float[,] noise = null, UnityEngine.Rendering.ShadowCastingMode shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On)
+    public static void GenerateTerrainMesh(int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int layer, float[] noise = null, UnityEngine.Rendering.ShadowCastingMode shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On)
     {
-
         GameObject parent = new GameObject("Procedural Terrain");
+        List<(int ChunkX, int ChunkY)> chunkPositions = new List<(int ChunkX, int ChunkY)>();
 
         for (int i = 0; i <= mapHeight; i += chunkSize)
         {
             for (int j = 0; j <= mapWidth; j += chunkSize)
             {
-                GameObject currentTerrainChunk = new GameObject("Terrain(" + i + "," + j + ")");
-                currentTerrainChunk.transform.SetParent(parent.transform);
-                currentTerrainChunk.gameObject.layer = layer;
+                chunkPositions.Add((j, i));
+            }
+        }
 
-                GameObject lod2 = calculateLOD(i, j, currentTerrainChunk, mapWidth, mapHeight, chunkSize, meshMaterial, 2, noise);
-                GameObject lod1 = calculateLOD(i, j, currentTerrainChunk, mapWidth, mapHeight, chunkSize, meshMaterial, 1, noise);
-                GameObject lod0 = calculateLOD(i, j, currentTerrainChunk, mapWidth, mapHeight, chunkSize, meshMaterial, 0, noise);
+        ChunkBuildResult[] chunkResults = new ChunkBuildResult[chunkPositions.Count];
+        Parallel.For(0, chunkPositions.Count, index =>
+        {
+            (int ChunkX, int ChunkY) position = chunkPositions[index];
+            chunkResults[index] = BuildChunkMeshData(position.ChunkX, position.ChunkY, mapWidth, mapHeight, chunkSize, noise);
+        });
 
-                lod0.transform.SetParent(currentTerrainChunk.transform);
-                lod1.transform.SetParent(currentTerrainChunk.transform);
-                lod2.transform.SetParent(currentTerrainChunk.transform);
+        for (int index = 0; index < chunkResults.Length; index++)
+        {
+            ChunkBuildResult result = chunkResults[index];
+            GameObject currentTerrainChunk = new GameObject($"Terrain({result.ChunkY},{result.ChunkX})");
+            currentTerrainChunk.transform.SetParent(parent.transform);
+            currentTerrainChunk.gameObject.layer = layer;
 
-                lod0.gameObject.layer = layer;
-                lod1.gameObject.layer = layer;
-                lod2.gameObject.layer = layer;
-
-                LODGroup lodGroup = currentTerrainChunk.AddComponent<LODGroup>();
-
-                lodGroup.SetLODs(new LOD[] {
-                new LOD(0.6f, new Renderer[] { lod0.GetComponent<MeshRenderer>() }),
-                new LOD(0.3f, new Renderer[] { lod1.GetComponent<MeshRenderer>() }),
-                new LOD(0.1f, new Renderer[] { lod2.GetComponent<MeshRenderer>() })});
-
-                lodGroup.RecalculateBounds();
-                lodGroup.fadeMode = LODFadeMode.CrossFade;
-                lodGroup.animateCrossFading = true;
-
-                parent.isStatic = true;
-                lod2.isStatic = true;
-                lod1.isStatic = true;
-                lod0.isStatic = true;
+            GameObject[] lodObjects = new GameObject[3];
+            for (int lodLevel = 0; lodLevel < result.LodMeshes.Length; lodLevel++)
+            {
+                GameObject lodObject = CreateLodObject(result.ChunkX, result.ChunkY, result.LodMeshes[lodLevel], meshMaterial, shadowCastingMode, layer, lodLevel);
+                lodObject.transform.SetParent(currentTerrainChunk.transform);
+                lodObjects[lodLevel] = lodObject;
             }
 
+            GameObject lod2 = lodObjects[2];
+            GameObject lod1 = lodObjects[1];
+            GameObject lod0 = lodObjects[0];
+
+            lod0.gameObject.layer = layer;
+            lod1.gameObject.layer = layer;
+            lod2.gameObject.layer = layer;
+
+            LODGroup lodGroup = currentTerrainChunk.AddComponent<LODGroup>();
+            lodGroup.SetLODs(new LOD[]
+            {
+                new LOD(0.6f, new Renderer[] { lod0.GetComponent<MeshRenderer>() }),
+                new LOD(0.3f, new Renderer[] { lod1.GetComponent<MeshRenderer>() }),
+                new LOD(0.1f, new Renderer[] { lod2.GetComponent<MeshRenderer>() })
+            });
+
+            lodGroup.RecalculateBounds();
+            lodGroup.fadeMode = LODFadeMode.CrossFade;
+            lodGroup.animateCrossFading = true;
+
+            parent.isStatic = true;
+            lod2.isStatic = true;
+            lod1.isStatic = true;
+            lod0.isStatic = true;
         }
     }
 
-
-    public static GameObject calculateLOD(int i, int j, GameObject parent, int mapWidth, int mapHeight, int chunkSize, Material meshMaterial, int lodLevel, float[,] noise = null, UnityEngine.Rendering.ShadowCastingMode shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On)
+    private static ChunkBuildResult BuildChunkMeshData(int chunkX, int chunkY, int mapWidth, int mapHeight, int chunkSize, float[] noise)
     {
+        ChunkBuildResult result = new ChunkBuildResult
+        {
+            ChunkX = chunkX,
+            ChunkY = chunkY,
+            LodMeshes = new LodMeshData[3]
+        };
 
+        for (int lodLevel = 0; lodLevel < result.LodMeshes.Length; lodLevel++)
+        {
+            result.LodMeshes[lodLevel] = BuildLodMeshData(chunkX, chunkY, mapWidth, mapHeight, chunkSize, lodLevel, noise);
+        }
+
+        return result;
+    }
+
+    private static LodMeshData BuildLodMeshData(int chunkX, int chunkY, int mapWidth, int mapHeight, int chunkSize, int lodLevel, float[] noise)
+    {
+        int skip = 1 << lodLevel;
+        int vertsPerSide = chunkSize / skip + 1;
+        Vector3[] vertices = new Vector3[vertsPerSide * vertsPerSide];
+        int[] triangles = new int[(vertsPerSide - 1) * (vertsPerSide - 1) * 6];
+        Vector2[] uvs = new Vector2[vertsPerSide * vertsPerSide];
+
+        int triangleIndex = 0;
+
+        for (int y = 0; y < vertsPerSide; y++)
+        {
+            for (int x = 0; x < vertsPerSide; x++)
+            {
+                int worldX = chunkX + x * skip;
+                int worldY = chunkY + y * skip;
+
+                worldX = Mathf.Min(worldX, mapWidth - 1);
+                worldY = Mathf.Min(worldY, mapHeight - 1);
+
+                int vertexIndex = y * vertsPerSide + x;
+                float height = 4.5f;
+                if (noise != null)
+                {
+                    height = noise[worldY * mapWidth + worldX];
+                }
+
+                vertices[vertexIndex] = new Vector3(x * skip, height, y * skip);
+                uvs[vertexIndex] = new Vector2(
+                    (float)worldX / mapWidth,
+                    (float)worldY / mapHeight
+                );
+
+                if (x < vertsPerSide - 1 && y < vertsPerSide - 1)
+                {
+                    triangles[triangleIndex + 0] = vertexIndex;
+                    triangles[triangleIndex + 1] = vertexIndex + vertsPerSide;
+                    triangles[triangleIndex + 2] = vertexIndex + vertsPerSide + 1;
+                    triangles[triangleIndex + 3] = vertexIndex;
+                    triangles[triangleIndex + 4] = vertexIndex + vertsPerSide + 1;
+                    triangles[triangleIndex + 5] = vertexIndex + 1;
+                    triangleIndex += 6;
+                }
+            }
+        }
+
+        return new LodMeshData
+        {
+            Vertices = vertices,
+            Triangles = triangles,
+            Uvs = uvs
+        };
+    }
+
+    private static GameObject CreateLodObject(int chunkX, int chunkY, LodMeshData meshData, Material meshMaterial, UnityEngine.Rendering.ShadowCastingMode shadowCastingMode, int layer, int lodLevel)
+    {
         GameObject terrain = new GameObject($"LOD{lodLevel}");
-        terrain.transform.position = new Vector3(j, 0, i);
-        terrain.transform.SetParent(parent.transform);
+        terrain.transform.position = new Vector3(chunkX, 0, chunkY);
 
         MeshFilter meshFilter = terrain.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = terrain.AddComponent<MeshRenderer>();
@@ -72,66 +172,19 @@ public static class MeshGenerator
         meshRenderer.staticShadowCaster = true;
         Mesh mesh = new Mesh();
         mesh.name = "Terrain Mesh";
-
-        int skip = 1 << lodLevel; // 1, 2, 4
-
-
-        int vertsPerSide = chunkSize / skip + 1;
-        Vector3[] vertices = new Vector3[vertsPerSide * vertsPerSide];
-
-        int[] triangles = new int[(vertsPerSide - 1) * (vertsPerSide - 1) * 6];
-        int triangleIndex = 0;
-
-        Vector2[] uvs = new Vector2[vertsPerSide * vertsPerSide];
-
-        for (int y = 0; y < vertsPerSide; y++)
-        {
-            for (int x = 0; x < vertsPerSide; x++)
-            {
-                int worldX = j + x * skip;
-                int worldY = i + y * skip;
-
-                worldX = Mathf.Min(worldX, mapWidth - 1);
-                worldY = Mathf.Min(worldY, mapHeight - 1);
-
-                int v = y * vertsPerSide + x;
-                float height = 4.5f;
-                if (noise != null)
-                    height = noise[worldX, worldY];
-
-                vertices[v] = new Vector3(x * skip, height, y * skip);
-                uvs[v] = new Vector2(
-                    (float)worldX / mapWidth,
-                    (float)worldY / mapHeight
-                );
-                if (x < vertsPerSide - 1 && y < vertsPerSide - 1)
-                {
-                    triangles[triangleIndex + 0] = v;
-                    triangles[triangleIndex + 1] = v + vertsPerSide;
-                    triangles[triangleIndex + 2] = v + vertsPerSide + 1;
-
-                    triangles[triangleIndex + 3] = v;
-                    triangles[triangleIndex + 4] = v + vertsPerSide + 1;
-                    triangles[triangleIndex + 5] = v + 1;
-
-                    triangleIndex += 6;
-                }
-
-
-            }
-        }
-
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.uv = uvs;
-
+        mesh.vertices = meshData.Vertices;
+        mesh.triangles = meshData.Triangles;
+        mesh.uv = meshData.Uvs;
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
 
         meshFilter.mesh = mesh;
         if (lodLevel == 0)
+        {
             meshCollider.sharedMesh = mesh;
+        }
 
+        terrain.layer = layer;
         return terrain;
     }
 

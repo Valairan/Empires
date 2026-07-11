@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Drop", menuName = "Items/New Resource Drop")]
+[CreateAssetMenu(fileName = "New Drop", menuName = "Empires/Resource/New Resource Drop")]
 public class ResourceDrop : Item
 {
     public GameObject drop;

@@ -12,7 +12,6 @@ public class SettingsManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Keeps settings alive across scenes
         }
         else
         {

@@ -71,7 +71,12 @@ public class GameManager : NetworkBehaviour
         if (generateTerrain) GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
         else
         {
-
+            int poscount = 0;
+            foreach (GameObject tree in worldGenerator.TreesToPlace)
+            {
+                Instantiate(tree, new Vector3(50, 0, -10 + poscount), Quaternion.identity);
+                poscount += 5;
+            }
         }
         int count = 0;
         foreach (ulong client in NetworkManager.ConnectedClientsIds)
@@ -80,7 +85,7 @@ public class GameManager : NetworkBehaviour
 
             PlayerController controller = player.GetComponent<PlayerController>();
             NetworkPlayerManager.Singleton.connectedPlayerControllers[client] = controller;
-            
+
             controller.playerCCMotor.motor.SetPosition(GetSpawnPointForClient(client));
             NetworkGamePropertiesStorage.Singleton.spawnedPlayers.Add(client, player);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(client, true);
@@ -140,8 +145,8 @@ public class GameManager : NetworkBehaviour
             lacunarity = 0,
             multiplier = 5,
             offset = Vector2.zero,
-            falloffHeight = 20,
-            falloffDistance = 5
+            falloffHeight = 0,
+            falloffDistance = 10
         };
         worldGenerator.GenerateTerrain(settings, ref progress);
 

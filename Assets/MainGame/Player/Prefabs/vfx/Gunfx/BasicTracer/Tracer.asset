@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b9c7926441f0584894d091d92726513, type: 3}
+  m_Name: Tracer
+  m_EditorClassIdentifier: Assembly-CSharp::Empires.VFX.VfxDefinition
+  id: 84f1b42c-aed3-4494-9f5c-4c365d9f2415
+  Prefab: {fileID: 1047125720731386502, guid: 94b5e39bd5f4db8429a6b4e96332f776, type: 3}
+  InitialPoolSize: 64
+  AutoReturnWhenFinished: 1
+  GrowPoolOnDemand: 1

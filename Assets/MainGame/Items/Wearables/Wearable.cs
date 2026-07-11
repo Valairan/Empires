@@ -2,7 +2,7 @@ using System;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Items/New Wearable")]
+[CreateAssetMenu(menuName = "Empires/Wearables/New Wearable")]
 public class Wearable : Item
 {
     public int id;

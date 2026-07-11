@@ -3,7 +3,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Items/New Item")]
+[CreateAssetMenu(menuName = "Empires/Items/New Item")]
 public class Item : ItemBase
 {
     public Sprite ItemIcon;

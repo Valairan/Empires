@@ -1,6 +1,8 @@
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.VFX;
+using System.Linq;
+using Unity.Collections;
 
 public class RangedWeaponBehaviour
     : WeaponBehaviour<RangedWeapon>, IWeaponTriggerable, IWeaponUpdatable
@@ -14,6 +16,7 @@ public class RangedWeaponBehaviour
     [Header("References")]
     public Transform muzzleStartPoint;
     public VisualEffect muzzleFlash;
+    public VisualEffect[] tracer;
 
     [Header("FireMode")]
     public FireMode currentFiremode;
@@ -30,7 +33,7 @@ public class RangedWeaponBehaviour
     public override void OnNetworkSpawn()
     {
         currentFiremode = baseitem.firemodes[0];
-        raycastLayerMask = ~ (1 << 3);
+        raycastLayerMask = ~(1 << 3);
     }
 
     public void TriggerPressed(Vector3 aimPoint)
@@ -94,18 +97,18 @@ public class RangedWeaponBehaviour
 
         lastShotTime = Time.time;
         Attack_ServerRpc(aimPoint);
-        currentShot++;
         onAttack?.Invoke();
     }
 
     [ServerRpc]
     public override void Attack_ServerRpc(Vector3 point)
     {
+        Vector3 dir;
+        NativeArray<Vector3> tracers = new NativeArray<Vector3>(TypedItem.pelletCount, Allocator.TempJob);
         for (int i = 0; i < TypedItem.pelletCount; i++)
         {
-            PlayMuzzleFlash_ClientRpc();
 
-            Vector3 dir = (point - muzzleStartPoint.position).normalized;
+            dir = (point - muzzleStartPoint.position).normalized;
             dir = ApplySpread(dir, TypedItem.bulletSpread);
 
             if (Physics.Raycast(muzzleStartPoint.position, dir, out RaycastHit hit, Mathf.Infinity, raycastLayerMask))
@@ -124,7 +127,10 @@ public class RangedWeaponBehaviour
                     damageable.takeDamage(ctx);
                 }
             }
+            currentShot++;
+            tracers[i] = dir;
         }
+        PlayMuzzleFlash_ClientRpc(tracers);
 
     }
 
@@ -156,13 +162,20 @@ public class RangedWeaponBehaviour
     }
 
     [ClientRpc]
-    void PlayMuzzleFlash_ClientRpc()
+    void PlayMuzzleFlash_ClientRpc(NativeArray<Vector3> tracerTo)
     {
-        muzzleFlash.Play();
-        audioSource.Play();
-        
+        int index = 0;
+        foreach (Vector3 dir in tracerTo)
+        {
+            tracer[index].transform.rotation = Quaternion.LookRotation(dir);
+            tracer[index]?.SendEvent("OnPlay");
+            index++;
+        }
+        muzzleFlash?.Play();
+        audioSource?.Play();
+
     }
-    
+
 
     // Optional helper: CanFire for CombatController
 

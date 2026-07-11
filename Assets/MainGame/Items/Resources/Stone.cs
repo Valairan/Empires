@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Stone", menuName = "Items/New Stone")]
+[CreateAssetMenu(fileName = "Stone", menuName = "Empires/Resource/New Stone")]
 public class Stone : BaseResource
 {
 

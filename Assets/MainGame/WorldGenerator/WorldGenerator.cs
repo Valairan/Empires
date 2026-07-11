@@ -3,13 +3,12 @@ using UnityEngine;
 
 public class WorldGenerator : MonoBehaviour
 {
-    float[,] terrainNoise;
-    float[,] biomeNoise;
-    float[,] weatherNoise;
+    float[] terrainNoise;
+    float[] biomeNoise;
+    float[] weatherNoise;
     [SerializeField] Material terrainMaterial;
-    [SerializeField] Material oceanMaterial;
-    [SerializeField] GameObject[] TreesToPlace;
-    [SerializeField] GameObject[] DecorToPlace;
+    [SerializeField] public GameObject[] TreesToPlace;
+    [SerializeField] public GameObject[] DecorToPlace;
     [SerializeField] public BaseResourceBehaviour[,] placedTrees;
     public bool[,] spotsLeft;
     Camera mainCamera;
@@ -38,7 +37,7 @@ public class WorldGenerator : MonoBehaviour
             lacunarity = 0,
             multiplier = 5,
             offset = Vector2.zero,
-            falloffHeight = 20,
+            falloffHeight = 0,
             falloffDistance = 5
         };
 
@@ -58,14 +57,18 @@ public class WorldGenerator : MonoBehaviour
         mapWidth = settings.mapWidth;
         totaleVegetationChunks = new VegetationChunk[vegetation.Length][,];
         progress = .2f;
-        terrainNoise = NoiseGenerator.GenerateSteppedNoiseMap(settings.mapWidth, settings.mapHeight, settings.seed, settings.scale, settings.octaves, settings.persistance, settings.lacunarity, settings.multiplier, settings.offset, settings.falloffHeight, settings.falloffDistance);
-        progress = .3f;
-        biomeNoise = NoiseGenerator.GenerateNoiseMap(settings.biomeWidth, settings.biomeHeight, 20, 32, 4, 16f, 16f, 1f, Vector2.zero, 0, 0);
-        progress = .4f;
-        weatherNoise = NoiseGenerator.GenerateNoiseMap(100, 100, 10, 4, 4, 16f, 16f, 1f, Vector2.zero, 0, 0);
+        float[][] noiseMaps = NoiseGenerator.GenerateNoiseMapsParallel(
+            new NoiseMapGenerationRequest(settings.mapWidth, settings.mapHeight, settings.seed, settings.scale, settings.octaves, settings.persistance, settings.lacunarity, settings.multiplier, settings.offset, settings.falloffHeight, settings.falloffDistance, true),
+            new NoiseMapGenerationRequest(settings.biomeWidth, settings.biomeHeight, 20, 32, 4, 16f, 16f, 1f, Vector2.zero, 0, 0, false),
+            new NoiseMapGenerationRequest(100, 100, 10, 4, 4, 16f, 16f, 1f, Vector2.zero, 0, 0, false));
+
+        terrainNoise = noiseMaps[0];
+        biomeNoise = noiseMaps[1];
+        weatherNoise = noiseMaps[2];
+        //RiverGenerator.CarveRiver(settings.mapWidth, settings.mapHeight, settings.seed, 2f, 10f, 0.5f, 0.5f, terrainNoise);
         progress = .5f;
 
-        
+
         MeshGenerator.GenerateTerrainMesh(settings.mapWidth, settings.mapHeight, 100, terrainMaterial, 6, terrainNoise);
         progress = .6f;
         //MeshGenerator.GenerateSquareMesh(settings.mapWidth, settings.mapHeight, 25, oceanMaterial, 4);
@@ -86,7 +89,7 @@ public class WorldGenerator : MonoBehaviour
             shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off
         };
 
-        
+
         progress = 1f;
         generationComplete = true;
         ResourcesManager.Singleton.placedTrees = placedTrees;

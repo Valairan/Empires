@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Ranged Weapon", menuName = "Items/Weapons/New Ranged Weapon")]
+[CreateAssetMenu(fileName = "Ranged Weapon", menuName = "Empires/Weapons/New Ranged Weapon")]
 public class RangedWeapon : Weapon
 {
     [Header("Gun Properties")]

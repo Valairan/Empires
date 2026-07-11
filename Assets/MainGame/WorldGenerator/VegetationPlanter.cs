@@ -1,3 +1,4 @@
+using Palmmedia.ReportGenerator.Core;
 using UnityEngine;
 public struct VegetationChunk
 {
@@ -10,7 +11,7 @@ public struct VegetationChunk
 }
 public static class VegetationPlanter
 {
-    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[,] availableSpots, float[,] biomeNoise)
+    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[] availableSpots, float[] biomeNoise)
     {
         int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
 
@@ -40,19 +41,19 @@ public static class VegetationPlanter
 
         return chunkGrid;
     }
-    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[,] availableSpots)
+    public static VegetationChunk[,] scatterGrassInChunks(TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[] availableSpots)
     {
         int chunkCountX = Mathf.CeilToInt((float)settings.mapWidth / grassChunkSize);
 
         int chunkCountY = Mathf.CeilToInt((float)settings.mapHeight / grassChunkSize);
         VegetationChunk[,] chunkGrid = new VegetationChunk[chunkCountX, chunkCountY];
-        float[,] biomeMap = new float[settings.biomeWidth, settings.biomeHeight];
+        float[] biomeNoise = new float[settings.biomeWidth * settings.biomeHeight];
 
         for (int x = 0; x < settings.biomeWidth; x++)
         {
             for (int y = 0; y < settings.biomeHeight; y++)
             {
-                biomeMap[x, y] = 1;
+                biomeNoise[NoiseMapUtility.GetIndex(x, y, settings.biomeWidth)] = 1;
             }
         }
         for (int cy = 0; cy < chunkCountY; cy++)
@@ -71,40 +72,40 @@ public static class VegetationPlanter
                     scaleRangeMax,
                     probability,
                     availableSpots,
-                    biomeMap
+                    biomeNoise
                 );
             }
         }
 
         return chunkGrid;
     }
-    private static bool isEdge(int x, int y, float height, float[,] availableSpots)
+    private static bool IsEdge(int x, int y, float height, int mapWidth, float[] availableSpots)
     {
-
-        if (availableSpots[x, y - 1] != height ||
-            availableSpots[x, y + 1] != height ||
-            availableSpots[x - 1, y] != height ||
-            availableSpots[x + 1, y] != height ||
-            availableSpots[x + 1, y + 1] != height ||
-            availableSpots[x + 1, y - 1] != height ||
-            availableSpots[x - 1, y + 1] != height ||
-            availableSpots[x - 1, y - 1] != height)
+        if (availableSpots[NoiseMapUtility.GetIndex(x, y - 1, mapWidth)] != height ||
+            availableSpots[NoiseMapUtility.GetIndex(x, y + 1, mapWidth)] != height ||
+            availableSpots[NoiseMapUtility.GetIndex(x - 1, y, mapWidth)] != height ||
+            availableSpots[NoiseMapUtility.GetIndex(x + 1, y, mapWidth)] != height ||
+            availableSpots[NoiseMapUtility.GetIndex(x + 1, y + 1, mapWidth)] != height ||
+            availableSpots[NoiseMapUtility.GetIndex(x + 1, y - 1, mapWidth)] != height ||
+            availableSpots[NoiseMapUtility.GetIndex(x - 1, y + 1, mapWidth)] != height ||
+            availableSpots[NoiseMapUtility.GetIndex(x - 1, y - 1, mapWidth)] != height)
         {
             return true;
         }
+
         return false;
     }
-    private static bool isWaterEdge(int x, int y, float height, float[,] availableSpots)
+    private static bool isWaterEdge(int x, int y, float height, int mapWidth, float[] availableSpots)
     {
 
-        if (availableSpots[x, y - 1] < height ||
-            availableSpots[x, y + 1] < height ||
-            availableSpots[x - 1, y] < height ||
-            availableSpots[x + 1, y] < height ||
-            availableSpots[x + 1, y + 1] < height ||
-            availableSpots[x + 1, y - 1] < height ||
-            availableSpots[x - 1, y + 1] < height ||
-            availableSpots[x - 1, y - 1] < height)
+        if (availableSpots[NoiseMapUtility.GetIndex(x, y - 1, mapWidth)] < height ||
+            availableSpots[NoiseMapUtility.GetIndex(x, y + 1, mapWidth)] < height ||
+            availableSpots[NoiseMapUtility.GetIndex(x - 1, y, mapWidth)] < height ||
+            availableSpots[NoiseMapUtility.GetIndex(x + 1, y, mapWidth)] < height ||
+            availableSpots[NoiseMapUtility.GetIndex(x + 1, y + 1, mapWidth)] < height ||
+            availableSpots[NoiseMapUtility.GetIndex(x + 1, y - 1, mapWidth)] < height ||
+            availableSpots[NoiseMapUtility.GetIndex(x - 1, y + 1, mapWidth)] < height ||
+            availableSpots[NoiseMapUtility.GetIndex(x - 1, y - 1, mapWidth)] < height)
         {
             return true;
         }
@@ -113,17 +114,19 @@ public static class VegetationPlanter
     private static Vector2 CalculateWaterEdgeOffset(
         int x,
         int y,
-        float[,] heightMap,
+        int mapWidth,
+        int mapHeight,
+        float[] heightMap,
         DeterministicRng rng,
         float pushStrength = 0.35f,
         float sideStrength = 0.25f,
         bool scaleBySlope = true)
     {
         Vector2 pushDir = Vector2.zero;
-        float current = heightMap[x, y];
+        float current = heightMap[NoiseMapUtility.GetIndex(x, y, mapWidth)];
 
-        int width = heightMap.GetLength(0);
-        int height = heightMap.GetLength(1);
+        int width = mapWidth;
+        int height = mapHeight;
 
         // Accumulate direction AWAY from lower neighbours
         for (int dx = -1; dx <= 1; dx++)
@@ -139,7 +142,7 @@ public static class VegetationPlanter
                 if (nx < 0 || nx >= width || ny < 0 || ny >= height)
                     continue;
 
-                float neighbour = heightMap[nx, ny];
+                float neighbour = heightMap[NoiseMapUtility.GetIndex(nx, ny, width)];
 
                 if (neighbour < current)
                 {
@@ -168,7 +171,7 @@ public static class VegetationPlanter
         return offset;
     }
 
-    public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[,] availableSpots, float[,] biomeMap)
+    public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[] availableSpots, float[] biomeNoise)
     {
         int chunkSize = grassChunkSize;
 
@@ -213,16 +216,10 @@ public static class VegetationPlanter
 
                 //float biome = biomeMap[biomeX, biomeY];
 
-                if (x % 100 == 0)
-                {
-                    Debug.Log(biomeX);
-                    Debug.Log(biomeY);
-                }
-
                 float finalProbability = probability;
                 if (rng.Hash(x, y) >= finalProbability) continue;
 
-                float height = availableSpots[x, y];
+                float height = availableSpots[NoiseMapUtility.GetIndex(x, y, settings.mapWidth)];
                 if (height < 4) continue;
                 if (x > 0 && x < settings.mapWidth - 1 && y > 0 && y < settings.mapHeight - 1)
                 {
@@ -230,7 +227,7 @@ public static class VegetationPlanter
                     {
                         if (isWaterPlant)
                         {
-                            if (!isWaterEdge(x, y, height, availableSpots)) continue;
+                            if (!isWaterEdge(x, y, height, settings.mapWidth, availableSpots)) continue;
                         }
                     }
                     else
@@ -239,13 +236,13 @@ public static class VegetationPlanter
                     }
 
                     if (!isWaterPlant)
-                        if (isEdge(x, y, height, availableSpots)) continue;
+                        if (IsEdge(x, y, height, settings.mapWidth, availableSpots)) continue;
 
 
                     for (int i = 0; i < grassPerCell; i++)
                     {
                         Vector2 offset2D = isWaterPlant
-                            ? CalculateWaterEdgeOffset(x, y, availableSpots, rng)
+                            ? CalculateWaterEdgeOffset(x, y, settings.mapWidth, settings.mapHeight, availableSpots, rng)
                             : new Vector2(
                                 rng.NextFloat(-0.5f, 0.5f),
                                 rng.NextFloat(-0.5f, 0.5f)
@@ -297,7 +294,7 @@ public static class VegetationPlanter
 
         return chunk;
     }
-    public static BaseResourceBehaviour[,] ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, GameObject[] extras, ref float[,] availableSpots, int skip, float[,] biome)
+    public static BaseResourceBehaviour[,] ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, GameObject[] extras, ref float[] availableSpots, int skip, float[] biomeNoise)
     {
         GameObject treeParent = new GameObject("Tree Parent");
         BaseResourceBehaviour[,] placedTrees = new BaseResourceBehaviour[mapHeight, mapWidth];
@@ -308,21 +305,21 @@ public static class VegetationPlanter
         {
             for (int y = 0; y < mapWidth; y++)
             {
-                float height = availableSpots[x, y];
+                float height = availableSpots[NoiseMapUtility.GetIndex(x, y, mapWidth)];
                 if (height < 4) continue;
                 if (x > 0 && x < mapHeight - 1 && y > 0 && y < mapWidth - 1)
 
-                    if (availableSpots[x + 1, y + 1] == height && availableSpots[x + 1, y - 1] == height && availableSpots[x - 1, y + 1] == height && availableSpots[x - 1, y - 1] == height)
+                    if (availableSpots[NoiseMapUtility.GetIndex(x + 1, y + 1, mapWidth)] == height && availableSpots[NoiseMapUtility.GetIndex(x + 1, y - 1, mapWidth)] == height && availableSpots[NoiseMapUtility.GetIndex(x - 1, y + 1, mapWidth)] == height && availableSpots[NoiseMapUtility.GetIndex(x - 1, y - 1, mapWidth)] == height)
                     {
                         bool spawn = rng.NextFloat() > 0.98f;
 
-                        if (!((availableSpots[x, y] <= 1) && (availableSpots[x, y] < 40)))
+                        if (!((availableSpots[NoiseMapUtility.GetIndex(x, y, mapWidth)] <= 1) && (availableSpots[NoiseMapUtility.GetIndex(x, y, mapWidth)] < 40)))
                         {
                             if (spawn)
                             {
                                 //int whatToSpawn = (int)Mathf.Clamp(biome[y / ((mapWidth - 1) / (biomeDimensionsY - 1)), x / ((mapHeight - 1) / (biomeDimensionsX - 1))] * 5, 0, availableItems - 1);
                                 int whatToSpawn = rng.NextInt(0, vegetation.Length);
-                                GameObject resource = GameObject.Instantiate(vegetation[whatToSpawn], new Vector3(x + rng.NextFloat(), availableSpots[x, y], y + rng1.NextFloat()), Quaternion.Euler(new Vector3(0f, rng.NextInt(0, 360), 0f)), treeParent.transform);
+                                GameObject resource = GameObject.Instantiate(vegetation[whatToSpawn], new Vector3(x + rng.NextFloat(), availableSpots[NoiseMapUtility.GetIndex(x, y, mapWidth)], y + rng1.NextFloat()), Quaternion.Euler(new Vector3(0f, rng.NextInt(0, 360), 0f)), treeParent.transform);
                                 resource.isStatic = true;
                                 placedTrees[x, y] = resource.GetComponent<BaseResourceBehaviour>();
                                 placedTrees[x, y].xCoordinate = x;

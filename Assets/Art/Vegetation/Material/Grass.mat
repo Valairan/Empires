@@ -28,6 +28,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _ALPHATEST_ON
   - _DISABLE_SSR_TRANSPARENT
   - _DOUBLESIDED_ON
   - _MATERIAL_FEATURE_TRANSMISSION
@@ -36,9 +37,10 @@ Material:
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2225
+  m_CustomRenderQueue: 2475
   stringTagMap:
     MotionVector: User
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -134,7 +136,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2DLOD_4ce76fe7821749c5a93282810d6e42f2_Texture_1_Texture2D:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ebe20fd62c6161f46a84b30a4e47f873, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecularColorMap:
@@ -184,9 +186,9 @@ Material:
     m_Ints: []
     m_Floats:
     - Animation_Cutoff: 20
-    - Distance_Fade_End: 40
-    - Distance_Fade_Start: 30
-    - Vector1_593c5cea6c4a42e993ed03ced4685732: 4
+    - Distance_Fade_End: 60
+    - Distance_Fade_Start: 40
+    - Vector1_593c5cea6c4a42e993ed03ced4685732: 2
     - Vector1_8651797e3e304e108dbd25f9d5a426ba: 0
     - Vector1_a5b8b09028ce49a39f4d090894c89e22: 0.5
     - Vector1_a6983181c8dc4691ba6a28a34c4223a6: 1
@@ -203,7 +205,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlbedoAffectEmissive: 0
     - _AlphaCutoff: 0.5
-    - _AlphaCutoffEnable: 0
+    - _AlphaCutoffEnable: 1
     - _AlphaCutoffPostpass: 0.5
     - _AlphaCutoffPrepass: 0.5
     - _AlphaCutoffShadow: 0.5
@@ -242,7 +244,7 @@ Material:
     - _EnableGeometricSpecularAA: 0
     - _EnergyConservingSpecularColor: 1
     - _ExcludeFromTUAndAA: 1
-    - _FadeBias: 1
+    - _FadeBias: 0.1
     - _HeightAmplitude: 0.02
     - _HeightCenter: 0.5
     - _HeightMapParametrization: 0
@@ -322,14 +324,14 @@ Material:
     - _WindStrength: 0.2
     - _WindTurbulence: 1
     - _ZTestDepthEqualForOpaque: 3
-    - _ZTestGBuffer: 4
+    - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - Fade_Color: {r: 0.35294104, g: 0.5294118, b: 0.16470572, a: 1}
+    - Fade_Color: {r: 0.013572444, g: 0.5754717, b: 0.09838736, a: 1}
     - _BaseColor: {r: 0.6776141, g: 1, b: 0, a: 1}
     - _Color: {r: 0.6776141, g: 1, b: 0, a: 1}
-    - _ColorVariation: {r: -0.05, g: 0.05, b: 0, a: 0}
+    - _ColorVariation: {r: -0.1, g: 0.1, b: 0, a: 0}
     - _DiffusionProfileAsset: {r: -6.6581504e+12, g: -0.00000016772259, b: 59.747776, a: -3.1901394e-19}
     - _Diffusion_Profile_Asset: {r: 4.850136e-22, g: 2.7887351e-36, b: 2.7755116e-36, a: -6.4239144e-24}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}

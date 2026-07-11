@@ -78,3 +78,20 @@ public class InputHandler : NetworkBehaviour
 
 
 }
+
+
+public struct InputContext : INetworkSerializable
+{
+    public float Horizontal;
+    public float Vertical;
+    public bool climbing;
+    public float mouseHorizontal;
+    public float mouseVertical;
+    public Quaternion transformRotation;
+    public Vector3 ladderNormal;
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        throw new NotImplementedException();
+    }
+}

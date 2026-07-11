@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class RagdollController : MonoBehaviour, IDamageable
 {
     public GameObject graphicsRoot; // assign Graphics in inspector
-    public ParticleSystem damageParticles;
+    public VisualEffect damageParticles;
 
     private Rigidbody[] ragdollBodies;
     private Animator animator;
@@ -39,7 +40,6 @@ public class RagdollController : MonoBehaviour, IDamageable
 
     public void takeDamage(DamageContext ctx)
     {
-        Die();
         damageParticles.transform.position = ctx.hitpoint;
         damageParticles.transform.rotation = Quaternion.LookRotation(ctx.hitnormal);
         damageParticles.Play();

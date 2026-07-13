@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b9c7926441f0584894d091d92726513, type: 3}
+  m_Script: {fileID: 11500000, guid: 29b695e176d969845a51833247d4bb55, type: 3}
   m_Name: Muzzleflash
   m_EditorClassIdentifier: Assembly-CSharp::Empires.VFX.VfxDefinition
-  id: 3e6a77ca-1344-41bd-a6fd-d6be8f62b194
-  DisplayName: MuzzleFlash_fire
+  id: 63cb8013-ac37-4db0-9806-355e80ad6123
+  DisplayName: DefaultMuzzleFlash
   Prefab: {fileID: 5972868582603549154, guid: 951839a4ff3e4514c9301f8fbf8ffb73, type: 3}
   InitialPoolSize: 16
   AutoReturnWhenFinished: 1

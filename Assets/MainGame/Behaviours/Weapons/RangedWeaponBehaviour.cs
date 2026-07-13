@@ -126,8 +126,8 @@ public class RangedWeaponBehaviour
             }
             currentShot++;
             tracers[i] = dir;
-            VfxService.Instance.RequestVfxServerByName(baseitem.muzzleflash, muzzleStartPoint.position, muzzleStartPoint.rotation);
-            VfxService.Instance.RequestVfxServerByName(baseitem.tracer, muzzleStartPoint.position, muzzleStartPoint.rotation);
+            VfxService.Instance.RequestVfxServerByName(baseitem.muzzleflash, muzzleStartPoint.position, Quaternion.Euler(dir));
+            VfxService.Instance.RequestVfxServerByName(baseitem.tracer, muzzleStartPoint.position, Quaternion.Euler(dir));
         }
     }
 

@@ -26,6 +26,7 @@ MonoBehaviour:
   headDamage: 35
   bodyDamage: 25
   legDamage: 15
+  machineDamage: 0
   canADS: 1
   hasAreaEffect: 0
   weaponPrefab_rb: {fileID: 260881921318493846, guid: fa6a30c1972c36f469a93b4365e3694b, type: 3}
@@ -53,3 +54,5 @@ MonoBehaviour:
   returnToCenter: 0
   recoilRecovery: 2
   bulletSpread: 0.98
+  muzzleflash: DefaultMuzzleFlash
+  tracer: f9708bdd-5c03-426d-a844-080450af3a97

@@ -30,7 +30,7 @@ public class AnimationController : MonoBehaviour
     public Rig throwableRig;
     public float throwableRigWeight;
     public float lerpFactor;
-
+    public WeaponType currentWeapon;
     public State currentState;
     public Dictionary<states, State> availableStates = new Dictionary<states, State>();
     public void transition(State state)
@@ -49,6 +49,7 @@ public class AnimationController : MonoBehaviour
         availableStates.Add(states.Melee, new MeleeState());
         availableStates.Add(states.Throwable, new ThrowableState());
         availableStates.Add(states.OverTheShoulder, new OverTheShoulderState());
+        availableStates.Add(states.EquipState, new EquipState());
         transition(availableStates[states.Unarmed]);
     }
 
@@ -61,7 +62,7 @@ public class AnimationController : MonoBehaviour
         currentState.OnStateLateUpdate(this);
     }
 
-    public void updateMovemementParams(Vector2 movement, bool grounded, bool climbing, bool inwater)
+    public void updateMovemementParams(Vector2 movement, bool grounded, bool climbing, bool inwater, float crouch)
     {
         animator.SetBool("Grounded", grounded);
         animator.SetBool("Climbing", climbing);
@@ -72,6 +73,7 @@ public class AnimationController : MonoBehaviour
             animator.SetFloat("Horizontal", movement.x - 1);
             return;
         }
+        animator.SetFloat("Crouch", crouch);
         animator.SetFloat("Horizontal", movement.x);
         animator.SetFloat("Vertical", movement.y);
 
@@ -80,6 +82,7 @@ public class AnimationController : MonoBehaviour
     {
         leftHandConstraint.data.target = weapon.ik_target;
         leftHandConstraint.data.hint = weapon.ik_hint;
+        currentWeapon = weapon.baseitem.WeaponType;
 
     }
 
@@ -118,6 +121,19 @@ public abstract class State
             default: return 0;
         }
     }
+
+    public states WeaponTypeToState(WeaponType type)
+    {
+        switch (type)
+        {
+            case WeaponType.rifle: return states.Rifle;
+            case WeaponType.sidearm: return states.Sidearm;
+            case WeaponType.melee: return states.Melee;
+            case WeaponType.overtheshoulder: return states.OverTheShoulder;
+            case WeaponType.throwable: return states.Throwable;
+            default: return states.Unarmed;
+        }
+    }
 }
 
 public enum states
@@ -127,7 +143,9 @@ public enum states
     Sidearm,
     Melee,
     Throwable,
-    OverTheShoulder
+    OverTheShoulder,
+    EquipState,
+
 
 }
 
@@ -144,41 +162,6 @@ public class UnarmedState : State
         controller.throwableRigWeight = 0;
         controller.leftHandConstraintWeight = 0f;
         controller.leftHandRigWeight = 0f;
-
-    }
-
-    public override void OnStateExit(AnimationController controller)
-    {
-
-    }
-    public override void OnStateUpdate(AnimationController controller) { }
-
-    public override void OnStateLateUpdate(AnimationController controller)
-    {
-        controller.meleeRig.weight = Mathf.Lerp(controller.meleeRig.weight, controller.meleeRigWeight, timeElapsed / controller.lerpFactor);
-        controller.rifleRig.weight = Mathf.Lerp(controller.rifleRig.weight, controller.rifleRigWeight, timeElapsed / controller.lerpFactor);
-        controller.pistolRig.weight = Mathf.Lerp(controller.pistolRig.weight, controller.pistolRigWeight, timeElapsed / controller.lerpFactor);
-        controller.throwableRig.weight = Mathf.Lerp(controller.throwableRig.weight, controller.throwableRigWeight, timeElapsed / controller.lerpFactor);
-        controller.leftHandRig.weight = Mathf.Lerp(controller.leftHandRig.weight, controller.leftHandRigWeight, timeElapsed / controller.lerpFactor);
-        controller.leftHandConstraint.weight = Mathf.Lerp(controller.leftHandConstraint.weight, controller.leftHandConstraintWeight, timeElapsed / controller.lerpFactor);
-        timeElapsed += Time.deltaTime;
-    }
-}
-public class RifleState : State
-{
-    public override void OnStateEnter(AnimationController controller)
-    {
-        controller.animator.SetInteger("Weapon", stateToInt(states.Rifle));
-        timeElapsed = 0;
-        controller.rifleRigWeight = 1;
-        controller.pistolRigWeight = 0;
-        controller.meleeRigWeight = 0;
-        controller.throwableRigWeight = 0;
-        controller.leftHandConstraintWeight = 1f;
-        controller.leftHandRigWeight = 1f;
-
-        controller.torsoRigWeight = 1f;
-
         controller.parentRig.Build();
 
     }
@@ -197,10 +180,72 @@ public class RifleState : State
         controller.throwableRig.weight = Mathf.Lerp(controller.throwableRig.weight, controller.throwableRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandRig.weight = Mathf.Lerp(controller.leftHandRig.weight, controller.leftHandRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandConstraint.weight = Mathf.Lerp(controller.leftHandConstraint.weight, controller.leftHandConstraintWeight, timeElapsed / controller.lerpFactor);
+        timeElapsed += Time.deltaTime;
+    }
+}
+
+public class EquipState : State
+{
+    public override void OnStateEnter(AnimationController controller)
+    {
+        controller.animator.SetInteger("Weapon", stateToInt(WeaponTypeToState(controller.currentWeapon)));
+        controller.animator.SetTrigger("Equip");
+        timeElapsed = 0;
+
+    }
+
+    public override void OnStateExit(AnimationController controller)
+    {
+
+    }
+    public override void OnStateUpdate(AnimationController controller)
+    {
+        timeElapsed += Time.deltaTime;
+    }
+
+    public override void OnStateLateUpdate(AnimationController controller)
+    {
+
+    }
+}
+public class RifleState : State
+{
+    public override void OnStateEnter(AnimationController controller)
+    {
+        controller.animator.SetInteger("Weapon", stateToInt(states.Rifle));
+        timeElapsed = 0;
+        controller.rifleRigWeight = 1;
+        controller.pistolRigWeight = 0;
+        controller.meleeRigWeight = 0;
+        controller.throwableRigWeight = 0;
+        controller.leftHandConstraintWeight = 1f;
+        controller.leftHandRigWeight = 1f;
+        controller.torsoRigWeight = 1f;
+        controller.parentRig.Build();
+
+
+    }
+
+    public override void OnStateExit(AnimationController controller)
+    {
+
+    }
+    public override void OnStateUpdate(AnimationController controller)
+    {
+        timeElapsed += Time.deltaTime;
+    }
+
+    public override void OnStateLateUpdate(AnimationController controller)
+    {
+        controller.meleeRig.weight = Mathf.Lerp(controller.meleeRig.weight, controller.meleeRigWeight, timeElapsed / controller.lerpFactor);
+        controller.rifleRig.weight = Mathf.Lerp(controller.rifleRig.weight, controller.rifleRigWeight, timeElapsed / controller.lerpFactor);
+        controller.pistolRig.weight = Mathf.Lerp(controller.pistolRig.weight, controller.pistolRigWeight, timeElapsed / controller.lerpFactor);
+        controller.throwableRig.weight = Mathf.Lerp(controller.throwableRig.weight, controller.throwableRigWeight, timeElapsed / controller.lerpFactor);
+        controller.leftHandRig.weight = Mathf.Lerp(controller.leftHandRig.weight, controller.leftHandRigWeight, timeElapsed / controller.lerpFactor);
+        controller.leftHandConstraint.weight = Mathf.Lerp(controller.leftHandConstraint.weight, controller.leftHandConstraintWeight, timeElapsed / controller.lerpFactor);
 
         //controller.TorsoRig.weight = Mathf.Lerp(controller.TorsoRig.weight, controller.torsoRigWeight, timeElapsed / controller.lerpFactor);
 
-        timeElapsed += Time.deltaTime;
     }
 }
 public class MeleeState : State
@@ -215,6 +260,7 @@ public class MeleeState : State
         controller.throwableRigWeight = 0;
         controller.leftHandConstraintWeight = 0f;
         controller.leftHandRigWeight = 0f;
+        controller.parentRig.Build();
 
     }
 
@@ -222,7 +268,10 @@ public class MeleeState : State
     {
 
     }
-    public override void OnStateUpdate(AnimationController controller) { }
+    public override void OnStateUpdate(AnimationController controller)
+    {
+        timeElapsed += Time.deltaTime;
+    }
 
     public override void OnStateLateUpdate(AnimationController controller)
     {
@@ -232,7 +281,6 @@ public class MeleeState : State
         controller.throwableRig.weight = Mathf.Lerp(controller.throwableRig.weight, controller.throwableRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandRig.weight = Mathf.Lerp(controller.leftHandRig.weight, controller.leftHandRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandConstraint.weight = Mathf.Lerp(controller.leftHandConstraint.weight, controller.leftHandConstraintWeight, timeElapsed / controller.lerpFactor);
-        timeElapsed += Time.deltaTime;
     }
 }
 public class SidearmState : State
@@ -280,9 +328,8 @@ public class ThrowableState : State
         controller.throwableRigWeight = 1;
         controller.leftHandConstraintWeight = 0f;
         controller.leftHandRigWeight = 0f;
-
         controller.torsoRigWeight = 1f;
-
+        controller.parentRig.Build();
 
     }
 
@@ -311,6 +358,7 @@ public class OverTheShoulderState : State
     public override void OnStateEnter(AnimationController controller)
     {
         controller.animator.SetInteger("Weapon", stateToInt(states.OverTheShoulder));
+        controller.animator.SetTrigger("Equip");
         timeElapsed = 0;
         controller.rifleRigWeight = 0;
         controller.pistolRigWeight = 0;
@@ -318,9 +366,7 @@ public class OverTheShoulderState : State
         controller.throwableRigWeight = 0;
         controller.leftHandConstraintWeight = 1f;
         controller.leftHandRigWeight = 1f;
-
         controller.torsoRigWeight = 1f;
-
         controller.parentRig.Build();
 
     }

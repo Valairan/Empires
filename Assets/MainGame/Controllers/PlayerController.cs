@@ -23,6 +23,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
     [Header("Locomotion Settings")]
     bool Grounded = true;
+    bool Crouching;
     bool Climbing;
     bool Submerged
     {
@@ -115,7 +116,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerCamerasMotor.enabled = true;
         health.enabled = true;
     }
-
+    #region UI Events
     public void BindUI()
     {
         UiController.Singleton.currentPlayerBuildHandler = playerBuildHandler;
@@ -131,13 +132,30 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         UiController.Singleton.init();
 
     }
+    public void DetachUI()
+    {
 
+        onWeaponChanged -= UiController.Singleton.weaponChanged;
+        playerInventoryController.currentWeaponIndex.OnValueChanged -= UiController.Singleton.updateInventoryDisplay;
+        //playerInventoryController.weaponStorage.CollectionChanged -= UiController.Singleton.updateInventoryDisplay;
+
+        health.currentAmount.OnValueChanged -= onHealthChanged;
+        armor.currentAmount.OnValueChanged -= onArmorChanged;
+    }
+    #endregion
+    #region Component Events
     public void BindComponents()
     {
         playerInventoryController.currentWeaponIndex.OnValueChanged += OnWeaponUpdated;
         playerBuildHandler.locationValidityChange += UiController.Singleton.buildableLocationValid;
     }
-
+    public void DetachComponents()
+    {
+        playerInventoryController.currentWeaponIndex.OnValueChanged -= OnWeaponUpdated;
+        playerBuildHandler.locationValidityChange -= UiController.Singleton.buildableLocationValid;
+    }
+    #endregion
+    #region Input Events
     public void BindInputs()
     {
 
@@ -150,6 +168,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Previous += EquipPreviousItem;
         playerInputHandler.Next += EquipNextItem;
         playerInputHandler.Jump += jump;
+        playerInputHandler.Sneak += crouch;
 
         playerInputHandler.Inventory += UiController.Singleton.toggleInventory;
 
@@ -165,12 +184,43 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
         playerInputHandler.enableInputs();
     }
+    public void DetachInputs()
+    {
+
+        playerInteractionHandler.init();
+
+        playerInputHandler.Move -= ctx => MoveInput = ctx;
+        playerInputHandler.Look -= ctx => LookInput = ctx;
+        playerInputHandler.Attack -= Attack;
+        playerInputHandler.Sneak -= ctx => sneaking = ctx;
+        playerInputHandler.Previous -= EquipPreviousItem;
+        playerInputHandler.Next -= EquipNextItem;
+        playerInputHandler.Jump -= jump;
+        playerInputHandler.Sneak -= crouch;
+
+        playerInputHandler.Inventory -= UiController.Singleton.toggleInventory;
+
+        playerInputHandler.Equip -= EquipSpecificItem;
+        playerInputHandler.Stash -= storeCurrentWeapon;
+        playerInputHandler.Drop -= dropCurrentWeapon;
+        playerInputHandler.Interact -= OnInteract;
+        playerInputHandler.Aim -= OnAim;
+
+        playerInputHandler.Build -= buildButtonPressed;
+        playerInputHandler.Rotate -= playerBuildHandler.rotateButtonPressed;
+        playerInputHandler.Cancel -= playerBuildHandler.CancelButtonPressed;
+
+        playerInputHandler.disableInputs();
+    }
+    #endregion 
 
     public override void OnNetworkDespawn()
     {
         if (!IsLocalPlayer) return;
+        DetachComponents();
+        DetachInputs();
+        DetachUI();
 
-        playerInputHandler.disableInputs();
     }
 
     public void BindVfx()
@@ -193,6 +243,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
             Horizontal = MoveInput.x,
             Vertical = MoveInput.y,
             climbing = Climbing,
+            crouching = Crouching,
             mouseHorizontal = LookInput.x,
             mouseVertical = LookInput.y,
             transformRotation = playerCamera.transform.rotation,
@@ -201,13 +252,14 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerCCMotor.setInputs(ref inputs);
         Grounded = playerCCMotor.motor.GroundingStatus.IsStableOnGround;
 
-
         currentlyLookingAtPoint = playerCombatController.RaycastFromCamera();
         playerCombatController.UpdateWeapon();
         lookTargetTransform.position = currentlyLookingAtPoint;
         //playerCamerasMotor.Tick(LookInput, Time.deltaTime);
         //playerCCMotor.Move(finalMove * Time.deltaTime);
-        playerAnimationController.updateMovemementParams(MoveInput.normalized, Grounded, Climbing, Submerged);
+        playerAnimationController.updateMovemementParams(MoveInput.normalized, Grounded, Climbing, Submerged, !Crouching ? 1 : 0);
+
+        playerAnimationController.Tick();
 
     }
 
@@ -272,6 +324,12 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
             playerCCMotor.jump();
         }
     }
+    public void crouch(bool input)
+    {
+        if (!IsLocalPlayer) return;
+
+        Crouching = input;
+    }
 
     RecoilStage currentWeaponRecoilStage;
 
@@ -300,32 +358,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerAnimationController.updateCurrentWeapon(weapon);
         playerCombatController.currentWeapon = weapon;
 
-        switch (slot.weapon.WeaponType)
-        {
-            case WeaponType.rifle:
-                playerAnimationController.transition(
-                    playerAnimationController.availableStates[states.Rifle]);
-                break;
-
-            case WeaponType.sidearm:
-                playerAnimationController.transition(
-                    playerAnimationController.availableStates[states.Sidearm]);
-                break;
-
-            case WeaponType.melee:
-                playerAnimationController.transition(
-                    playerAnimationController.availableStates[states.Melee]);
-                break;
-
-            case WeaponType.throwable:
-                playerAnimationController.transition(
-                    playerAnimationController.availableStates[states.Throwable]);
-                break;
-            case WeaponType.overtheshoulder:
-                playerAnimationController.transition(
-                    playerAnimationController.availableStates[states.OverTheShoulder]);
-                break;
-        }
+        playerAnimationController.transition(playerAnimationController.availableStates[states.EquipState]);
 
         playerCombatController.currentWeapon.onAttack += playerAnimationController.attack;
 

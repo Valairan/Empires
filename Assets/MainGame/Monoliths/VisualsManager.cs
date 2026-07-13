@@ -42,9 +42,6 @@ public class VisualsManager : NetworkBehaviour, IVfxService
             }
         }
     }
-    // =========================================================================
-    // NEW: Name-Based Routing Interface Implementation
-    // =========================================================================
 
     public void RequestVfxServerByName(string vfxName, Vector3 position, Quaternion rotation)
     {
@@ -66,9 +63,6 @@ public class VisualsManager : NetworkBehaviour, IVfxService
         }
     }
 
-    // =========================================================================
-    // Original GUID/ID Execution Pipeline (Remains exactly the same)
-    // =========================================================================
 
     public void RequestVfxServer(string vfxId, Vector3 position, Quaternion rotation)
     {

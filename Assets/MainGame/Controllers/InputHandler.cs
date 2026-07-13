@@ -85,6 +85,7 @@ public struct InputContext : INetworkSerializable
     public float Horizontal;
     public float Vertical;
     public bool climbing;
+    public bool crouching;
     public float mouseHorizontal;
     public float mouseVertical;
     public Quaternion transformRotation;

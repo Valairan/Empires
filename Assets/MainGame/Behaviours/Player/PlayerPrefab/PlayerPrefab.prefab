@@ -756,7 +756,6 @@ GameObject:
   - component: {fileID: 6703637815125287513}
   - component: {fileID: 7014954875726692685}
   - component: {fileID: 4835396568835302231}
-  - component: {fileID: 1125308173485118977}
   - component: {fileID: 4720122550096299429}
   - component: {fileID: 8357343821977610369}
   m_Layer: 3
@@ -878,35 +877,7 @@ MonoBehaviour:
   NetworkAnimatorExpanded: 0
   AuthorityMode: 1
   m_Animator: {fileID: 1502791702499704288}
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 537620060
-    DestinationState: -151370449
-    TransitionDuration: 0.05
-    TriggerNameHash: 1080829965
-    TransitionIndex: 0
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 348266038
-    DestinationState: 983785542
-    TransitionDuration: 0.04545474
-    TriggerNameHash: 1080829965
-    TransitionIndex: 0
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -151370449
-    DestinationState: -151370449
-    TransitionDuration: 0
-    TriggerNameHash: 1080829965
-    TransitionIndex: 1
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -438948933
-    DestinationState: -1907200461
-    TransitionDuration: 0.04545474
-    TriggerNameHash: 1080829965
-    TransitionIndex: 0
+  TransitionStateInfoList: []
   AnimatorParameterEntries:
     ParameterEntries:
     - name: Horizontal
@@ -941,6 +912,14 @@ MonoBehaviour:
       NameHash: 1056877677
       Synchronize: 1
       ParameterType: 4
+    - name: Crouch
+      NameHash: -2015693266
+      Synchronize: 1
+      ParameterType: 1
+    - name: Equip
+      NameHash: 867364020
+      Synchronize: 1
+      ParameterType: 9
   AnimatorParametersExpanded: 0
 --- !u!114 &531750188607022820
 MonoBehaviour:
@@ -1230,21 +1209,7 @@ MonoBehaviour:
   throwableRig: {fileID: 8057647416888942590}
   throwableRigWeight: 0
   lerpFactor: 2
---- !u!114 &1125308173485118977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3549461418572006148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0e2ce6402411564094e68a65785944e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VfxController
-  damageParticles: {fileID: 6863710306112291380}
-  splashParticles: {fileID: 6525008730794525305}
-  landParticles: {fileID: 0}
+  currentWeapon: 0
 --- !u!114 &4720122550096299429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1263,7 +1228,6 @@ MonoBehaviour:
   playerAnimationController: {fileID: 4835396568835302231}
   playerCamerasMotor: {fileID: 4308909321517958399}
   playerCombatController: {fileID: 3911377783466050159}
-  playerVfxController: {fileID: 1125308173485118977}
   playerInventoryController: {fileID: 6703637815125287513}
   playerClothesParent: {fileID: 0}
   playerInputHandler: {fileID: 531750188607022820}
@@ -2444,11 +2408,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efc7314a56f267545866ab85046739f5, type: 3}
---- !u!2083052967 &6863710306112291380 stripped
-VisualEffect:
-  m_CorrespondingSourceObject: {fileID: 5251909687760768399, guid: efc7314a56f267545866ab85046739f5, type: 3}
-  m_PrefabInstance: {fileID: 1702998519476588475}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7141429343812492303 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8410806589272200116, guid: efc7314a56f267545866ab85046739f5, type: 3}
@@ -2514,11 +2473,6 @@ PrefabInstance:
 --- !u!4 &4897331895992131431 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7642382913852691327, guid: c396d8b7d120e8543a6e85d6520464c0, type: 3}
-  m_PrefabInstance: {fileID: 3024698958644071448}
-  m_PrefabAsset: {fileID: 0}
---- !u!2083052967 &6525008730794525305 stripped
-VisualEffect:
-  m_CorrespondingSourceObject: {fileID: 8319449731238317665, guid: c396d8b7d120e8543a6e85d6520464c0, type: 3}
   m_PrefabInstance: {fileID: 3024698958644071448}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5021628752541941873
@@ -3955,12 +3909,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 03698e80041b67843b3ed912b2ba84b1, type: 2}
     - target: {fileID: 5866666021909216657, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
       propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'mixamorig:Spine1'\n\tTransform 'mixamorig:RightArm'\n\tTransform
-        'mixamorig:Head'\n\tTransform 'mixamorig:RightHand'\n\tTransform 'mixamorig:RightShoulder'\n\tTransform
-        'mixamorig:Spine2'\n\tTransform 'mixamorig:RightForeArm'\n\tTransform 'mixamorig:Neck'\n\tTransform
-        'mixamorig:Spine'\n\tTransform 'mixamorig:Spine1'\n\tand more ..."
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 91941f8018cfa34489aa72468a3c88e4, type: 3}
       propertyPath: m_ApplyRootMotion
@@ -4826,10 +4775,6 @@ MonoBehaviour:
   - m_Rig: {fileID: 8057647416888942590}
     m_Active: 1
   - m_Rig: {fileID: 4473905830225279887}
-    m_Active: 1
-  - m_Rig: {fileID: 0}
-    m_Active: 1
-  - m_Rig: {fileID: 0}
     m_Active: 1
   m_Effectors: []
 --- !u!114 &6306537184800434030

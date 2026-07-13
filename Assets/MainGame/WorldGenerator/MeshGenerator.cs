@@ -51,39 +51,26 @@ public static class MeshGenerator
             GameObject currentTerrainChunk = new GameObject($"Terrain({result.ChunkY},{result.ChunkX})");
             currentTerrainChunk.transform.SetParent(parent.transform);
             currentTerrainChunk.gameObject.layer = layer;
+            currentTerrainChunk.isStatic = true;
 
-            GameObject[] lodObjects = new GameObject[3];
+            Renderer[] lodRenderers = new Renderer[3];
             for (int lodLevel = 0; lodLevel < result.LodMeshes.Length; lodLevel++)
             {
-                GameObject lodObject = CreateLodObject(result.ChunkX, result.ChunkY, result.LodMeshes[lodLevel], meshMaterial, shadowCastingMode, layer, lodLevel);
-                lodObject.transform.SetParent(currentTerrainChunk.transform);
-                lodObjects[lodLevel] = lodObject;
+                GameObject lodObject = CreateLodObject(result.ChunkX, result.ChunkY, result.LodMeshes[lodLevel], meshMaterial, shadowCastingMode, layer, lodLevel, currentTerrainChunk.transform);
+                lodRenderers[lodLevel] = lodObject.GetComponent<MeshRenderer>();
             }
-
-            GameObject lod2 = lodObjects[2];
-            GameObject lod1 = lodObjects[1];
-            GameObject lod0 = lodObjects[0];
-
-            lod0.gameObject.layer = layer;
-            lod1.gameObject.layer = layer;
-            lod2.gameObject.layer = layer;
 
             LODGroup lodGroup = currentTerrainChunk.AddComponent<LODGroup>();
             lodGroup.SetLODs(new LOD[]
             {
-                new LOD(0.6f, new Renderer[] { lod0.GetComponent<MeshRenderer>() }),
-                new LOD(0.3f, new Renderer[] { lod1.GetComponent<MeshRenderer>() }),
-                new LOD(0.1f, new Renderer[] { lod2.GetComponent<MeshRenderer>() })
+                new LOD(0.6f, new Renderer[] { lodRenderers[0] }),
+                new LOD(0.3f, new Renderer[] { lodRenderers[1] }),
+                new LOD(0.1f, new Renderer[] { lodRenderers[2] })
             });
 
             lodGroup.RecalculateBounds();
             lodGroup.fadeMode = LODFadeMode.CrossFade;
             lodGroup.animateCrossFading = true;
-
-            parent.isStatic = true;
-            lod2.isStatic = true;
-            lod1.isStatic = true;
-            lod0.isStatic = true;
         }
     }
 
@@ -158,10 +145,11 @@ public static class MeshGenerator
         };
     }
 
-    private static GameObject CreateLodObject(int chunkX, int chunkY, LodMeshData meshData, Material meshMaterial, UnityEngine.Rendering.ShadowCastingMode shadowCastingMode, int layer, int lodLevel)
+    private static GameObject CreateLodObject(int chunkX, int chunkY, LodMeshData meshData, Material meshMaterial, UnityEngine.Rendering.ShadowCastingMode shadowCastingMode, int layer, int lodLevel, Transform parent)
     {
         GameObject terrain = new GameObject($"LOD{lodLevel}");
-        terrain.transform.position = new Vector3(chunkX, 0, chunkY);
+        terrain.transform.SetParent(parent);
+        terrain.transform.localPosition = new Vector3(chunkX, 0, chunkY);
 
         MeshFilter meshFilter = terrain.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = terrain.AddComponent<MeshRenderer>();
@@ -185,6 +173,7 @@ public static class MeshGenerator
         }
 
         terrain.layer = layer;
+        terrain.isStatic = true;
         return terrain;
     }
 

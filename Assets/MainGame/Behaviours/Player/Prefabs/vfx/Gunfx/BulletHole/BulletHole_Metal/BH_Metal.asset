@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b9c7926441f0584894d091d92726513, type: 3}
+  m_Name: BH_Metal
+  m_EditorClassIdentifier: Assembly-CSharp::Empires.VFX.VfxDefinition
+  id: 3f1d20c3-9674-4897-a072-5429d2e8d32c
+  DisplayName: BH_Metal
+  Prefab: {fileID: 7378108697577063260, guid: 2fddb911ed27c71489643e655cafcf87, type: 3}
+  InitialPoolSize: 16
+  AutoReturnWhenFinished: 1
+  GrowPoolOnDemand: 1

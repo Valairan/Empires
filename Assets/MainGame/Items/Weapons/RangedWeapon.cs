@@ -23,6 +23,10 @@ public class RangedWeapon : Weapon
     public bool returnToCenter = false;
     public float recoilRecovery = 8f;
     public float bulletSpread = 0f;  // Degrees
+    [Header("VFX")]
+    public string muzzleflash;
+    public string tracer;
+
     protected void OnCreate()
     {
         if (firemodes == null)

@@ -1,4 +1,4 @@
-using Palmmedia.ReportGenerator.Core;
+using System.Threading.Tasks;
 using UnityEngine;
 public struct VegetationChunk
 {
@@ -18,7 +18,7 @@ public static class VegetationPlanter
         int chunkCountY = Mathf.CeilToInt((float)settings.mapHeight / grassChunkSize);
         VegetationChunk[,] chunkGrid = new VegetationChunk[chunkCountX, chunkCountY];
 
-        for (int cy = 0; cy < chunkCountY; cy++)
+        Parallel.For(0, chunkCountY, cy =>
         {
             for (int cx = 0; cx < chunkCountX; cx++)
             {
@@ -37,7 +37,7 @@ public static class VegetationPlanter
                     biomeNoise
                 );
             }
-        }
+        });
 
         return chunkGrid;
     }
@@ -56,7 +56,7 @@ public static class VegetationPlanter
                 biomeNoise[NoiseMapUtility.GetIndex(x, y, settings.biomeWidth)] = 1;
             }
         }
-        for (int cy = 0; cy < chunkCountY; cy++)
+        Parallel.For(0, chunkCountY, cy =>
         {
             for (int cx = 0; cx < chunkCountX; cx++)
             {
@@ -75,7 +75,7 @@ public static class VegetationPlanter
                     biomeNoise
                 );
             }
-        }
+        });
 
         return chunkGrid;
     }
@@ -174,22 +174,29 @@ public static class VegetationPlanter
     public static VegetationChunk GenerateGrassChunk(int chunkX, int chunkY, TerrainSettings settings, int grassChunkSize, int grassPerCell, bool isWaterPlant, int seed, float scaleRangeMin, float scaleRangeMax, float probability, float[] availableSpots, float[] biomeNoise)
     {
         int chunkSize = grassChunkSize;
+        int mapWidth = settings.mapWidth;
+        int mapHeight = settings.mapHeight;
+        int mapWidthMinusOne = mapWidth - 1;
+        int mapHeightMinusOne = mapHeight - 1;
+        float[] spotMap = availableSpots;
+        bool waterPlant = isWaterPlant;
+        int grassCount = grassPerCell;
 
-        int maxInstances = chunkSize * chunkSize * grassPerCell;
+        int maxInstances = chunkSize * chunkSize * grassCount;
+        Matrix4x4[] matrices = new Matrix4x4[maxInstances];
+        int[] meshes = new int[maxInstances];
 
         VegetationChunk chunk = new VegetationChunk
         {
             coord = new Vector2Int(chunkX, chunkY),
-            matrices = new Matrix4x4[maxInstances],
-            meshes = new int[maxInstances],
             count = 0
         };
 
         int startX = chunkX * chunkSize;
         int startY = chunkY * chunkSize;
 
-        int endX = Mathf.Min(startX + chunkSize - 1, settings.mapWidth - 1);
-        int endY = Mathf.Min(startY + chunkSize - 1, settings.mapHeight - 1);
+        int endX = Mathf.Min(startX + chunkSize - 1, mapWidthMinusOne);
+        int endY = Mathf.Min(startY + chunkSize - 1, mapHeightMinusOne);
 
         float minH = float.MaxValue;
         float maxH = float.MinValue;
@@ -200,81 +207,64 @@ public static class VegetationPlanter
         {
             for (int y = startY; y <= endY; y++)
             {
+                if (rng.Hash(x, y) >= probability) continue;
 
-                float u = (x + 0.5f) / settings.mapWidth;
-                float v = (y + 0.5f) / settings.mapHeight;
+                int spotIndex = y * mapWidth + x;
+                float height = spotMap[spotIndex];
+                if (height < 4f) continue;
+                if (x <= 0 || x >= mapWidthMinusOne || y <= 0 || y >= mapHeightMinusOne) continue;
 
-                int biomeX = Mathf.Clamp(
-                    (int)(u * settings.biomeWidth),
-                    0, settings.biomeWidth - 1
-                );
-
-                int biomeY = Mathf.Clamp(
-                    (int)(v * settings.biomeHeight),
-                    0, settings.biomeHeight - 1
-                );
-
-                //float biome = biomeMap[biomeX, biomeY];
-
-                float finalProbability = probability;
-                if (rng.Hash(x, y) >= finalProbability) continue;
-
-                float height = availableSpots[NoiseMapUtility.GetIndex(x, y, settings.mapWidth)];
-                if (height < 4) continue;
-                if (x > 0 && x < settings.mapWidth - 1 && y > 0 && y < settings.mapHeight - 1)
+                if (height < 6f)
                 {
-                    if (height < 6)
+                    if (waterPlant)
                     {
-                        if (isWaterPlant)
-                        {
-                            if (!isWaterEdge(x, y, height, settings.mapWidth, availableSpots)) continue;
-                        }
+                        if (!isWaterEdge(x, y, height, mapWidth, spotMap)) continue;
                     }
-                    else
-                    {
-                        if (isWaterPlant) continue;
-                    }
+                }
+                else
+                {
+                    if (waterPlant) continue;
+                }
 
-                    if (!isWaterPlant)
-                        if (IsEdge(x, y, height, settings.mapWidth, availableSpots)) continue;
+                if (!waterPlant)
+                {
+                    if (IsEdge(x, y, height, mapWidth, spotMap)) continue;
+                }
 
+                int instanceCount = chunk.count;
+                for (int i = 0; i < grassCount; i++)
+                {
+                    Vector2 offset2D = waterPlant
+                        ? CalculateWaterEdgeOffset(x, y, mapWidth, mapHeight, spotMap, rng)
+                        : new Vector2(
+                            rng.NextFloat(-0.5f, 0.5f),
+                            rng.NextFloat(-0.5f, 0.5f)
+                          );
 
-                    for (int i = 0; i < grassPerCell; i++)
-                    {
-                        Vector2 offset2D = isWaterPlant
-                            ? CalculateWaterEdgeOffset(x, y, settings.mapWidth, settings.mapHeight, availableSpots, rng)
-                            : new Vector2(
-                                rng.NextFloat(-0.5f, 0.5f),
-                                rng.NextFloat(-0.5f, 0.5f)
-                              );
+                    float offsetX = offset2D.x;
+                    float offsetZ = offset2D.y;
 
-                        float offsetX = offset2D.x;
-                        float offsetZ = offset2D.y;
+                    float scale = waterPlant ? 1f : rng.NextFloat(scaleRangeMin, scaleRangeMax);
+                    float rotY = rng.NextFloat(0f, 360f);
 
-                        float scale = isWaterPlant ? 1f : Random.Range(scaleRangeMin, scaleRangeMax);
-                        float rotY = Random.Range(0f, 360f);
+                    Vector3 pos = new Vector3(
+                        x + offsetX,
+                        height,
+                        y + offsetZ
+                    );
 
-                        Vector3 pos = new Vector3(
-                            x + offsetX,
-                            height,
-                            y + offsetZ
+                    matrices[instanceCount++] =
+                        Matrix4x4.TRS(
+                            pos,
+                            Quaternion.Euler(0f, rotY, 0f),
+                            Vector3.one * scale
                         );
 
-                        chunk.matrices[chunk.count++] =
-                            Matrix4x4.TRS(
-                                pos,
-                                Quaternion.Euler(0f, rotY, 0f),
-                                Vector3.one * scale
-                            );
-
-                        minH = Mathf.Min(minH, height);
-                        maxH = Mathf.Max(maxH, height);
-
-                        //chunk.meshes[chunk.count] = 0;//(int)Random.Range(0, numberOfMeshes - 1);
-
-                    }
-
+                    minH = Mathf.Min(minH, height);
+                    maxH = Mathf.Max(maxH, height);
                 }
+
+                chunk.count = instanceCount;
             }
         }
 
@@ -291,13 +281,15 @@ public static class VegetationPlanter
         );
 
         chunk.bounds = new Bounds(center, size);
+        chunk.matrices = matrices;
+        chunk.meshes = meshes;
 
         return chunk;
     }
-    public static BaseResourceBehaviour[,] ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, GameObject[] extras, ref float[] availableSpots, int skip, float[] biomeNoise)
+    public static IScatteredDecoration[,] ScatterDecoration(int mapHeight, int mapWidth, int seed, GameObject[] vegetation, GameObject[] extras, ref float[] availableSpots, int skip, float[] biomeNoise)
     {
         GameObject treeParent = new GameObject("Tree Parent");
-        BaseResourceBehaviour[,] placedTrees = new BaseResourceBehaviour[mapHeight, mapWidth];
+        IScatteredDecoration[,] placedDecoration = new IScatteredDecoration[mapHeight, mapWidth];
         int treeCount = 0;
         DeterministicRng rng = new DeterministicRng(seed);
         DeterministicRng rng1 = new DeterministicRng(seed + 1);
@@ -320,24 +312,19 @@ public static class VegetationPlanter
                                 //int whatToSpawn = (int)Mathf.Clamp(biome[y / ((mapWidth - 1) / (biomeDimensionsY - 1)), x / ((mapHeight - 1) / (biomeDimensionsX - 1))] * 5, 0, availableItems - 1);
                                 int whatToSpawn = rng.NextInt(0, vegetation.Length);
                                 GameObject resource = GameObject.Instantiate(vegetation[whatToSpawn], new Vector3(x + rng.NextFloat(), availableSpots[NoiseMapUtility.GetIndex(x, y, mapWidth)], y + rng1.NextFloat()), Quaternion.Euler(new Vector3(0f, rng.NextInt(0, 360), 0f)), treeParent.transform);
+                                placedDecoration[x, y] = resource.GetComponent<IScatteredDecoration>();
+                                placedDecoration[x, y].InitializeDecoration(x, y);
                                 resource.isStatic = true;
-                                placedTrees[x, y] = resource.GetComponent<BaseResourceBehaviour>();
-                                placedTrees[x, y].xCoordinate = x;
-                                placedTrees[x, y].yCoordinate = y;
                                 treeCount++;
                             }
                         }
-
-
-
-
                         //Loader.instance.setProgress(x / mapHeight);
                     }
             }
 
         }
 
-        return placedTrees;
+        return placedDecoration;
         //StaticBatchingUtility.Combine(grassParentSub);
         //StaticBatchingUtility.Combine(treeParentSub);
     }
@@ -359,4 +346,19 @@ public static class VegetationPlanter
 
 }
 
+public interface IScatteredDecoration
+{
+    GameObject decorationObject { get; }
+    void InitializeDecoration(int x, int y);
+}
 
+public static class WorldDataStore
+{
+    public static IWorldDataStore Lookup { get; set; }
+}
+
+public interface IWorldDataStore
+{
+    IScatteredDecoration GetTreeAt(int x, int y);
+    void RemoveTreeAt(int x, int y);
+}

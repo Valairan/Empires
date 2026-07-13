@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -190,4 +191,42 @@ public static class NoiseMapUtility
     {
         map[y * width + x] = value;
     }
+}
+
+
+[Serializable]
+public struct VegetationType
+{
+    public bool isWaterPlant;
+    public int seed;
+    public int density;
+    public float scaleRangeMin;
+    public float scaleRangeMax;
+    public Mesh mesh;
+    public int submesh;
+    [Range(0, 1)]
+    public float probability;
+}
+
+
+
+
+
+
+[Serializable]
+public struct TerrainSettings
+{
+    public int mapWidth;
+    public int mapHeight;
+    public int biomeWidth;
+    public int biomeHeight;
+    public int seed;
+    public float scale;
+    public int octaves;
+    public float persistance;
+    public float lacunarity;
+    public float multiplier;
+    public Vector2 offset;
+    public int falloffHeight;
+    public int falloffDistance;
 }

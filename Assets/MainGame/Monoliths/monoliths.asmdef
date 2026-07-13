@@ -1,0 +1,22 @@
+{
+    "name": "monoliths",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1491147abca9d7d4bb7105af628b223e",
+        "GUID:df380645f10b7bc4b97d4f5eb6303d95",
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:2a4cf4703e85b4c499055f3452ff9163",
+        "GUID:9469477eb53c7314cbf0c932e4741ddf",
+        "GUID:146e5f634957f414cbdd38ac5e01efb9",
+        "GUID:124cc61c9f09c524fb17cfcb8ccaf5f4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

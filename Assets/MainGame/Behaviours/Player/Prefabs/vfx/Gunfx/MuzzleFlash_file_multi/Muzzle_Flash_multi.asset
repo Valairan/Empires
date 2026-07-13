@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b9c7926441f0584894d091d92726513, type: 3}
+  m_Name: Muzzle_Flash_multi
+  m_EditorClassIdentifier: Assembly-CSharp::Empires.VFX.VfxDefinition
+  id: fbbc251e-4a0a-41dc-9d0b-93d79303044f
+  DisplayName: Muzzle_flash_multi
+  Prefab: {fileID: 3102942123906289198, guid: 865953735488ac840829202ad016de75, type: 3}
+  InitialPoolSize: 16
+  AutoReturnWhenFinished: 1
+  GrowPoolOnDemand: 1

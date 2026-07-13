@@ -1,6 +1,7 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using Unity.Collections;
 public class GameManager : NetworkBehaviour
 {
     [SerializeField] bool generateTerrain;
@@ -84,7 +85,7 @@ public class GameManager : NetworkBehaviour
             GameObject player = Instantiate(NetworkGamePropertiesStorage.Singleton.playerPrefab);
 
             PlayerController controller = player.GetComponent<PlayerController>();
-            NetworkPlayerManager.Singleton.connectedPlayerControllers[client] = controller;
+            //NetworkPlayerManager.Singleton.connectedPlayerControllers[client] = controller;
 
             controller.playerCCMotor.motor.SetPosition(GetSpawnPointForClient(client));
             NetworkGamePropertiesStorage.Singleton.spawnedPlayers.Add(client, player);
@@ -94,7 +95,6 @@ public class GameManager : NetworkBehaviour
             count++;
         }
         GameStarted = true;
-        NetworkPlayerManager.Singleton.startGame();
         DisableLoader_ClientRpc();
 
     }

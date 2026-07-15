@@ -160,7 +160,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         networkObject.transform.localPosition = weaponBehaviour.baseitem.position;
         networkObject.transform.localRotation = Quaternion.Euler(weaponBehaviour.baseitem.rotation);
         networkObject.transform.localScale = weaponBehaviour.baseitem.scale;
-        
+
     }
     public void EquipWeapon(int index)
     {

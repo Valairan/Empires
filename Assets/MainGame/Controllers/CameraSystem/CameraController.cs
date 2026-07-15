@@ -65,7 +65,7 @@ public class CameraController : MonoBehaviour
         else
             cameraCurrentFollowDistance = cameraDefaultDistance;
 
-        targetDistance = (AimInput) ? minimumDistance : cameraCurrentFollowDistance;
+        targetDistance = AimInput ? minimumDistance : cameraCurrentFollowDistance;
 
         currentFollowPosition = Vector3.Lerp(currentFollowPosition, cameraFollowTarget.position, 1f - Mathf.Exp(-movementInterpolationFactor * deltaTime));
         Vector3 targetPosition = currentFollowPosition - ((targetRotation * Vector3.forward) * currentDistance);

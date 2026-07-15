@@ -11,6 +11,7 @@ public class InputHandler : NetworkBehaviour
     public Action<Vector2> Look;
     public Action<bool> Aim;
     public Action<bool> Attack;
+    public Action<bool> Reload;
     public Action<bool> Interact;
     public Action<bool> Jump;
     public Action<bool> Sneak;
@@ -39,6 +40,9 @@ public class InputHandler : NetworkBehaviour
 
         ingameInputActions.Player.Attack.performed += ctx => Attack?.Invoke(true);
         ingameInputActions.Player.Attack.canceled += ctx => Attack?.Invoke(false);
+
+        ingameInputActions.Player.Reload.performed += ctx => Reload?.Invoke(true);
+        ingameInputActions.Player.Reload.canceled += ctx => Reload?.Invoke(false);
 
         ingameInputActions.Player.Interact.performed += ctx => Interact?.Invoke(true);
         ingameInputActions.Player.Interact.canceled += ctx => Interact?.Invoke(false);

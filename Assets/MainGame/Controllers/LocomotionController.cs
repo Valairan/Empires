@@ -1,13 +1,15 @@
 
 using KinematicCharacterController;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 public class LocomotionController : MonoBehaviour, ICharacterController
 {
     [SerializeField] public KinematicCharacterMotor motor;
     [SerializeField] private Vector3 gravity = new Vector3(0f, -18f, 0f);
-    [SerializeField] private float maxStableMoveSpeed;
+    [SerializeField] private float runSpeed;
+    [SerializeField] private float sneakSpeed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float stableVelocityInterpolationFactor;
     [SerializeField] private float stableRotationInterpolationFactor;
@@ -17,6 +19,7 @@ public class LocomotionController : MonoBehaviour, ICharacterController
 
     bool climbing = false;
     Vector3 moveInput;
+    bool sneaking;
     Vector3 ladderNormal = Vector3.up;
     Vector3 lookInput;
     public bool jumpRequested;
@@ -45,6 +48,7 @@ public class LocomotionController : MonoBehaviour, ICharacterController
         Quaternion cameraForwardRotation = Quaternion.LookRotation(cameraForwardDirection, motor.CharacterUp);
         moveInput = cameraForwardRotation * moveInputVector;
         lookInput = moveInput.normalized;
+        sneaking = inputs.crouching;
         climbing = inputs.climbing;
         cameraForward = inputs.transformRotation;
         ladderNormal = inputs.ladderNormal;
@@ -92,7 +96,8 @@ public class LocomotionController : MonoBehaviour, ICharacterController
 
     public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
     {
-        currentRotation = Quaternion.Euler(0, cameraForward.eulerAngles.y, 0);
+        if (!climbing && motor.GroundingStatus.IsStableOnGround)
+            currentRotation = Quaternion.Euler(0, cameraForward.eulerAngles.y, 0);
     }
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
@@ -101,46 +106,46 @@ public class LocomotionController : MonoBehaviour, ICharacterController
 
         if (climbing)
         {
-
             // 1. Derive spatial vectors directly from your custom ladder's surface normal
             Vector3 ladderRight = Vector3.Cross(ladderNormal, motor.CharacterUp).normalized;
             Vector3 ladderUp = Vector3.Cross(ladderRight, ladderNormal).normalized;
 
             // 2. Determine if the player's world direction is pushing into or pulling away from the ladder
             float approachDirection = Vector3.Dot(moveInput.normalized, ladderNormal);
+            float ladderNormalAngle = Vector2.Dot(ladderUp, ladderNormal);
 
+            if (ladderNormalAngle > .3f && ladderNormalAngle < .5f)
+            {
+                currentVelocity = transform.forward * ladderClimbSpeed;
+            }
             Vector3 targetLadderVelocity = Vector3.zero;
 
-            if (moveInput.sqrMagnitude > 0.01f)
+            if (moveInput.x != 0)
             {
                 if (approachDirection < -0.1f)
                 {
                     // Moving TOWARD the ladder face -> Ascend
-                    targetLadderVelocity = ladderUp * ladderClimbSpeed;
+                    targetLadderVelocity = moveInput.sqrMagnitude > 0 ? (ladderUp * ladderClimbSpeed) : Vector3.zero;
+                    motor.ForceUnground();
+
                 }
                 else if (approachDirection > 0.1f)
                 {
                     // Moving AWAY from the ladder face -> Descend
-                    targetLadderVelocity = -ladderUp * ladderClimbSpeed;
+                    targetLadderVelocity = moveInput.sqrMagnitude > 0 ? (-ladderUp * ladderClimbSpeed) : Vector3.zero;
                     if (motor.GroundingStatus.IsStableOnGround)
                     {
-                        targetLadderVelocity = Vector3.zero;
+                        if (approachDirection > 0.1f)
+                        {
+                            targetLadderVelocity = moveInput * ladderClimbSpeed;
+                        }
                     }
-                }
-                else
-                {
-                    // Strafe perfectly along the ladder horizontal rungs
-                    float strafeDirection = Vector3.Dot(moveInput.normalized, ladderRight);
-                    targetLadderVelocity = ladderRight * (strafeDirection * ladderClimbSpeed);
+                    //motor.ForceUnground();
                 }
             }
-
-            // 3. Apply the sticky force pushing back INTO the ladder (-ladderNormal)
-            // This stops the player from drifting out of the detection trigger box on angled slopes
-
-            // Combine your vertical climb velocity with the stabilizing snap force
-            motor.ForceUnground();
             currentVelocity = targetLadderVelocity;
+
+
 
         }
         else if (motor.GroundingStatus.IsStableOnGround)
@@ -153,7 +158,7 @@ public class LocomotionController : MonoBehaviour, ICharacterController
             Vector3 inputRight = Vector3.Cross(moveInput, motor.CharacterUp);
             Vector3 reorientedInput = Vector3.Cross(effectiveGroundNormal, inputRight).normalized * moveInput.magnitude;
 
-            Vector3 targetMovementVelocity = reorientedInput * maxStableMoveSpeed;
+            Vector3 targetMovementVelocity = reorientedInput * (sneaking ? sneakSpeed : runSpeed);
 
             currentVelocity = Vector3.Lerp(currentVelocity, targetMovementVelocity, 1f - Mathf.Exp(-stableVelocityInterpolationFactor * deltaTime));
             currentVelocity = Vector3.Lerp(currentVelocity, targetMovementVelocity, 1f - Mathf.Exp(-stableRotationInterpolationFactor * deltaTime));
@@ -168,9 +173,10 @@ public class LocomotionController : MonoBehaviour, ICharacterController
             if (climbing)
             {
                 // Push the player away from the ladder face, plus an upward kick
-                currentVelocity = ladderNormal * jumpForce * .5f;
+                currentVelocity = ladderNormal * (jumpForce * .5f);
                 motor.ForceUnground();
                 jumpRequested = false;
+                climbing = false;
             }
             else if (motor.GroundingStatus.IsStableOnGround)
             {

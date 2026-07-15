@@ -164,7 +164,6 @@ public class UiController : MonoBehaviour
             }
         }
 
-        Debug.Log(currentlyEquipped);
 
         if (!hasRifle)
             InventoryIcons[0].transform.parent.gameObject.SetActive(false);

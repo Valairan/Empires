@@ -802,7 +802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 618126814
+  GlobalObjectIdHash: 1520680668
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -877,7 +877,42 @@ MonoBehaviour:
   NetworkAnimatorExpanded: 0
   AuthorityMode: 1
   m_Animator: {fileID: 1502791702499704288}
-  TransitionStateInfoList: []
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: -2068825901
+    DestinationState: 514214614
+    TransitionDuration: 0.25
+    TriggerNameHash: 1080829965
+    TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: 881816425
+    DestinationState: -1785867215
+    TransitionDuration: 0.25
+    TriggerNameHash: 1080829965
+    TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: 415977425
+    DestinationState: -1316629574
+    TransitionDuration: 0.25
+    TriggerNameHash: 1080829965
+    TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: 415977425
+    DestinationState: -1525363869
+    TransitionDuration: 0.25
+    TriggerNameHash: -1525363869
+    TransitionIndex: 1
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: -1316629574
+    DestinationState: -1316629574
+    TransitionDuration: 0.25
+    TriggerNameHash: 1080829965
+    TransitionIndex: 0
   AnimatorParameterEntries:
     ParameterEntries:
     - name: Horizontal
@@ -918,6 +953,10 @@ MonoBehaviour:
       ParameterType: 1
     - name: Equip
       NameHash: 867364020
+      Synchronize: 1
+      ParameterType: 9
+    - name: Reload
+      NameHash: -1525363869
       Synchronize: 1
       ParameterType: 9
   AnimatorParametersExpanded: 0
@@ -1028,7 +1067,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   motor: {fileID: 1142106596359738240}
   gravity: {x: 0, y: -18, z: 0}
-  maxStableMoveSpeed: 4
+  runSpeed: 3.4
+  sneakSpeed: 1.6
   jumpForce: 7
   stableVelocityInterpolationFactor: 20
   stableRotationInterpolationFactor: 100
@@ -1060,7 +1100,7 @@ MonoBehaviour:
   followInterpolationFactor: 10000
   minimumAngle: -80
   maximumAngle: 80
-  defaultAngle: 20
+  defaultAngle: 60
   cameraBlockers:
     serializedVersion: 2
     m_Bits: 464
@@ -1240,12 +1280,16 @@ MonoBehaviour:
   - {fileID: 1159640454961803845}
   - {fileID: 7554383353378802428}
   - {fileID: 8125125203902127048}
-  runSpeed: 4
-  walkSpeed: 1.5
-  gravity: 200
-  jumpHeight: 2000
+  MoveInput: {x: 0, y: 0}
+  movementInputAcceleration: 10
+  movementInputDeceleration: 15
+  interpolationFactor: 0
+  LookInput: {x: 0, y: 0}
+  aiming: 0
+  sneaking: 0
+  interacting: 0
   turnSmoothVelocity: 0.01
-  turnSmoothTime: 0.1
+  turnSmoothTime: 0.01
   lookTargetTransform: {fileID: 2196578551122818929}
   GroundCheck: {fileID: 8549256906201458926}
   WhatIsGround:
@@ -1257,13 +1301,12 @@ MonoBehaviour:
   WhatIsClimbable:
     serializedVersion: 2
     m_Bits: 512
-  MoveInput: {x: 0, y: 0}
-  LookInput: {x: 0, y: 0}
-  aiming: 0
-  sneaking: 0
-  interacting: 0
+  defaultCameraPosition: {x: 0.6, y: 1.5, z: 0}
+  crouchCameraPosition: {x: 0.6, y: 1.5, z: 0}
+  climbCameraPosition: {x: 0, y: 0, z: 0}
+  cameraStateInterpolationSpeed: 200
   ladderCheck: {fileID: 2751490162165561580}
-  LadderDetectionBoxSize: {x: 0.45, y: 0.1, z: 0.45}
+  LadderDetectionBoxSize: {x: 0.18, y: 0.1, z: 0.18}
 --- !u!114 &8357343821977610369
 MonoBehaviour:
   m_ObjectHideFlags: 0

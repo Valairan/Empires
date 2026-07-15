@@ -67,12 +67,6 @@ public class AnimationController : MonoBehaviour
         animator.SetBool("Grounded", grounded);
         animator.SetBool("Climbing", climbing);
         animator.SetBool("Submerged", inwater);
-
-        if (inwater)
-        {
-            animator.SetFloat("Horizontal", movement.x - 1);
-            return;
-        }
         animator.SetFloat("Crouch", crouch);
         animator.SetFloat("Horizontal", movement.x);
         animator.SetFloat("Vertical", movement.y);
@@ -191,6 +185,13 @@ public class EquipState : State
         controller.animator.SetInteger("Weapon", stateToInt(WeaponTypeToState(controller.currentWeapon)));
         controller.animator.SetTrigger("Equip");
         timeElapsed = 0;
+        controller.rifleRigWeight = 0;
+        controller.pistolRigWeight = 0;
+        controller.meleeRigWeight = 0;
+        controller.throwableRigWeight = 0;
+        controller.leftHandConstraintWeight = 0f;
+        controller.leftHandRigWeight = 0f;
+        controller.parentRig.Build();
 
     }
 

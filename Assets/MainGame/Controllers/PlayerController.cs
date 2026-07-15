@@ -22,6 +22,15 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
 
     [Header("Locomotion Settings")]
+    public Vector2 MoveInput;
+    Vector2 smoothedMoveInput;
+    [SerializeField] float movementInputAcceleration = 10f;
+    [SerializeField] float movementInputDeceleration = 15f;
+    [SerializeField] float interpolationFactor;
+    public Vector2 LookInput;
+    public bool aiming;
+    public bool sneaking;
+    public bool interacting;
     bool Grounded = true;
     bool Crouching;
     bool Climbing;
@@ -30,20 +39,16 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         get { return submerged; }
         set
         {
-            if (value && !submerged) submergedForVfx?.Invoke(value);
+            if (value && !submerged) onEnterAndExitWater?.Invoke(value);
 
             submerged = value;
         }
     }
     bool submerged;
     public Action<bool> groundedForVfx;
-    public Action<bool> submergedForVfx;
+    public Action<bool> onEnterAndExitWater;
 
 
-    [SerializeField] float runSpeed;
-    [SerializeField] float walkSpeed;
-    [SerializeField] float gravity;
-    [SerializeField] float jumpHeight;
     [SerializeField]
     float turnSmoothVelocity;
     public float turnSmoothTime = 0.1f;
@@ -52,17 +57,14 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     [SerializeField] LayerMask WhatIsGround;
     [SerializeField] LayerMask WhatIsWater;
     [SerializeField] LayerMask WhatIsClimbable;
+    [Header("Camera States")]
+    [SerializeField] Vector3 defaultCameraPosition;
+    [SerializeField] Vector3 crouchCameraPosition;
+    [SerializeField] Vector3 climbCameraPosition;
+    [SerializeField] float cameraStateInterpolationSpeed;
     Vector3 velocity;
 
     public Action<Weapon> onWeaponChanged;
-
-
-    public Vector2 MoveInput;
-    public Vector2 LookInput;
-    public bool aiming;
-    public bool sneaking;
-    public bool interacting;
-
 
 
     public override void OnNetworkSpawn()
@@ -212,6 +214,30 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
         playerInputHandler.disableInputs();
     }
+
+    InputContext currentInputs = new InputContext
+    {
+        Horizontal = 0f,
+        Vertical = 0f,
+        climbing = false,
+        crouching = false,
+        mouseHorizontal = 0f,
+        mouseVertical = 0f,
+        transformRotation = Quaternion.identity,
+        ladderNormal = Vector3.zero
+    };
+    Vector2 InterpolateMovementInput(Vector2 target)
+    {
+        float rate = movementInputAcceleration;
+
+        smoothedMoveInput = Vector2.MoveTowards(
+            smoothedMoveInput,
+            target,
+            rate * Time.deltaTime
+        );
+        return smoothedMoveInput;
+    }
+
     #endregion 
 
     public override void OnNetworkDespawn()
@@ -225,7 +251,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
     public void BindVfx()
     {
-        //submergedForVfx += VisualsManager.Singleton.RequestPlayEffect_ServerRpc();
+        //onEnterAndExitWater += VisualsManager.Singleton.RequestPlayEffect_ServerRpc();
     }
 
     Vector3 currentlyLookingAtPoint;
@@ -238,10 +264,13 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInteractionHandler.checkForRaycasts(OwnerClientId, playerCamera.transform);
         playerInteractionHandler.HandleTimedInteraction(NetworkManager.Singleton.LocalClientId);
         playerInteractionHandler.interacting = interacting;
-        InputContext inputs = new InputContext
+
+        Vector2 smoothMovement = InterpolateMovementInput(MoveInput);
+
+        currentInputs = new InputContext
         {
-            Horizontal = MoveInput.x,
-            Vertical = MoveInput.y,
+            Horizontal = smoothMovement.x,
+            Vertical = smoothMovement.y,
             climbing = Climbing,
             crouching = Crouching,
             mouseHorizontal = LookInput.x,
@@ -249,7 +278,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
             transformRotation = playerCamera.transform.rotation,
             ladderNormal = currentLadderNormal
         };
-        playerCCMotor.setInputs(ref inputs);
+        playerCCMotor.setInputs(ref currentInputs);
         Grounded = playerCCMotor.motor.GroundingStatus.IsStableOnGround;
 
         currentlyLookingAtPoint = playerCombatController.RaycastFromCamera();
@@ -260,7 +289,6 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerAnimationController.updateMovemementParams(MoveInput.normalized, Grounded, Climbing, Submerged, !Crouching ? 1 : 0);
 
         playerAnimationController.Tick();
-
     }
 
     public void LateUpdate()
@@ -275,6 +303,23 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
         // Continue updating animations
         playerAnimationController.LateTick();
+        UpdateCameraFollowPosition();
+    }
+
+    Vector3 cameraShouldBeHere = Vector3.zero;
+    public void UpdateCameraFollowPosition()
+    {
+        if (Climbing)
+        {
+            playerCamerasMotor.cameraFollowTarget.localPosition = Vector3.MoveTowards(playerCamerasMotor.cameraFollowTarget.localPosition, climbCameraPosition, cameraStateInterpolationSpeed * Time.deltaTime);
+            return;
+        }
+        else if (Crouching)
+        {
+            playerCamerasMotor.cameraFollowTarget.localPosition = Vector3.MoveTowards(playerCamerasMotor.cameraFollowTarget.localPosition, crouchCameraPosition, cameraStateInterpolationSpeed * Time.deltaTime);
+            return;
+        }
+        playerCamerasMotor.cameraFollowTarget.localPosition = Vector3.MoveTowards(playerCamerasMotor.cameraFollowTarget.localPosition, defaultCameraPosition, cameraStateInterpolationSpeed * Time.deltaTime);
     }
     void OnAim(bool pressed)
     {
@@ -324,6 +369,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
             playerCCMotor.jump();
         }
     }
+
     public void crouch(bool input)
     {
         if (!IsLocalPlayer) return;
@@ -335,13 +381,8 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
     public void OnWeaponUpdated(int previousValue, int newValue)
     {
-        OnWeaponUpdated(newValue);
-    }
 
-    public void OnWeaponUpdated(int currentlyEquipped)
-    {
-
-        if (currentlyEquipped == -1) // No weapon equipped
+        if (newValue == -1) // No weapon equipped
         {
             if (playerCombatController.currentWeapon != null)
                 if (playerCombatController.currentWeapon.onAttack != null)
@@ -353,7 +394,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
             return;
         }
 
-        WeaponStorageSlot slot = playerInventoryController.weaponStorage[currentlyEquipped];
+        WeaponStorageSlot slot = playerInventoryController.weaponStorage[newValue];
         WeaponBehaviour weapon = slot.onplayer_behaviour;
         playerAnimationController.updateCurrentWeapon(weapon);
         playerCombatController.currentWeapon = weapon;
@@ -450,12 +491,13 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
     public bool checkIfInLadder()
     {
-        Collider[] cols = Physics.OverlapBox(GroundCheck.position, LadderDetectionBoxSize, transform.rotation, WhatIsClimbable);
+        Collider[] cols = Physics.OverlapBox(ladderCheck.position, LadderDetectionBoxSize, transform.rotation, WhatIsClimbable);
         if (cols.Length > 0)
         {
             Debug.DrawRay(transform.position, (cols[0].transform.position - transform.position) * 2f, Color.red);
             if (Physics.SphereCast(transform.position, 0.1f, transform.forward, out RaycastHit hit, 0.6f, WhatIsClimbable))
             {
+                Debug.DrawRay(hit.point, hit.normal * 2f, Color.blue);
                 currentLadderNormal = hit.normal;
                 return true;
             }
@@ -479,7 +521,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
     void OnDrawGizmos()
     {
-        Gizmos.DrawCube(transform.position, LadderDetectionBoxSize * 2);
+        Gizmos.DrawCube(ladderCheck.position, LadderDetectionBoxSize * 2);
     }
 
 }

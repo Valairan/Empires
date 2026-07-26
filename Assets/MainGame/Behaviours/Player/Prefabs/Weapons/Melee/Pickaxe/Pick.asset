@@ -26,6 +26,7 @@ MonoBehaviour:
   headDamage: 15
   bodyDamage: 10
   legDamage: 5
+  machineDamage: 0
   canADS: 0
   hasAreaEffect: 0
   weaponPrefab_rb: {fileID: 6046908748360820920, guid: 8ba16a9d7306d714b84af65be47f2a0c, type: 3}
@@ -33,6 +34,7 @@ MonoBehaviour:
   position: {x: -0.0307, y: 0.0579, z: 0.0189}
   rotation: {x: 24.913376, y: 0, z: 180}
   scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: 0, y: 0, z: 0}
   storedPosition: {x: 0.014, y: 0.273, z: -0.117}
   storedRotation: {x: 357.615, y: 359.96173, z: 284.67773}
   storedScale: {x: 1, y: 1, z: 1}

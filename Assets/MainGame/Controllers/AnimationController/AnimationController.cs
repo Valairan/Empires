@@ -15,8 +15,6 @@ public class AnimationController : MonoBehaviour
     public float parentRigWeight;
     public Rig meleeRig;
     public float meleeRigWeight;
-    public Rig TorsoRig;
-    public float torsoRigWeight;
     public Rig rifleRig;
     public float rifleRigWeight;
     public TwoBoneIKConstraint RiflePositionConstraint;
@@ -62,14 +60,15 @@ public class AnimationController : MonoBehaviour
         currentState.OnStateLateUpdate(this);
     }
 
-    public void updateMovemementParams(Vector2 movement, bool grounded, bool climbing, bool inwater, float crouch)
+    public void updateMovemementParams(InputContext ctx)
     {
-        animator.SetBool("Grounded", grounded);
-        animator.SetBool("Climbing", climbing);
-        animator.SetBool("Submerged", inwater);
-        animator.SetFloat("Crouch", crouch);
-        animator.SetFloat("Horizontal", movement.x);
-        animator.SetFloat("Vertical", movement.y);
+        animator.SetBool("Grounded", ctx.grounded);
+        animator.SetBool("Climbing", ctx.climbing);
+        animator.SetBool("Submerged", ctx.submerged);
+        animator.SetFloat("Crouch", ctx.crouchAmount);
+        animator.SetFloat("Horizontal", ctx.Horizontal);
+        animator.SetFloat("Vertical", ctx.Vertical);
+        animator.SetFloat("Velocity", Mathf.Clamp(ctx.Horizontal + ctx.Vertical, -1, 1));
 
     }
     public void updateCurrentWeapon(WeaponBehaviour weapon)
@@ -164,7 +163,9 @@ public class UnarmedState : State
     {
 
     }
-    public override void OnStateUpdate(AnimationController controller) { }
+    public override void OnStateUpdate(AnimationController controller)
+    {
+    }
 
     public override void OnStateLateUpdate(AnimationController controller)
     {
@@ -202,6 +203,8 @@ public class EquipState : State
     public override void OnStateUpdate(AnimationController controller)
     {
         timeElapsed += Time.deltaTime;
+        if (controller.animator.GetCurrentAnimatorStateInfo(2).normalizedTime > .8f) controller.transition(controller.availableStates[WeaponTypeToState(controller.currentWeapon)]);
+
     }
 
     public override void OnStateLateUpdate(AnimationController controller)
@@ -221,7 +224,6 @@ public class RifleState : State
         controller.throwableRigWeight = 0;
         controller.leftHandConstraintWeight = 1f;
         controller.leftHandRigWeight = 1f;
-        controller.torsoRigWeight = 1f;
         controller.parentRig.Build();
 
 
@@ -233,11 +235,11 @@ public class RifleState : State
     }
     public override void OnStateUpdate(AnimationController controller)
     {
-        timeElapsed += Time.deltaTime;
     }
 
     public override void OnStateLateUpdate(AnimationController controller)
     {
+        timeElapsed += Time.deltaTime;
         controller.meleeRig.weight = Mathf.Lerp(controller.meleeRig.weight, controller.meleeRigWeight, timeElapsed / controller.lerpFactor);
         controller.rifleRig.weight = Mathf.Lerp(controller.rifleRig.weight, controller.rifleRigWeight, timeElapsed / controller.lerpFactor);
         controller.pistolRig.weight = Mathf.Lerp(controller.pistolRig.weight, controller.pistolRigWeight, timeElapsed / controller.lerpFactor);
@@ -329,7 +331,6 @@ public class ThrowableState : State
         controller.throwableRigWeight = 1;
         controller.leftHandConstraintWeight = 0f;
         controller.leftHandRigWeight = 0f;
-        controller.torsoRigWeight = 1f;
         controller.parentRig.Build();
 
     }
@@ -349,7 +350,6 @@ public class ThrowableState : State
         controller.leftHandRig.weight = Mathf.Lerp(controller.leftHandRig.weight, controller.leftHandRigWeight, timeElapsed / controller.lerpFactor);
         controller.leftHandConstraint.weight = Mathf.Lerp(controller.leftHandConstraint.weight, controller.leftHandConstraintWeight, timeElapsed / controller.lerpFactor);
 
-        controller.TorsoRig.weight = Mathf.Lerp(controller.TorsoRig.weight, controller.torsoRigWeight, timeElapsed / controller.lerpFactor);
 
         timeElapsed += Time.deltaTime;
     }
@@ -367,7 +367,6 @@ public class OverTheShoulderState : State
         controller.throwableRigWeight = 0;
         controller.leftHandConstraintWeight = 1f;
         controller.leftHandRigWeight = 1f;
-        controller.torsoRigWeight = 1f;
         controller.parentRig.Build();
 
     }

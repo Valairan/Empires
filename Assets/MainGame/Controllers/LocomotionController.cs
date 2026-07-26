@@ -98,6 +98,25 @@ public class LocomotionController : MonoBehaviour, ICharacterController
     {
         if (!climbing && motor.GroundingStatus.IsStableOnGround)
             currentRotation = Quaternion.Euler(0, cameraForward.eulerAngles.y, 0);
+        if (climbing)
+        {
+            // 1. Face towards the ladder (opposite of the normal)
+            Vector3 lookDirection = -ladderNormal;
+
+            // 2. Flatten it so we don't tilt up or down
+            lookDirection.y = 0;
+
+            if (lookDirection != Vector3.zero)
+            {
+                // 3. Create the target rotation keeping the up-axis strictly vertical
+                Quaternion targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+
+                // 4. Smoothly rotate. Note: Multiply Time.deltaTime by a speed variable, 
+                // otherwise Slerp at raw Time.deltaTime (~0.02) will feel incredibly sluggish.
+                float rotationSpeed = 10f;
+                currentRotation = Quaternion.Slerp(currentRotation, targetRotation, Time.deltaTime * rotationSpeed);
+            }
+        }
     }
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)

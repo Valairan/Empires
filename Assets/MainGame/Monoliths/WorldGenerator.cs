@@ -37,7 +37,7 @@ public class WorldGenerator : MonoBehaviour, IWorldDataStore
             lacunarity = 0,
             multiplier = 5,
             offset = Vector2.zero,
-            falloffHeight = 0,
+            falloffHeight = 5,
             falloffDistance = 5
         };
 
@@ -65,9 +65,9 @@ public class WorldGenerator : MonoBehaviour, IWorldDataStore
         terrainNoise = noiseMaps[0];
         biomeNoise = noiseMaps[1];
         weatherNoise = noiseMaps[2];
-        //RiverGenerator.CarveRiver(settings.mapWidth, settings.mapHeight, settings.seed, 2f, 10f, 0.5f, 0.5f, terrainNoise);
         progress = .5f;
 
+        RiverGenerator.CarveRiver(settings.mapWidth, settings.mapHeight, settings.seed, 6, 10, terrainNoise);
 
         MeshGenerator.GenerateTerrainMesh(settings.mapWidth, settings.mapHeight, 100, terrainMaterial, 6, terrainNoise);
         progress = .6f;

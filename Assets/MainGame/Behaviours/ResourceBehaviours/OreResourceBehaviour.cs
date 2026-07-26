@@ -3,9 +3,12 @@ using System.Data.Common;
 using Unity.Netcode;
 using UnityEngine;
 
-public class OreResourceBehaviour : BaseResourceBehaviour
+public class OreResourceBehaviour : BaseResourceBehaviour, IScatteredDecoration
 {
     [SerializeField] private string hitEffectName = "OreHit";
+
+    public GameObject decorationObject => throw new NotImplementedException();
+
     public override void takeDamage(DamageContext ctx)
     {
         float damage = ctx.damage;

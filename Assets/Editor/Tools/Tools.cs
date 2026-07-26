@@ -42,7 +42,7 @@ public class Tools : EditorWindow
             if (cachedScene != null)
                 EditorSceneManager.playModeStartScene = cachedScene;
 
-            var scenePath = "Assets/Scenes/MainMenu.unity";
+            var scenePath = "Assets/Scenes/MainMenu/MainMenu.unity";
             if (GUILayout.Button("Set start Scene: " + scenePath))
                 SetPlayModeStartScene(scenePath);
         }

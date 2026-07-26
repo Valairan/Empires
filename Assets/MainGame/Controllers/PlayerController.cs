@@ -7,7 +7,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     [Header("Components")]
     [SerializeField] public LocomotionController playerCCMotor;
     [SerializeField] public AnimationController playerAnimationController;
-    [SerializeField] public CameraController playerCamerasMotor;
+    [SerializeField] public CameraController playerCameraMotor;
     [SerializeField] public CombatController playerCombatController;
     [SerializeField] public InventoryHandler playerInventoryController;
     [SerializeField] public SkinnedMeshRenderer playerClothesParent;
@@ -34,6 +34,8 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     bool Grounded = true;
     bool Crouching;
     bool Climbing;
+
+    [HideInInspector] public bool preventInput = false;
     bool Submerged
     {
         get { return submerged; }
@@ -57,11 +59,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     [SerializeField] LayerMask WhatIsGround;
     [SerializeField] LayerMask WhatIsWater;
     [SerializeField] LayerMask WhatIsClimbable;
-    [Header("Camera States")]
-    [SerializeField] Vector3 defaultCameraPosition;
-    [SerializeField] Vector3 crouchCameraPosition;
-    [SerializeField] Vector3 climbCameraPosition;
-    [SerializeField] float cameraStateInterpolationSpeed;
+
     Vector3 velocity;
 
     public Action<Weapon> onWeaponChanged;
@@ -80,8 +78,8 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         UiController.Singleton.toggleInGameUI();
 
         playerCamera = Camera.main;
-        //playerCamerasMotor.ca = playerCamera;
-        //playerCamerasMotor.Init();
+        //playerCameraMotor.ca = playerCamera;
+        //playerCameraMotor.Init();
         playerCombatController.cameraTransform = playerCamera.transform;
         playerCCMotor.init();
         playerAnimationController.init();
@@ -95,6 +93,13 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         base.OnNetworkDespawn();
     }
 
+    public override void OnNetworkPreDespawn()
+    {
+        DetachUI();
+        DetachInputs();
+        DetachComponents();
+    }
+
     public void disableComponents()
     {
         playerCCMotor.motor.enabled = false;
@@ -103,7 +108,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInventoryController.enabled = false;
         playerCombatController.enabled = false;
         playerBuildHandler.enabled = false;
-        playerCamerasMotor.enabled = false;
+        playerCameraMotor.enabled = false;
         health.enabled = false;
     }
 
@@ -115,7 +120,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInventoryController.enabled = true;
         playerCombatController.enabled = true;
         playerBuildHandler.enabled = true;
-        playerCamerasMotor.enabled = true;
+        playerCameraMotor.enabled = true;
         health.enabled = true;
     }
     #region UI Events
@@ -158,6 +163,10 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     }
     #endregion
     #region Input Events
+    public void toggleInput()
+    {
+        preventInput = !preventInput;
+    }
     public void BindInputs()
     {
 
@@ -173,6 +182,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Sneak += crouch;
 
         playerInputHandler.Inventory += UiController.Singleton.toggleInventory;
+        playerInputHandler.Inventory += toggleInput;
 
         playerInputHandler.Equip += EquipSpecificItem;
         playerInputHandler.Stash += storeCurrentWeapon;
@@ -181,11 +191,13 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Aim += OnAim;
 
         playerInputHandler.Build += buildButtonPressed;
+        playerInputHandler.Build += toggleInput;
         playerInputHandler.Rotate += playerBuildHandler.rotateButtonPressed;
         playerInputHandler.Cancel += playerBuildHandler.CancelButtonPressed;
 
         playerInputHandler.enableInputs();
     }
+
     public void DetachInputs()
     {
 
@@ -201,6 +213,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Sneak -= crouch;
 
         playerInputHandler.Inventory -= UiController.Singleton.toggleInventory;
+        playerInputHandler.Inventory -= toggleInput;
 
         playerInputHandler.Equip -= EquipSpecificItem;
         playerInputHandler.Stash -= storeCurrentWeapon;
@@ -209,33 +222,39 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Aim -= OnAim;
 
         playerInputHandler.Build -= buildButtonPressed;
+        playerInputHandler.Build -= toggleInput;
+
         playerInputHandler.Rotate -= playerBuildHandler.rotateButtonPressed;
         playerInputHandler.Cancel -= playerBuildHandler.CancelButtonPressed;
 
         playerInputHandler.disableInputs();
     }
 
-    InputContext currentInputs = new InputContext
+    InputContext rawInputs = new InputContext();
+    InputContext smoothedInputs = new InputContext();
+    InputContext InterpolateInput(InputContext raw)
     {
-        Horizontal = 0f,
-        Vertical = 0f,
-        climbing = false,
-        crouching = false,
-        mouseHorizontal = 0f,
-        mouseVertical = 0f,
-        transformRotation = Quaternion.identity,
-        ladderNormal = Vector3.zero
-    };
-    Vector2 InterpolateMovementInput(Vector2 target)
-    {
-        float rate = movementInputAcceleration;
+        InputContext result = raw;
 
-        smoothedMoveInput = Vector2.MoveTowards(
-            smoothedMoveInput,
-            target,
-            rate * Time.deltaTime
+        result.Horizontal = Mathf.MoveTowards(
+            smoothedInputs.Horizontal,
+            raw.Horizontal,
+            interpolationFactor * Time.deltaTime
         );
-        return smoothedMoveInput;
+
+        result.Vertical = Mathf.MoveTowards(
+            smoothedInputs.Vertical,
+            raw.Vertical,
+            interpolationFactor * Time.deltaTime
+        );
+
+        result.crouchAmount = Mathf.MoveTowards(
+            smoothedInputs.crouchAmount,
+            raw.crouchAmount,
+            interpolationFactor * Time.deltaTime
+        );
+
+        return result;
     }
 
     #endregion 
@@ -265,76 +284,91 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInteractionHandler.HandleTimedInteraction(NetworkManager.Singleton.LocalClientId);
         playerInteractionHandler.interacting = interacting;
 
-        Vector2 smoothMovement = InterpolateMovementInput(MoveInput);
 
-        currentInputs = new InputContext
+
+        smoothedInputs = (!preventInput) ? InterpolateInput(new InputContext
         {
-            Horizontal = smoothMovement.x,
-            Vertical = smoothMovement.y,
-            climbing = Climbing,
-            crouching = Crouching,
+            Horizontal = MoveInput.x,
+            Vertical = MoveInput.y,
             mouseHorizontal = LookInput.x,
             mouseVertical = LookInput.y,
             transformRotation = playerCamera.transform.rotation,
-            ladderNormal = currentLadderNormal
+            ladderNormal = currentLadderNormal,
+            climbing = Climbing,
+            crouching = Crouching,
+            crouchAmount = Crouching ? 0f : 1f,
+            grounded = Grounded,
+            submerged = submerged,
+        }) : new InputContext
+        {
+            Horizontal = 0,
+            Vertical = 0,
+            mouseHorizontal = 0,
+            mouseVertical = 0,
+            transformRotation = playerCamera.transform.rotation,
+            ladderNormal = currentLadderNormal,
+            climbing = Climbing,
+            crouching = Crouching,
+            crouchAmount = Crouching ? 0f : 1f,
+            grounded = Grounded,
+            submerged = submerged,
         };
-        playerCCMotor.setInputs(ref currentInputs);
+
+        playerCCMotor.setInputs(ref smoothedInputs);
         Grounded = playerCCMotor.motor.GroundingStatus.IsStableOnGround;
 
         currentlyLookingAtPoint = playerCombatController.RaycastFromCamera();
         playerCombatController.UpdateWeapon();
         lookTargetTransform.position = currentlyLookingAtPoint;
-        //playerCamerasMotor.Tick(LookInput, Time.deltaTime);
+        //playerCameraMotor.Tick(LookInput, Time.deltaTime);
         //playerCCMotor.Move(finalMove * Time.deltaTime);
-        playerAnimationController.updateMovemementParams(MoveInput.normalized, Grounded, Climbing, Submerged, !Crouching ? 1 : 0);
+        playerAnimationController.updateMovemementParams(smoothedInputs);
 
+        playerCameraMotor.Tick();
         playerAnimationController.Tick();
+        CheckCameraTranstions();
     }
 
     public void LateUpdate()
     {
         if (!IsLocalPlayer) return;
 
-        playerCamera.transform.rotation = playerCamerasMotor.HandleRotation(playerCamera.transform.rotation, Time.deltaTime, LookInput);
-        playerCamera.transform.position = playerCamerasMotor.HandlePosition(Time.deltaTime, aiming, playerCamera.transform.rotation, playerCamera.transform.position);
-
         // Update the camera using the new staged system
-        //playerCamerasMotor.LateTick();
+        //playerCameraMotor.LateTick();
 
         // Continue updating animations
+        playerCameraMotor.LateTick();
         playerAnimationController.LateTick();
-        UpdateCameraFollowPosition();
+
+        playerCamera.transform.rotation = playerCameraMotor.HandleRotation(playerCamera.transform.rotation, Time.deltaTime, new Vector3(smoothedInputs.mouseHorizontal, smoothedInputs.mouseVertical));
+        playerCamera.transform.position = playerCameraMotor.HandlePosition(Time.deltaTime, aiming, playerCamera.transform.rotation, playerCamera.transform.position);
+
     }
 
-    Vector3 cameraShouldBeHere = Vector3.zero;
-    public void UpdateCameraFollowPosition()
-    {
-        if (Climbing)
-        {
-            playerCamerasMotor.cameraFollowTarget.localPosition = Vector3.MoveTowards(playerCamerasMotor.cameraFollowTarget.localPosition, climbCameraPosition, cameraStateInterpolationSpeed * Time.deltaTime);
-            return;
-        }
-        else if (Crouching)
-        {
-            playerCamerasMotor.cameraFollowTarget.localPosition = Vector3.MoveTowards(playerCamerasMotor.cameraFollowTarget.localPosition, crouchCameraPosition, cameraStateInterpolationSpeed * Time.deltaTime);
-            return;
-        }
-        playerCamerasMotor.cameraFollowTarget.localPosition = Vector3.MoveTowards(playerCamerasMotor.cameraFollowTarget.localPosition, defaultCameraPosition, cameraStateInterpolationSpeed * Time.deltaTime);
-    }
     void OnAim(bool pressed)
     {
         if (!IsLocalPlayer) return;
-        if (playerCombatController.currentWeapon == null) return;
-        if (!playerCombatController.currentWeapon.baseitem.canADS) return;
-        if (playerCombatController.currentWeapon.baseitem.WeaponType == WeaponType.melee || playerCombatController.currentWeapon.baseitem.WeaponType == WeaponType.throwable) return;
+        if (Climbing || !Grounded || Submerged)
+        {
+            aiming = false;
+            return;
+        }
+        aiming = pressed;
         if (pressed)
         {
+            if (playerCombatController.currentWeapon == null) return;
+            if (!playerCombatController.currentWeapon.baseitem.canADS)
+            {
+                return;
+            }
+            if (playerCombatController.currentWeapon.baseitem.WeaponType == WeaponType.melee || playerCombatController.currentWeapon.baseitem.WeaponType == WeaponType.throwable) return;
             playerCamera.fieldOfView = 60 * ((RangedWeapon)playerCombatController.currentWeapon.baseitem).scopeZoom;
             foreach (SkinnedMeshRenderer mesh in playerMeshes)
             {
                 mesh.enabled = false;
             }
             UiController.Singleton.onAim(pressed);
+
             //playerInventoryController.currentGO.transform = camera
         }
         else
@@ -345,9 +379,46 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
                 mesh.enabled = true;
             }
             UiController.Singleton.onAim(pressed);
+            //if(playerCameraMotor.currentState == playerCameraMotor.availableStates[CameraStates.Aiming]) 
         }
-        aiming = pressed;
     }
+    public void CheckCameraTranstions()
+    {
+        // 1. Enforce Restriction: Cannot aim if Climbing or Submerged
+        if ((Climbing || Submerged) && aiming)
+        {
+            aiming = false;
+        }
+
+        // 2. Determine state based on priority
+        CameraStates targetState = CameraStates.Default;
+
+        if (Submerged)
+        {
+            targetState = CameraStates.Submerged;
+        }
+        else if (Climbing)
+        {
+            targetState = CameraStates.Climbing;
+        }
+        else if (aiming)
+        {
+            // If aiming and crouching, use AimingCrouch, otherwise regular Aiming
+            targetState = Crouching ? CameraStates.AimingCrouch : CameraStates.Aiming;
+        }
+        else if (Crouching)
+        {
+            targetState = CameraStates.Crouch;
+        }
+
+        // 3. Apply Transition
+        CameraState targetStateInstance = playerCameraMotor.availableStates[targetState];
+        if (playerCameraMotor.currentState != targetStateInstance)
+        {
+            playerCameraMotor.transition(targetStateInstance);
+        }
+    }
+
 
     void OnInteract(bool pressed)
     {

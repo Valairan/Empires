@@ -88,10 +88,13 @@ public struct InputContext : INetworkSerializable
 {
     public float Horizontal;
     public float Vertical;
-    public bool climbing;
-    public bool crouching;
     public float mouseHorizontal;
     public float mouseVertical;
+    public bool climbing;
+    public bool crouching;
+    public float crouchAmount;
+    public bool grounded;
+    public bool submerged;
     public Quaternion transformRotation;
     public Vector3 ladderNormal;
 

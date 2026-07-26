@@ -26,6 +26,7 @@ MonoBehaviour:
   headDamage: 120
   bodyDamage: 90
   legDamage: 60
+  machineDamage: 0
   canADS: 1
   hasAreaEffect: 0
   weaponPrefab_rb: {fileID: 5595713960653442875, guid: 01c98fc9228089c4a9229a65fd6292db, type: 3}
@@ -37,7 +38,9 @@ MonoBehaviour:
   storedPosition: {x: -0.1083, y: 0.0042, z: -0.1115}
   storedRotation: {x: 347.04675, y: 108.236015, z: 261.61993}
   storedScale: {x: 1, y: 1, z: 1}
-  firemodes: 00000000
+  firemodes:
+  - mode: 0
+    shots: 0
   shellsize: 5
   fireRate: 50
   magSize: 5
@@ -53,3 +56,5 @@ MonoBehaviour:
   returnToCenter: 0
   recoilRecovery: 0.5
   bulletSpread: 1.02
+  muzzleflash: 
+  tracer: 

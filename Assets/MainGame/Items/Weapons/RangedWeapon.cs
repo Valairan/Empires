@@ -6,7 +6,7 @@ using UnityEngine;
 public class RangedWeapon : Weapon
 {
     [Header("Gun Properties")]
-    public FireMode[] firemodes;
+    public FireModeProperties[] firemodes;
     public float shellsize;                      // Magazine size
     public float fireRate;                     // Shots per minute (or per second if you prefer)
     public int magSize;                      // Magazine size
@@ -31,8 +31,8 @@ public class RangedWeapon : Weapon
     {
         if (firemodes == null)
         {
-            firemodes = new FireMode[1];
-            firemodes[0] = FireMode.FullAuto;
+            firemodes = new FireModeProperties[1];
+            firemodes[0].mode = FireMode.FullAuto;
         }
     }
 }
@@ -41,6 +41,13 @@ public enum FireMode
     SemiAuto,
     FullAuto,
     Burst
+}
+
+[Serializable]
+public struct FireModeProperties
+{
+    public FireMode mode;
+    public int shots;
 }
 
 [Serializable]

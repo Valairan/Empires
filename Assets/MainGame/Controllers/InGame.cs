@@ -253,6 +253,15 @@ public partial class @InGame: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Firemode"",
+                    ""type"": ""Button"",
+                    ""id"": ""5b605ad8-9bdb-464e-beb3-244dfb61df66"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -847,6 +856,17 @@ public partial class @InGame: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ed57cd61-44cb-4e00-afdd-4a1f0f26552e"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Firemode"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1452,6 +1472,7 @@ public partial class @InGame: IInputActionCollection2, IDisposable
         m_Player_CancelBuild = m_Player.FindAction("CancelBuild", throwIfNotFound: true);
         m_Player_CycleItems = m_Player.FindAction("CycleItems", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
+        m_Player_Firemode = m_Player.FindAction("Firemode", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1563,6 +1584,7 @@ public partial class @InGame: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_CancelBuild;
     private readonly InputAction m_Player_CycleItems;
     private readonly InputAction m_Player_Reload;
+    private readonly InputAction m_Player_Firemode;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1647,6 +1669,10 @@ public partial class @InGame: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
         /// <summary>
+        /// Provides access to the underlying input action "Player/Firemode".
+        /// </summary>
+        public InputAction @Firemode => m_Wrapper.m_Player_Firemode;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1726,6 +1752,9 @@ public partial class @InGame: IInputActionCollection2, IDisposable
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
+            @Firemode.started += instance.OnFiremode;
+            @Firemode.performed += instance.OnFiremode;
+            @Firemode.canceled += instance.OnFiremode;
         }
 
         /// <summary>
@@ -1791,6 +1820,9 @@ public partial class @InGame: IInputActionCollection2, IDisposable
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
+            @Firemode.started -= instance.OnFiremode;
+            @Firemode.performed -= instance.OnFiremode;
+            @Firemode.canceled -= instance.OnFiremode;
         }
 
         /// <summary>
@@ -2217,6 +2249,13 @@ public partial class @InGame: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnReload(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Firemode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFiremode(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

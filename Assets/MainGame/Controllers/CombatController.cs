@@ -63,6 +63,17 @@ public class CombatController : MonoBehaviour
             updatable.UpdateWeapon(lookingAtPoint);
         }
     }
+    public virtual void toggleFiremode()
+    {
+        if (currentWeapon != null)
+        {
+            if (currentWeapon is IWeaponUpdatable updatable)
+            {
+                updatable.SwitchFiremode();
+            }
+        }
+
+    }
 
     public virtual void OnAttackAnimationStarted()
     {

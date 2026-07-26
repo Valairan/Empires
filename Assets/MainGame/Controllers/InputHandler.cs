@@ -12,6 +12,7 @@ public class InputHandler : NetworkBehaviour
     public Action<bool> Aim;
     public Action<bool> Attack;
     public Action<bool> Reload;
+    public Action<bool> Firemode;
     public Action<bool> Interact;
     public Action<bool> Jump;
     public Action<bool> Sneak;
@@ -61,6 +62,8 @@ public class InputHandler : NetworkBehaviour
         ingameInputActions.Player.One.performed += ctx => Equip?.Invoke(0);
         ingameInputActions.Player.Two.performed += ctx => Equip?.Invoke(1);
         ingameInputActions.Player.Three.performed += ctx => Equip?.Invoke(2);
+
+        ingameInputActions.Player.Firemode.performed += ctx => Firemode?.Invoke(true);
 
         ingameInputActions.Player.Four.performed += ctx => Stash?.Invoke();
         ingameInputActions.Player.Drop.performed += ctx => Drop?.Invoke();

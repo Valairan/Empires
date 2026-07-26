@@ -26,6 +26,7 @@ MonoBehaviour:
   headDamage: 110
   bodyDamage: 85
   legDamage: 60
+  machineDamage: 0
   canADS: 1
   hasAreaEffect: 0
   weaponPrefab_rb: {fileID: 4111884394379372380, guid: d940809bc58031545813e46f91d78491, type: 3}
@@ -33,18 +34,27 @@ MonoBehaviour:
   position: {x: -0.0323, y: 0.1176, z: 0.025}
   rotation: {x: 0, y: 270, z: 270}
   scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: 0, y: 0, z: 0}
   storedPosition: {x: -0.1083, y: 0.0042, z: -0.1115}
   storedRotation: {x: 347.04675, y: 108.236015, z: 261.61993}
   storedScale: {x: 1, y: 1, z: 1}
-  firemodes: 00000000
+  firemodes:
+  - mode: 0
+    shots: 0
   shellsize: 4.5
   fireRate: 50
   magSize: 5
   pelletCount: 1
-  recoil: 1
-  bulletSpread: 1
-  recoilPattern: {x: 0, y: 0}
   scopeTexture: {fileID: 21300000, guid: 68ba859ea011ac1449ba3e08b807da1c, type: 3}
   scopeZoom: 0.273
   shotSound: {fileID: 0}
   reloadSound: {fileID: 0}
+  recoil: 1
+  recoilPattern: {x: 0, y: 0}
+  maxRecoilPitch: 20
+  maxRecoilYaw: 10
+  returnToCenter: 0
+  recoilRecovery: 8
+  bulletSpread: 1
+  muzzleflash: 
+  tracer: 

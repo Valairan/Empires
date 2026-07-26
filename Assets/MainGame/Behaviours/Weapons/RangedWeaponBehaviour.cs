@@ -15,7 +15,7 @@ public class RangedWeaponBehaviour
     public Transform muzzleStartPoint;
 
     [Header("FireMode")]
-    public FireMode currentFiremode;
+    public FireModeProperties currentFiremode;
     public int firemodeindex = 0;
     private bool isHoldingTrigger;
     private int burstShotsRemaining;
@@ -34,7 +34,7 @@ public class RangedWeaponBehaviour
 
     public void TriggerPressed(Vector3 aimPoint)
     {
-        switch (currentFiremode)
+        switch (currentFiremode.mode)
         {
             case FireMode.SemiAuto:
                 TryShoot(aimPoint);
@@ -45,7 +45,7 @@ public class RangedWeaponBehaviour
                 break;
 
             case FireMode.Burst:
-                burstShotsRemaining = 3; // configurable per weapon
+                burstShotsRemaining = currentFiremode.shots; // configurable per weapon
                 break;
         }
     }
@@ -65,10 +65,10 @@ public class RangedWeaponBehaviour
     public void UpdateWeapon(Vector3 aimPoint)
     {
 
-        if (currentFiremode == FireMode.FullAuto && isHoldingTrigger)
+        if (currentFiremode.mode == FireMode.FullAuto && isHoldingTrigger)
             TryShoot(aimPoint);
 
-        if (currentFiremode == FireMode.Burst && burstShotsRemaining > 0)
+        if (currentFiremode.mode == FireMode.Burst && burstShotsRemaining > 0)
         {
             if (Time.time - lastShotTime >= FireInterval)
             {

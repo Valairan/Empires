@@ -18,7 +18,6 @@ public partial class BuildHandler : MonoBehaviour, IInteractable, IRaycastRespon
 
     public Action<bool> locationValidityChange;
 
-    // ---- Main build functions ----
     public void setCurrentMachine(Machine machine)
     {
         currentMachine = machine;

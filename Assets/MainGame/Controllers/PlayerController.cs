@@ -175,6 +175,8 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Move += ctx => MoveInput = ctx;
         playerInputHandler.Look += ctx => LookInput = ctx;
         playerInputHandler.Attack += Attack;
+        playerInputHandler.Reload += (bool input) => Debug.Log("Tomato");
+        playerInputHandler.Firemode += toggleFiremode;
         playerInputHandler.Sneak += ctx => sneaking = ctx;
         playerInputHandler.Previous += EquipPreviousItem;
         playerInputHandler.Next += EquipNextItem;
@@ -286,7 +288,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
 
 
-        smoothedInputs = (!preventInput) ? InterpolateInput(new InputContext
+        smoothedInputs = InterpolateInput(new InputContext
         {
             Horizontal = MoveInput.x,
             Vertical = MoveInput.y,
@@ -299,21 +301,12 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
             crouchAmount = Crouching ? 0f : 1f,
             grounded = Grounded,
             submerged = submerged,
-        }) : new InputContext
+        });
+        if (preventInput)
         {
-            Horizontal = 0,
-            Vertical = 0,
-            mouseHorizontal = 0,
-            mouseVertical = 0,
-            transformRotation = playerCamera.transform.rotation,
-            ladderNormal = currentLadderNormal,
-            climbing = Climbing,
-            crouching = Crouching,
-            crouchAmount = Crouching ? 0f : 1f,
-            grounded = Grounded,
-            submerged = submerged,
-        };
-
+            smoothedInputs.mouseHorizontal = 0;
+            smoothedInputs.mouseVertical = 0;
+        }
         playerCCMotor.setInputs(ref smoothedInputs);
         Grounded = playerCCMotor.motor.GroundingStatus.IsStableOnGround;
 
@@ -488,6 +481,10 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         return baseitem;
     }
 
+    public void toggleFiremode(bool input)
+    {
+        playerCombatController.toggleFiremode();
+    }
     public void EquipSpecificItem(int index)
     {
         playerInventoryController.EquipWeapon_ServerRpc(index);

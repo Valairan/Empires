@@ -132575,13 +132575,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 240357298592585755, guid: e95b15adec5b28240906d1e02912ef0e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 3035836188175260725, guid: e95b15adec5b28240906d1e02912ef0e, type: 3}
       propertyPath: m_Name
       value: LoaderCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 3035836188175260725, guid: e95b15adec5b28240906d1e02912ef0e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6100534531649070367, guid: e95b15adec5b28240906d1e02912ef0e, type: 3}
       propertyPath: m_Pivot.x
@@ -132707,9 +132711,9 @@ SceneRoots:
   - {fileID: 1856705727}
   - {fileID: 330585546}
   - {fileID: 416621790}
+  - {fileID: 949173091691577838}
   - {fileID: 1779020982}
   - {fileID: 1622181147}
-  - {fileID: 949173091691577838}
   - {fileID: 1186202278}
   - {fileID: 423966628}
   - {fileID: 1486016098}

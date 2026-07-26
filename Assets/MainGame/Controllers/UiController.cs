@@ -56,6 +56,7 @@ public class UiController : MonoBehaviour
 
     public void init()
     {
+        
         InGame.SetActive(true);
     }
     public void setCurerntlyLookingAt(Item item, Vector3 itemPosition)
@@ -131,6 +132,9 @@ public class UiController : MonoBehaviour
     bool hasMelee = false;
     public void updateInventoryDisplay(int currentlyEquipped)
     {
+        hasRifle = false;
+        hasSidearm = false;
+        hasMelee = false;
 
         foreach (var slot in currentPlayerInventoryHandler.weaponStorage)
         {

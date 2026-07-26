@@ -82,6 +82,7 @@ public class RangedWeaponBehaviour
         firemodeindex++;
         if (firemodeindex >= baseitem.firemodes.Length) firemodeindex = 0;
         currentFiremode = baseitem.firemodes[firemodeindex];
+        //burstShotsRemaining = currentFiremode.shots;
     }
     public void Reload()
     {

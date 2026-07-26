@@ -48,10 +48,10 @@ public class Weapon : Item
 
 public enum WeaponType
 {
-    rifle,
-    sidearm,
-    melee,
-    overtheshoulder,
-    throwable,
+    rifle = 0,
+    sidearm = 1,
+    melee = 2,
+    overtheshoulder = 3,
+    throwable = 4,
 
 }

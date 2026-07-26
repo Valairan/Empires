@@ -7,7 +7,7 @@ using UnityEngine;
 public class InventoryHandler : NetworkBehaviour, IInventory
 {
 
-    public List<WeaponStorageSlot> weaponStorage = new();
+    public WeaponStorageSlot[] weaponStorage;
     [SerializeField]
     public NetworkVariable<int> currentWeaponIndex = new NetworkVariable<int>(-1);
     public int coins, timber, iron, stone;
@@ -25,6 +25,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
 
     public void init()
     {
+        weaponStorage = new WeaponStorageSlot[4];
         currentWeaponIndex.OnValueChanged += OnWeaponChangedOnServer;
     }
 
@@ -38,15 +39,11 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         nettemp.ChangeOwnership(OwnerClientId);
         NetworkObjectReference netref = nettemp;
 
-        int index = 0;
-        foreach (WeaponStorageSlot item in weaponStorage)
+        int index = ((int)weapon.WeaponType == 3) ? 0 : (int)weapon.WeaponType;
+
+        if (weaponStorage[index] != null)
         {
-            if (item.weapon.WeaponType == weapon.WeaponType)
-            {
-                dropWeapon(index);
-                break;
-            }
-            index++;
+            dropWeapon(index);
         }
 
         WeaponStorageSlot slot = new WeaponStorageSlot(weapon, inworld.gameObject, nettemp.gameObject);
@@ -73,7 +70,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         }
         inworld.NetworkObject.TrySetParent(transform);
         inworld.transform.position = Vector3.zero;
-        setWeaponToStoredPosition(weaponStorage.Count - 1);
+        setWeaponToStoredPosition(weaponStorage.Length - 1);
         StashWeaponOnAll_ClientRpc(netref);
         toggleInWorldWeaponOnAllPlayers_ClientRpc(inworld.NetworkObject);
         ClientRpcParams rpcParams = new ClientRpcParams
@@ -93,13 +90,14 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         UiController.Singleton.updateInventoryDisplay(current);
     }
 
+
     [ServerRpc]
     public void NextWeapon_ServerRpc()
     {
-        if (weaponStorage.Count == 0) return;
+        if (weaponStorage.Length == 0) return;
         int nextIndex = currentWeaponIndex.Value - 1;
         if (nextIndex < 0)
-            nextIndex = weaponStorage.Count - 1;
+            nextIndex = weaponStorage.Length - 1;
 
         stashCurrentWeapon();
         EquipWeapon(nextIndex);
@@ -108,9 +106,9 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     [ServerRpc]
     public void PreviousWeapon_ServerRpc()
     {
-        if (weaponStorage.Count == 0) return;
+        if (weaponStorage.Length == 0) return;
         int prevIndex = currentWeaponIndex.Value + 1;
-        if (prevIndex >= weaponStorage.Count)
+        if (prevIndex >= weaponStorage.Length)
             prevIndex = 0;
 
         stashCurrentWeapon();
@@ -121,15 +119,23 @@ public class InventoryHandler : NetworkBehaviour, IInventory
 
     public void dropWeapon(int weaponIndex)
     {
-        if (weaponIndex >= weaponStorage.Count || weaponIndex < 0) return;
-        if (weaponStorage.Count < 1) return;
+        if (weaponIndex >= weaponStorage.Length || weaponIndex < 0) return;
+        if (weaponStorage.Length < 1) return;
         weaponStorage[weaponIndex].onplayer_instance.GetComponent<WeaponBehaviour>().NetworkObject.Despawn(true);
         weaponStorage[weaponIndex].rb_instance.GetComponent<NetworkObject>().TrySetParent((Transform)null);
         weaponStorage[weaponIndex].rb_instance.transform.position = inWorldStorageForDiscarding.transform.position;
         toggleInWorldWeaponOnAllPlayers_ClientRpc((NetworkObjectReference)weaponStorage[weaponIndex].rb_instance.GetComponent<NetworkObject>());
         RemoveFromInventory_ClientRpc((int)weaponStorage[weaponIndex].weapon.WeaponType, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
-        weaponStorage.RemoveAt(weaponIndex);
+        weaponStorage[weaponIndex] = null;
         currentWeaponIndex.Value = weaponIndex == currentWeaponIndex.Value ? -1 : currentWeaponIndex.Value;
+        ClientRpcParams rpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        };
+        updateUIOnPickup_ClientRpc(weaponIndex, rpcParams);
 
     }
 
@@ -147,6 +153,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     [ServerRpc]
     public void EquipWeapon_ServerRpc(int index)
     {
+        if (currentWeaponIndex.Value == index) return;
         stashCurrentWeapon();
         EquipWeapon(index);
 
@@ -165,7 +172,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     public void EquipWeapon(int index)
     {
         //if (!IsServer) return;
-        if (index < 0 || index >= weaponStorage.Count) return;
+        if (index < 0 || index >= weaponStorage.Length) return;
         if (!networkObjectRoot.TryToParentNetworkObject((NetworkObjectReference)weaponStorage[index].onplayer_instance, handParent)) return;
         setWeaponToEquippedPosition(index);
         EquipWeaponOnAll_ClientRpc((NetworkObjectReference)weaponStorage[index].onplayer_instance);
@@ -207,7 +214,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     }
     public void stashCurrentWeapon()
     {
-        if (weaponStorage.Count < 1) return;
+        if (weaponStorage.Length < 1) return;
         if (currentWeaponIndex.Value < 0) return;
 
         int temp = currentWeaponIndex.Value;
@@ -284,17 +291,18 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     public void RemoveFromInventory_ClientRpc(int type, ClientRpcParams _ = default)
     {
         if (IsServer) return;
-        int index = weaponStorage.FindIndex(
-            x => (int)x.weapon.WeaponType == type
-        );
 
-        if (index >= 0)
-            weaponStorage.RemoveAt(index);
+        if (type >= 0 && type < 3)
+            weaponStorage[type] = null;
     }
     public void AddToInventory(WeaponStorageSlot slot)
     {
         if (!IsServer) return;
-        weaponStorage.Add(slot);
+        int index = ((int)slot.weapon.WeaponType == 3) ? 0 : ((int)slot.weapon.WeaponType == 4) ? 3 : (int)slot.weapon.WeaponType;
+        Debug.Log(index);
+        if (index >= weaponStorage.Length || index < 0) return;
+
+        weaponStorage[index] = slot;
 
         AddToInventoryOn_ClientRpc(slot.rb_instance.GetComponent<NetworkObject>(), slot.onplayer_instance.GetComponent<NetworkObject>(), new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { this.NetworkObject.OwnerClientId } } });
     }
@@ -306,8 +314,9 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         NetworkObject rb = NetworkManager.Singleton.SpawnManager.SpawnedObjects[inworld.NetworkObjectId];
 
         op.TryGetComponent(out WeaponBehaviour wb);
+        int index = ((int)wb.baseitem.WeaponType == 4) ? 1 : ((int)wb.baseitem.WeaponType == 5) ? 4 : (int)wb.baseitem.WeaponType;
 
-        weaponStorage.Add(new WeaponStorageSlot(wb.baseitem, rb.gameObject, op.gameObject));
+        weaponStorage[index] = new WeaponStorageSlot(wb.baseitem, rb.gameObject, op.gameObject);
 
     }
 
@@ -336,4 +345,5 @@ public class WeaponStorageSlot
         this.rb_instance = rb_instance;
         this.onplayer_instance = onplayer_instance;
     }
+
 }

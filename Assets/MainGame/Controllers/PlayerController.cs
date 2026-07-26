@@ -130,7 +130,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         UiController.Singleton.currentPlayerInventoryHandler = playerInventoryController;
 
         onWeaponChanged += UiController.Singleton.weaponChanged;
-        playerInventoryController.currentWeaponIndex.OnValueChanged += UiController.Singleton.updateInventoryDisplay;
+        //playerInventoryController.currentWeaponIndex.OnValueChanged += UiController.Singleton.updateInventoryDisplay;
         //playerInventoryController.weaponStorage.CollectionChanged += UiController.Singleton.updateInventoryDisplay;
 
         health.currentAmount.OnValueChanged += onHealthChanged;
@@ -143,7 +143,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     {
 
         onWeaponChanged -= UiController.Singleton.weaponChanged;
-        playerInventoryController.currentWeaponIndex.OnValueChanged -= UiController.Singleton.updateInventoryDisplay;
+        //playerInventoryController.currentWeaponIndex.OnValueChanged -= UiController.Singleton.updateInventoryDisplay;
         //playerInventoryController.weaponStorage.CollectionChanged -= UiController.Singleton.updateInventoryDisplay;
 
         health.currentAmount.OnValueChanged -= onHealthChanged;
@@ -593,4 +593,6 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     }
 
 }
+
+
 

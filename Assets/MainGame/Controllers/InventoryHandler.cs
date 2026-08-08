@@ -25,7 +25,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
 
     public void init()
     {
-        weaponStorage = new WeaponStorageSlot[4];
+        weaponStorage = new WeaponStorageSlot[3];
         currentWeaponIndex.OnValueChanged += OnWeaponChangedOnServer;
     }
 
@@ -40,9 +40,10 @@ public class InventoryHandler : NetworkBehaviour, IInventory
         NetworkObjectReference netref = nettemp;
 
         int index = ((int)weapon.WeaponType == 3) ? 0 : (int)weapon.WeaponType;
-
+        Debug.Log(index);
         if (weaponStorage[index] != null)
         {
+            Debug.Log(weaponStorage[index]);
             dropWeapon(index);
         }
 
@@ -173,6 +174,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     {
         //if (!IsServer) return;
         if (index < 0 || index >= weaponStorage.Length) return;
+        if (!weaponStorage[index]) return;
         if (!networkObjectRoot.TryToParentNetworkObject((NetworkObjectReference)weaponStorage[index].onplayer_instance, handParent)) return;
         setWeaponToEquippedPosition(index);
         EquipWeaponOnAll_ClientRpc((NetworkObjectReference)weaponStorage[index].onplayer_instance);
@@ -249,7 +251,7 @@ public class InventoryHandler : NetworkBehaviour, IInventory
     [ClientRpc]
     void OnWeaponChanged_ClientRpc(int previous, int current)
     {
-        if (previous <= 0)
+        if (previous >= 0)
         {
             if (weaponStorage[previous].onplayer_behaviour.TryGetComponent(out WeaponBehaviour wb))
                 wb.store();
@@ -346,4 +348,8 @@ public class WeaponStorageSlot
         this.onplayer_instance = onplayer_instance;
     }
 
+    public static implicit operator bool(WeaponStorageSlot slot)
+    {
+        return slot.weapon != null;
+    }
 }

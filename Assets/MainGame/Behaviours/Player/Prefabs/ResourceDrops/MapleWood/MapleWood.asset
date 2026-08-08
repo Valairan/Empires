@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc07ad4343687554f86c11766e29e183, type: 3}
   m_Name: MapleWood
   m_EditorClassIdentifier: Assembly-CSharp::ResourceDrop
+  ItemId: fdf0b30d-7336-477e-afb2-79cffe5d1ad9
   ItemIcon: {fileID: 21300000, guid: c71be14e76faca94489e02088a857021, type: 3}
   ItemName: Maple Wood
   ItemDescription: Used to build structures

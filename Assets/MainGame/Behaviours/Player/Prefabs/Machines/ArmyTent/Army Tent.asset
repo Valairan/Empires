@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc387b6be4786e547affad47be060354, type: 3}
   m_Name: Army Tent
   m_EditorClassIdentifier: Assembly-CSharp::Machine
+  ItemId: 33c2d34f-bfd0-4ecc-86b7-0949b17e72e7
   ItemIcon: {fileID: 21300000, guid: d992e384882ac454ebacf6c0e4defdde, type: 3}
   ItemName: Barracks
   ItemDescription: Houses upto five soldiers
@@ -21,6 +22,7 @@ MonoBehaviour:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
   machinePrefab: {fileID: 8062165046013275980, guid: 45b55455043945741a4b2f147703d69a, type: 3}
+  buildTime: 0
   preview: {fileID: 8171806277142321998, guid: 54eb16e6a237604419374fd35c2bf230, type: 3}
   canManufacture: []
   buildableLayers:
@@ -29,3 +31,12 @@ MonoBehaviour:
   blockingLayers:
     serializedVersion: 2
     m_Bits: 128
+  footprint: {x: 1, y: 1, z: 1}
+  requiresGroundSupport: 1
+  canBuildOnSlopes: 0
+  maxSlopeAngle: 30
+  isPrivate: 1
+  isBuilding: 1
+  allowExtraRotation: 0
+  canBuildOnWater: 0
+  requiresGround: 0

@@ -8,6 +8,8 @@ public class InteractionHandler : MonoBehaviour
     IInteractable currentInteractable;
     public float interactTimer = 0f;
     public bool interacting;
+    public float interactionRadius;
+    public float interactionDistance;
     public Action<bool, Vector3> onInteractableInView;
     public Action<float> onInteractionProgressChanged;
     public Action<Item, Vector3> onLookingAtChanged;
@@ -45,7 +47,7 @@ public class InteractionHandler : MonoBehaviour
 
     public void checkForRaycasts(ulong interactor, Transform startPosition)
     {
-        if (Physics.SphereCast(startPosition.position, 1f, startPosition.forward, out RaycastHit hit, 5f, whatToInclude))
+        if (Physics.SphereCast(startPosition.position, interactionRadius    , startPosition.forward, out RaycastHit hit, interactionDistance, whatToInclude))
         {
             if (hit.transform.TryGetComponent(out IRaycastResponder responder))
             {

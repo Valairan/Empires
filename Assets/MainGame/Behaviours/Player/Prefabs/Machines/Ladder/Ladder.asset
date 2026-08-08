@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc387b6be4786e547affad47be060354, type: 3}
   m_Name: Ladder
   m_EditorClassIdentifier: Assembly-CSharp::Machine
+  ItemId: a0a2965e-cebb-44e2-8be6-a685b801907f
   ItemIcon: {fileID: 21300000, guid: 2f85fca6c5e0e3d4380592db6c9576f8, type: 3}
   ItemName: Ladder
   ItemDescription: Allows you to reach high places
   stack: 0
-  Type: 0
+  Type: 1
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
   machinePrefab: {fileID: 4853250429765697466, guid: 2da9495615ea1a54c92de61a4d22dfb1, type: 3}
-  preview: {fileID: 7464898346791989989, guid: 159f349f4157dd445b470bcf18c820c8, type: 3}
+  buildTime: 0
+  preview: {fileID: 4853250429765697466, guid: 275a5ba956e541f4a9cd832f116963c4, type: 3}
   canManufacture: []
   buildableLayers:
     serializedVersion: 2
@@ -29,3 +31,12 @@ MonoBehaviour:
   blockingLayers:
     serializedVersion: 2
     m_Bits: 152
+  footprint: {x: 1, y: 1, z: 1}
+  requiresGroundSupport: 1
+  canBuildOnSlopes: 0
+  maxSlopeAngle: 30
+  isPrivate: 1
+  isBuilding: 1
+  allowExtraRotation: 0
+  canBuildOnWater: 0
+  requiresGround: 0

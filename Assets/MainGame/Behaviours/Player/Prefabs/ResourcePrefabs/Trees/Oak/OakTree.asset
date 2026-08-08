@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b4aa48abfe11b246be91599f35380ce, type: 3}
   m_Name: OakTree
   m_EditorClassIdentifier: Assembly-CSharp::TreeItem
+  ItemId: 2f0abb3e-0c00-4f4e-86f8-4a02af8346f4
   ItemIcon: {fileID: 0}
   ItemName: Oak Tree
   ItemDescription: Can be cut down
@@ -20,9 +21,6 @@ MonoBehaviour:
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  position: {x: 0, y: 0, z: 0}
-  rotation: {x: 0, y: 0, z: 0}
-  scale: {x: 0, y: 0, z: 0}
   drops:
   - {fileID: 6562819602572507190, guid: 807bb6cc1257c4040801a02141bc3644, type: 3}
   dropsHowMany: 0f000000

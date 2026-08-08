@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: Jackal
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemId: acb6109d-4bf2-41e3-942d-fb6b11db2b72
+  ItemIcon: {fileID: 21300000, guid: a50142686dabca04494eac31fc0157d5, type: 3}
+  ItemName: GRAVEMARCH
+  ItemDescription: 'Fires 30 rounds at 600 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 0
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 38
+  bodyDamage: 27
+  legDamage: 17
+  machineDamage: 0
+  canADS: 0
+  hasAreaEffect: 0
+  weaponPrefab_rb: {fileID: 803026881900182408, guid: a960aad619c6d094286ea51b0f7f8e0d, type: 3}
+  weaponPrefab_onplayer: {fileID: 7588521901446039205, guid: aa197e5ce462698469044f80ed3f7242, type: 3}
+  position: {x: -0.098, y: 0.26, z: 0.02}
+  rotation: {x: 0, y: -90, z: -90}
+  scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: -0.2944, y: 0.086, z: -0.0057}
+  storedPosition: {x: 0, y: 0.06, z: -0.1}
+  storedRotation: {x: 0, y: 90, z: -90}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes:
+  - mode: 0
+    shots: 0
+    burstDelay: 0
+  - mode: 1
+    shots: 0
+    burstDelay: 0
+  shellsize: 0
+  fireRate: 600
+  magSize: 30
+  pelletCount: 1
+  canReload: 0
+  reloadTime: 0
+  scopeTexture: {fileID: 0}
+  scopeZoom: 1
+  shotSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  recoil: 1
+  recoilPattern: {x: 0, y: 0}
+  maxRecoilPitch: 20
+  maxRecoilYaw: 10
+  returnToCenter: 0
+  recoilRecovery: 8
+  bulletSpread: 1.02
+  muzzleflash: DefaultMuzzleFlash
+  tracer: Tracer

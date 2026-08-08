@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using Unity.Collections;
+using System;
 
 public class RangedWeaponBehaviour
     : WeaponBehaviour<RangedWeapon>, IWeaponTriggerable, IWeaponUpdatable
@@ -17,14 +18,20 @@ public class RangedWeaponBehaviour
     [Header("FireMode")]
     public FireModeProperties currentFiremode;
     public int firemodeindex = 0;
+    private int ammoInGun;
+    private int ammoInPocket;
     private bool isHoldingTrigger;
     private int burstShotsRemaining;
     private float lastShotTime;
+    private float lastBurstEndTime; // Track when the last burst sequence ended
     private float FireInterval => 60f / baseitem.fireRate;
     public int currentShot = 0;
     public LayerMask raycastLayerMask;
     [Header("Audio")]
     [SerializeField] AudioSource audioSource;
+    public Action<int, int, int> onShoot;
+    public Action<int, int, int> onReload;
+    public Action<int> onSpecialToggle;
 
     public override void OnNetworkSpawn()
     {
@@ -45,7 +52,12 @@ public class RangedWeaponBehaviour
                 break;
 
             case FireMode.Burst:
-                burstShotsRemaining = currentFiremode.shots; // configurable per weapon
+                // Only allow starting a new burst if we aren't currently bursting
+                // AND enough time has passed since the last burst (burstDelay)
+                if (burstShotsRemaining <= 0 && (Time.time - lastBurstEndTime >= (currentFiremode.burstDelay / 1000f)))
+                {
+                    burstShotsRemaining = currentFiremode.shots;
+                }
                 break;
         }
     }
@@ -70,10 +82,17 @@ public class RangedWeaponBehaviour
 
         if (currentFiremode.mode == FireMode.Burst && burstShotsRemaining > 0)
         {
+            // Within a burst, we use FireInterval.
             if (Time.time - lastShotTime >= FireInterval)
             {
-                burstShotsRemaining--;
                 TryShoot(aimPoint);
+                burstShotsRemaining--;
+
+                if (burstShotsRemaining <= 0)
+                {
+                    currentShot = 0;
+                    lastBurstEndTime = Time.time; // Mark when the burst finished
+                }
             }
         }
     }
@@ -82,7 +101,9 @@ public class RangedWeaponBehaviour
         firemodeindex++;
         if (firemodeindex >= baseitem.firemodes.Length) firemodeindex = 0;
         currentFiremode = baseitem.firemodes[firemodeindex];
-        //burstShotsRemaining = currentFiremode.shots;
+        onSpecialToggle.Invoke((int)currentFiremode.mode);
+        burstShotsRemaining = 0;
+        currentShot = 0;
     }
     public void Reload()
     {
@@ -127,8 +148,9 @@ public class RangedWeaponBehaviour
             }
             currentShot++;
             tracers[i] = dir;
-            VfxService.Instance.RequestVfxServerByName(baseitem.muzzleflash, muzzleStartPoint.position, Quaternion.Euler(dir));
-            VfxService.Instance.RequestVfxServerByName(baseitem.tracer, muzzleStartPoint.position, Quaternion.Euler(dir));
+            Debug.Log(dir);
+            VfxService.Instance.RequestVfxServerByName(baseitem.muzzleflash, muzzleStartPoint.position, dir);
+            VfxService.Instance.RequestVfxServerByName(baseitem.tracer, muzzleStartPoint.position, dir);
         }
     }
 
@@ -152,9 +174,9 @@ public class RangedWeaponBehaviour
 
         float spreadAmount = (1f - accuracy) * Mathf.Clamp(currentShot, 0, 5f);
         direction += new Vector3(
-            Random.Range(-spreadAmount, spreadAmount),
-            Random.Range(-spreadAmount, spreadAmount),
-            Random.Range(-spreadAmount, spreadAmount)
+            UnityEngine.Random.Range(-spreadAmount, spreadAmount),
+            UnityEngine.Random.Range(-spreadAmount, spreadAmount),
+            UnityEngine.Random.Range(-spreadAmount, spreadAmount)
         );
         return direction.normalized;
     }
@@ -162,3 +184,4 @@ public class RangedWeaponBehaviour
 
 
 }
+

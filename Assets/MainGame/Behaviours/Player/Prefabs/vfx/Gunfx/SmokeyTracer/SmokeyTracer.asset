@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b9c7926441f0584894d091d92726513, type: 3}
+  m_Script: {fileID: 11500000, guid: 29b695e176d969845a51833247d4bb55, type: 3}
   m_Name: SmokeyTracer
   m_EditorClassIdentifier: Assembly-CSharp::Empires.VFX.VfxDefinition
-  id: 84f1b42c-aed3-4494-9f5c-4c365d9f2415
-  Prefab: {fileID: 1047125720731386502, guid: 94b5e39bd5f4db8429a6b4e96332f776, type: 3}
-  InitialPoolSize: 64
+  id: 314482dd-27c8-4c35-81a6-d6f58ea6404f
+  DisplayName: SmokeyTracer
+  Prefab: {fileID: 1047125720731386502, guid: 40ae7dbed6269e34ab32b0bcd24a14c1, type: 3}
+  InitialPoolSize: 16
   AutoReturnWhenFinished: 1
   GrowPoolOnDemand: 1

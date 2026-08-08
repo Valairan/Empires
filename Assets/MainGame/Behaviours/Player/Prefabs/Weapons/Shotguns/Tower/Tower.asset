@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: Tower
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemId: 5df781ce-f420-4253-bc2f-920c510ae3d3
+  ItemIcon: {fileID: 21300000, guid: 8d524455f4d5f0a42bd360f33bb788f9, type: 3}
+  ItemName: TOWER
+  ItemDescription: 'Fires 8 rounds at 80 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 0
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 60
+  bodyDamage: 45
+  legDamage: 25
+  machineDamage: 0
+  canADS: 0
+  hasAreaEffect: 1
+  weaponPrefab_rb: {fileID: 5667669601905457420, guid: 0dbd67300915e514d9def0fc5d0dfb9c, type: 3}
+  weaponPrefab_onplayer: {fileID: 4159927586690759151, guid: 536fbb01b3b3abd409b67800c396cafd, type: 3}
+  position: {x: -0.0194, y: 0.0611, z: 0.0284}
+  rotation: {x: 2.6939893, y: -90, z: -90}
+  scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: 0, y: 0, z: 0}
+  storedPosition: {x: -0.1083, y: 0.0042, z: -0.1115}
+  storedRotation: {x: 347.04675, y: 108.236015, z: 261.61993}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes:
+  - mode: 0
+    shots: 0
+    burstDelay: 0
+  shellsize: 2
+  fireRate: 80
+  magSize: 8
+  pelletCount: 8
+  canReload: 0
+  reloadTime: 0
+  scopeTexture: {fileID: 0}
+  scopeZoom: 0
+  shotSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  recoil: 1
+  recoilPattern: {x: 0, y: 0}
+  maxRecoilPitch: 20
+  maxRecoilYaw: 10
+  returnToCenter: 0
+  recoilRecovery: 8
+  bulletSpread: 1.02
+  muzzleflash: DefaultMuzzleFlash
+  tracer: Tracer

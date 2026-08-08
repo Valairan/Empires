@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc387b6be4786e547affad47be060354, type: 3}
   m_Name: Hospital
   m_EditorClassIdentifier: Items::Machine
-  ItemIcon: {fileID: 0}
+  ItemId: 68628125-c9c6-42d7-9370-922e84e09400
+  ItemIcon: {fileID: 21300000, guid: 444f129441134ee45809747a83750cca, type: 3}
   ItemName: HOSPITAL
   ItemDescription: Heals units over time
   stack: 0
@@ -21,6 +22,7 @@ MonoBehaviour:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
   machinePrefab: {fileID: 4131775596871940505, guid: 4cacb0375833cd04c966a6bf9341e337, type: 3}
+  buildTime: 0
   preview: {fileID: 3009973322367070326, guid: 16354b88880ddb8469a8b3304df9aa9f, type: 3}
   canManufacture: []
   buildableLayers:
@@ -29,3 +31,12 @@ MonoBehaviour:
   blockingLayers:
     serializedVersion: 2
     m_Bits: 0
+  footprint: {x: 1, y: 1, z: 1}
+  requiresGroundSupport: 1
+  canBuildOnSlopes: 0
+  maxSlopeAngle: 30
+  isPrivate: 1
+  isBuilding: 1
+  allowExtraRotation: 0
+  canBuildOnWater: 0
+  requiresGround: 0

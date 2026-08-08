@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.VisualScripting;
@@ -7,11 +8,18 @@ using UnityEngine.Animations.Rigging;
 public class AnimationController : MonoBehaviour
 {
     public Animator animator;
-    public Transform lookTargetTransform;
-    public Transform leftHandGrabTransform;
-    public Transform leftHandHintTransform;
+    [SerializeField] private Transform lookTargetTransform;
+    [SerializeField] private Transform leftHandGrabTransform;
+    [SerializeField] private Transform leftHandHintTransform;
+    [SerializeField] private Transform leftFootIKStart;
+    [SerializeField] private Transform rightFootIKStart;
+    [SerializeField] private Transform pelvisTarget;
+    [SerializeField] private Transform leftFootTarget;
+    [SerializeField] private Transform rightFootTarget;
     public RigBuilder parentRig;
     public float parentRigWeight;
+    public Rig footRig;
+    public float footRigWeight;
     public Rig meleeRig;
     public float meleeRigWeight;
     public Rig rifleRig;
@@ -30,6 +38,8 @@ public class AnimationController : MonoBehaviour
     public WeaponType currentWeapon;
     public State currentState;
     public Dictionary<states, State> availableStates = new Dictionary<states, State>();
+
+
     public void transition(State state)
     {
         if (currentState != null && currentState.GetType() == state.GetType())
@@ -56,7 +66,15 @@ public class AnimationController : MonoBehaviour
     public void Tick()
     {
         currentState.OnStateUpdate(this);
+        //FootIK();
+        RiflePositionConstraintOffset();
     }
+
+    private void RiflePositionConstraintOffset()
+    {
+        
+    }
+
     public void LateTick()
     {
         currentState.OnStateLateUpdate(this);
@@ -80,7 +98,53 @@ public class AnimationController : MonoBehaviour
         currentWeapon = weapon.baseitem.WeaponType;
 
     }
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float raycastDistance = 1.5f;
+    [SerializeField] private float footOffset = 0.1f;
+    private Vector3 currentPelvisOffset;
+    private Vector3 targetPelvisOffset;
+    private Vector3 leftFootTargetPos;
+    private Vector3 rightFootTargetPos;
+    private Vector3 originalPelvisLocalPos;
+    [SerializeField] private float pelvisSmoothSpeed = 10f;
+    [SerializeField] private float footSmoothSpeed = 15f;
+    private void FootIK()
+    {
+        float leftDistance = GetFootGroundDistance(leftFootIKStart, out Vector3 leftHitPoint);
+        float rightDistance = GetFootGroundDistance(rightFootIKStart, out Vector3 rightHitPoint);
 
+        leftFootTargetPos = Vector3.Lerp(leftFootTarget.position, leftHitPoint + Vector3.up * footOffset, Time.deltaTime * footSmoothSpeed);
+        rightFootTargetPos = Vector3.Lerp(rightFootTarget.position, rightHitPoint + Vector3.up * footOffset, Time.deltaTime * footSmoothSpeed);
+
+        leftFootTarget.position = leftFootTargetPos;
+        rightFootTarget.position = rightFootTargetPos;
+
+        float maxReach = Mathf.Min(leftDistance, rightDistance);
+
+        if (maxReach < 0f)
+        {
+            targetPelvisOffset = new Vector3(0f, maxReach, 0f);
+        }
+        else
+        {
+            targetPelvisOffset = Vector3.zero;
+        }
+    }
+    private float GetFootGroundDistance(Transform hipTransform, out Vector3 hitPoint)
+    {
+        Ray ray = new Ray(hipTransform.position, Vector3.down);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, raycastDistance, groundLayer))
+        {
+            hitPoint = hit.point;
+            // Negative value means ground is lower than hip's default reach
+            return hit.point.y - (hipTransform.position.y - (raycastDistance * 0.5f));
+        }
+
+        // Fallback if floating in air
+        hitPoint = hipTransform.position + (Vector3.down * raycastDistance * 0.5f);
+        return 0f;
+    }
     public void attack()
     {
         animator.SetTrigger("Attack");

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b4aa48abfe11b246be91599f35380ce, type: 3}
   m_Name: BirchBush
   m_EditorClassIdentifier: Assembly-CSharp::TreeItem
+  ItemId: 86515132-d886-432e-a701-32223c045e98
   ItemIcon: {fileID: 0}
   ItemName: Birch Bush
   ItemDescription: Can be cut down

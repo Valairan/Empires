@@ -4,8 +4,9 @@ public struct VegetationChunk
 {
     public Vector2Int coord;
     public Bounds bounds;
-
     public Matrix4x4[] matrices;
+    public ComputeBuffer matrixBuffer;
+
     public int[] meshes;
     public int count; // number of valid instances
 }

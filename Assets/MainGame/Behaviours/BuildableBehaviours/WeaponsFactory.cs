@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class WeaponsFactory : MachineBehaviour, IInteractable
+public class WeaponsFactory : BuildableBehaviour, IInteractable
 {
     public float InteractionDuration => 1f;
 

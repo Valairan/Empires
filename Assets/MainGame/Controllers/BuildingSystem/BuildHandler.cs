@@ -1,32 +1,59 @@
-using UnityEngine;
-using Unity.Netcode;
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEditor.Build.Content;
+using UnityEngine;
 
-public partial class BuildHandler : MonoBehaviour, IInteractable, IRaycastResponder
+[RequireComponent(typeof(InventoryHandler))]
+public partial class BuildHandler : NetworkBehaviour, IInteractable, IRaycastResponder
 {
-    [Header("Available Machines")]
-    public Machine[] allAvailableMachines;
-    Machine currentMachine;
+    private Machine currentMachine;
 
-    public bool IsValidPlacement { get; private set; }
-    public Quaternion ValidRotation { get; private set; }
+    [Header("Building Settings")]
 
-    public float InteractionDuration => throw new NotImplementedException();
+    bool IsValidPlacement
+    {
+        get { return isValidPlacement; }
+        set
+        {
+            if (value && !isValidPlacement) onBuildvalidityChange?.Invoke(value);
 
-    public List<MachineBehaviour> ThingsIveBuilt = new();
+            isValidPlacement = value;
+        }
+    }
 
-    public Action<bool> locationValidityChange;
+    public IBuildContext _buildContext;
+    public IBuildDatabaseContext _buildDatabaseContext;
+
+
+    bool isValidPlacement;
+    public Quaternion ValidRotation { get; private set; } = Quaternion.identity;
+
+    public float InteractionDuration => 0f;
+
+    private InventoryHandler inventoryHandler;
+
+    public void Init(IBuildContext ctx, IBuildDatabaseContext dbctx)
+    {
+        _buildContext = ctx;
+        _buildDatabaseContext = dbctx;
+    }
+
+    private void Awake()
+    {
+        inventoryHandler = GetComponent<InventoryHandler>();
+    }
 
     public void setCurrentMachine(Machine machine)
     {
         currentMachine = machine;
     }
 
-
-    public void buildButtonPressed()
+    public void buildButtonPressed(Vector3 rayOrigin, Vector3 rayDirection)
     {
-        // Nothing selected → open menu
+        if (!IsOwner) return;
+
+        // Nothing selected -> open menu
         if (!inPreview && currentMachine == null)
         {
             UiController.Singleton.toggleBuildMenu();
@@ -37,6 +64,7 @@ public partial class BuildHandler : MonoBehaviour, IInteractable, IRaycastRespon
         if (!inPreview)
         {
             startPreview();
+            UiController.Singleton.toggleBuildMenu();
             return;
         }
 
@@ -44,52 +72,56 @@ public partial class BuildHandler : MonoBehaviour, IInteractable, IRaycastRespon
         TryPlaceBuilding();
     }
 
-    void TryPlaceBuilding()
+    private void TryPlaceBuilding()
     {
-        if (previewGO == null)
+        if (previewGO == null || !IsValidPlacement || currentMachine == null)
             return;
 
-        if (!IsValidPlacement)
+        if (Vector3.Distance(transform.position, previewGO.transform.position) > maxBuildDistance)
             return;
 
-        if (!Place_ServerRpc(previewGO.transform.position, previewGO.transform.rotation)) return;
+        string machineId = currentMachine.ItemId;
+        if (machineId.Length < 1) return;
+        Place_ServerRpc(machineId, previewGO.transform.position, ValidRotation);
 
-        Destroy(previewGO);
-
-        previewGO = null;
-        inPreview = false;
-        currentMachine = null;
+        CancelButtonPressed();
     }
 
     [ServerRpc]
-    bool Place_ServerRpc(Vector3 pos, Quaternion rot)
+    private void Place_ServerRpc(string machineId, Vector3 pos, Quaternion rot)
     {
-        if (!IsValidPlacement) return false;
+        if (machineId.Length < 1) return;
+        GameObject targetMachinePrefab = _buildDatabaseContext.GetPrefab(machineId);
 
-        TryGetComponent(out InventoryHandler handler);
-        if (!currentMachine.cost.CanBeCrafted(handler.coins, handler.timber, handler.iron, handler.stone))
-            return false;
+        BuildableBehaviour targetBehaviour = targetMachinePrefab.GetComponent<BuildableBehaviour>();
 
-        currentMachine.cost.SubtractFromInventory(ref handler.coins, ref handler.timber, ref handler.iron, ref handler.stone);
+        if (targetBehaviour == null || targetMachinePrefab == null)
+            return;
 
-        GameObject placedBuildableGO = Instantiate(currentMachine.machinePrefab.gameObject);
-        placedBuildableGO.transform.SetPositionAndRotation(
-            new Vector3Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)),
-            rot);
+        if (Vector3.Distance(transform.position, pos) > maxBuildDistance + 1f)
+            return;
 
-        if (!placedBuildableGO.GetComponent<NetworkObject>().IsSpawned)
-            placedBuildableGO.GetComponent<NetworkObject>().Spawn();
-        ThingsIveBuilt.Add(placedBuildableGO.GetComponent<MachineBehaviour>());
-        return true;
+        if (!targetBehaviour.baseitem.cost.CanBeCrafted(inventoryHandler.coins, inventoryHandler.timber, inventoryHandler.iron, inventoryHandler.stone))
+            return;
+
+        // Authoritative grid collision check on Server
+        Vector3 snappedPos = snapToGrid(pos);
+        if (Physics.OverlapSphere(snappedPos, 0.4f, targetBehaviour.baseitem.blockingLayers).Length > 0)
+            return;
+
+        targetBehaviour.baseitem.cost.SubtractFromInventory(ref inventoryHandler.coins, ref inventoryHandler.timber, ref inventoryHandler.iron, ref inventoryHandler.stone);
+
+        GameObject placedBuildableGO = Instantiate(targetBehaviour.baseitem.machinePrefab.gameObject, snappedPos, rot);
+
+        if (placedBuildableGO.TryGetComponent(out NetworkObject netObj))
+        {
+            netObj.SpawnWithOwnership(OwnerClientId);
+        }
+
+        targetBehaviour.interactWithMe += UiController.Singleton.toggleWeaponSelector;
+
     }
 
-    public Item Interact(ulong interactor)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Item respondToRaycast(ulong interactor)
-    {
-        throw new NotImplementedException();
-    }
+    public Item Interact(ulong interactor) => throw new NotImplementedException();
+    public Item respondToRaycast(ulong interactor) => throw new NotImplementedException();
 }

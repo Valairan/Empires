@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class WorkbenchBehaviour : MachineBehaviour, IInteractable
+public class WorkbenchBehaviour : BuildableBehaviour, IInteractable
 {
     public float InteractionDuration => 1f;
 

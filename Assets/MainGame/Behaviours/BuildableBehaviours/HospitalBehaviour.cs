@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class HospitalBehaviour : MachineBehaviour
+public class HospitalBehaviour : BuildableBehaviour
 {
     public float InteractionDuration => 1f;
     public float healPerSecond = 10f;

@@ -1,7 +1,7 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
-using Unity.Collections;
+
 public partial class GameManager : NetworkBehaviour
 {
     [SerializeField] bool generateTerrain;
@@ -34,12 +34,17 @@ public partial class GameManager : NetworkBehaviour
     void Awake()
     {
         if (Singleton == null) Singleton = this;
+        AudioService.Instance = this;
+        VfxService.Instance = this;
+        InitializePools();
     }
 
     public override void OnNetworkSpawn()
     {
         sceneLoadComplete += init;
-
+        allAvailableMachinesList = new();
+        allAvailableMachines = new();
+        buildMachineDatabase();
     }
 
     public override void OnNetworkDespawn()
@@ -68,6 +73,7 @@ public partial class GameManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
+
         NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value = UnityEngine.Random.Range(0, 2000);
         if (generateTerrain) GenerateTerrain_ClientRpc(NetworkGamePropertiesStorage.Singleton.WorldGenerationSeed.Value);
         else
@@ -85,6 +91,8 @@ public partial class GameManager : NetworkBehaviour
             GameObject player = Instantiate(NetworkGamePropertiesStorage.Singleton.playerPrefab);
 
             PlayerController controller = player.GetComponent<PlayerController>();
+            BuildHandler bh = player.GetComponent<BuildHandler>();
+            bh.Init(this, this);
             //NetworkPlayerManager.Singleton.connectedPlayerControllers[client] = controller;
 
             controller.playerCCMotor.motor.SetPosition(GetSpawnPointForClient(client));
@@ -95,6 +103,9 @@ public partial class GameManager : NetworkBehaviour
             count++;
         }
         GameStarted = true;
+
+
+
         DisableLoader_ClientRpc();
 
     }

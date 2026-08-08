@@ -11,6 +11,8 @@ public class RangedWeapon : Weapon
     public float fireRate;                     // Shots per minute (or per second if you prefer)
     public int magSize;                      // Magazine size
     public int pelletCount;                  // For shotguns, number of pellets per shot
+    public bool canReload;                  // For shotguns, number of pellets per shot
+    public float reloadTime;                  // For shotguns, number of pellets per shot
     public Sprite scopeTexture;
     public float scopeZoom;
     public AudioClip shotSound;
@@ -38,8 +40,8 @@ public class RangedWeapon : Weapon
 }
 public enum FireMode
 {
-    SemiAuto,
     FullAuto,
+    SemiAuto,
     Burst
 }
 
@@ -48,6 +50,8 @@ public struct FireModeProperties
 {
     public FireMode mode;
     public int shots;
+
+    public float burstDelay;
 }
 
 [Serializable]

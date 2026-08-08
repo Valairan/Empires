@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc07ad4343687554f86c11766e29e183, type: 3}
   m_Name: PineWood
   m_EditorClassIdentifier: Assembly-CSharp::ResourceDrop
+  ItemId: 2765c5d0-0722-4de3-ac39-be35660e9455
   ItemIcon: {fileID: 21300000, guid: ca58aeba9efd8574086ce4d9c1b2a68f, type: 3}
   ItemName: Pine Wood
   ItemDescription: Used to build structures

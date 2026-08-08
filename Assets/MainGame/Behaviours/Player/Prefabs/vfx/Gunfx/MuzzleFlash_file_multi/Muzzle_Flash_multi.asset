@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b9c7926441f0584894d091d92726513, type: 3}
+  m_Script: {fileID: 11500000, guid: 29b695e176d969845a51833247d4bb55, type: 3}
   m_Name: Muzzle_Flash_multi
   m_EditorClassIdentifier: Assembly-CSharp::Empires.VFX.VfxDefinition
-  id: fbbc251e-4a0a-41dc-9d0b-93d79303044f
-  DisplayName: Muzzle_flash_multi
+  id: c61b6796-377e-445f-ab57-13b8e6955be2
+  DisplayName: 
   Prefab: {fileID: 3102942123906289198, guid: 865953735488ac840829202ad016de75, type: 3}
   InitialPoolSize: 16
   AutoReturnWhenFinished: 1

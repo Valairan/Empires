@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fe4c0c5c94d60cd469346b6fb3276652, type: 2}
+  - {fileID: 2100000, guid: ed628861f82d95446a63ec1f95c4806d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -156,7 +156,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fe4c0c5c94d60cd469346b6fb3276652, type: 2}
+  - {fileID: 2100000, guid: ed628861f82d95446a63ec1f95c4806d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -246,7 +246,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fe4c0c5c94d60cd469346b6fb3276652, type: 2}
+  - {fileID: 2100000, guid: ed628861f82d95446a63ec1f95c4806d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -336,7 +336,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fe4c0c5c94d60cd469346b6fb3276652, type: 2}
+  - {fileID: 2100000, guid: ed628861f82d95446a63ec1f95c4806d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -474,7 +474,7 @@ MonoBehaviour:
   xCoordinate: 0
   yCoordinate: 0
   health: {fileID: 2067152626688518141}
-  woodImpact: {fileID: 700772888275146017}
+  hitEffectName: TreeHit
 --- !u!114 &2067152626688518141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -585,10 +585,5 @@ PrefabInstance:
 --- !u!4 &700772888259940449 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400002, guid: d39ab699aa314a147969fd483aa55205, type: 3}
-  m_PrefabInstance: {fileID: 700772888259807971}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &700772888275146017 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 19800002, guid: d39ab699aa314a147969fd483aa55205, type: 3}
   m_PrefabInstance: {fileID: 700772888259807971}
   m_PrefabAsset: {fileID: 0}

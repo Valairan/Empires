@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: Fox
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemId: 4761851c-e8a7-42c5-9271-e7a57a7440bd
+  ItemIcon: {fileID: 21300000, guid: fc2ea4bfd8632b1409e40b2a03999e51, type: 3}
+  ItemName: GRIZZLY
+  ItemDescription: 'Fires 30 rounds at 700 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 0
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 34
+  bodyDamage: 24
+  legDamage: 14
+  machineDamage: 0
+  canADS: 0
+  hasAreaEffect: 0
+  weaponPrefab_rb: {fileID: 5583564498263241822, guid: be2f5b74254e7de4ba3ebea7719dcc17, type: 3}
+  weaponPrefab_onplayer: {fileID: 3753915171420379030, guid: 1adba6eadcfc9a44194bade5da044db9, type: 3}
+  position: {x: -0.0743, y: 0.1562, z: 0.0203}
+  rotation: {x: 0, y: -90, z: -90}
+  scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: -0.2944, y: 0.086, z: -0.0057}
+  storedPosition: {x: 0, y: 0.06, z: -0.1}
+  storedRotation: {x: 0, y: 90, z: -90}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes:
+  - mode: 1
+    shots: 0
+    burstDelay: 0
+  - mode: 2
+    shots: 5
+    burstDelay: 3
+  shellsize: 0
+  fireRate: 700
+  magSize: 30
+  pelletCount: 1
+  canReload: 0
+  reloadTime: 0
+  scopeTexture: {fileID: 0}
+  scopeZoom: 1
+  shotSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  recoil: 1
+  recoilPattern: {x: 0, y: 0}
+  maxRecoilPitch: 20
+  maxRecoilYaw: 10
+  returnToCenter: 0
+  recoilRecovery: 8
+  bulletSpread: 1.02
+  muzzleflash: DefaultMuzzleFlash
+  tracer: Tracer

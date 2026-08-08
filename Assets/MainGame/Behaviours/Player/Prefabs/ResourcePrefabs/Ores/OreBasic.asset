@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36dfdd78065f138498477839e5083f18, type: 3}
   m_Name: OreBasic
   m_EditorClassIdentifier: Items::Stone
+  ItemId: 9a875ebf-ac11-4f3f-bc16-fccb879dec8b
   ItemIcon: {fileID: 0}
   ItemName: 
   ItemDescription: 

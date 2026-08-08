@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc387b6be4786e547affad47be060354, type: 3}
   m_Name: WoodenWall
   m_EditorClassIdentifier: Assembly-CSharp::Machine
+  ItemId: da883994-733d-4dff-8084-a8869af3ac4f
   ItemIcon: {fileID: 21300000, guid: 53f9579abefe1fb45a989ea26df813bd, type: 3}
   ItemName: Wooden Wall
   ItemDescription: Keeps things out.
@@ -20,9 +21,22 @@ MonoBehaviour:
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  position: {x: 0, y: 0, z: 0}
-  rotation: {x: 0, y: 0, z: 0}
-  scale: {x: 0, y: 0, z: 0}
   machinePrefab: {fileID: 5818426843855211294, guid: 9d29b41493b743d4f8684a1791cac44c, type: 3}
-  buildable: {fileID: 1893896666057385853, guid: 9d29b41493b743d4f8684a1791cac44c, type: 3}
+  buildTime: 0
+  preview: {fileID: 0}
   canManufacture: []
+  buildableLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  blockingLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  footprint: {x: 1, y: 1, z: 1}
+  requiresGroundSupport: 1
+  canBuildOnSlopes: 0
+  maxSlopeAngle: 30
+  isPrivate: 1
+  isBuilding: 1
+  allowExtraRotation: 0
+  canBuildOnWater: 0
+  requiresGround: 0

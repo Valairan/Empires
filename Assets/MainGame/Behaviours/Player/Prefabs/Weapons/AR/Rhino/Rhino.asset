@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: Rhino
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemId: a1cb7506-1965-4e1a-b243-d70d2ad6700d
+  ItemIcon: {fileID: 21300000, guid: 8645403b30b6b3c4592b0100f66eb7a1, type: 3}
+  ItemName: RHINO
+  ItemDescription: 'Fires 100 rounds at 650 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 0
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 42
+  bodyDamage: 30
+  legDamage: 18
+  machineDamage: 0
+  canADS: 0
+  hasAreaEffect: 0
+  weaponPrefab_rb: {fileID: 947801632806932562, guid: a966e79b502757249b4e0fa9be734d20, type: 3}
+  weaponPrefab_onplayer: {fileID: 905080284561060411, guid: c1c464de5c44f9d4dae088a4268a06a7, type: 3}
+  position: {x: -0.0707, y: 0.2577, z: 0.02}
+  rotation: {x: 0, y: -90, z: -90}
+  scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: -0.2944, y: 0.086, z: -0.0057}
+  storedPosition: {x: 0, y: 0.06, z: -0.1}
+  storedRotation: {x: 0, y: 90, z: -90}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes:
+  - mode: 0
+    shots: 0
+    burstDelay: 0
+  shellsize: 12
+  fireRate: 650
+  magSize: 100
+  pelletCount: 1
+  canReload: 0
+  reloadTime: 0
+  scopeTexture: {fileID: 0}
+  scopeZoom: 1
+  shotSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  recoil: 1
+  recoilPattern: {x: 0, y: 0}
+  maxRecoilPitch: 20
+  maxRecoilYaw: 10
+  returnToCenter: 0
+  recoilRecovery: 8
+  bulletSpread: 1.02
+  muzzleflash: DefaultMuzzleFlash
+  tracer: Tracer

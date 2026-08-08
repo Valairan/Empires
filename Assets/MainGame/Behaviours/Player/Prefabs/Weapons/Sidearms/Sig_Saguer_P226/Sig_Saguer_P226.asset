@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
   m_Name: Sig_Saguer_P226
   m_EditorClassIdentifier: Items::RangedWeapon
+  ItemId: 532d4118-f7f5-48d4-a0d2-49e4f465b246
   ItemIcon: {fileID: 21300000, guid: ec19b72f7c5928d419e9dbe499ac58a0, type: 3}
   ItemName: BOA
   ItemDescription: 'Fires 12 rounds at 350 rounds per minute. '
@@ -32,7 +33,7 @@ MonoBehaviour:
   weaponPrefab_rb: {fileID: 6194705320696511564, guid: 6136745bb8ea8354cb87f114c0b44e4e, type: 3}
   weaponPrefab_onplayer: {fileID: 5910605805067927801, guid: eedc5046d081e3344a3edb0a237525f5, type: 3}
   position: {x: 0, y: 0, z: 0}
-  rotation: {x: 0, y: 270, z: 270}
+  rotation: {x: 0, y: -90, z: -90}
   scale: {x: 1, y: 1, z: 1}
   forwardOffset: {x: 0, y: 0, z: 0}
   storedPosition: {x: 0.1115, y: 0.0001, z: 0.0005}
@@ -41,10 +42,13 @@ MonoBehaviour:
   firemodes:
   - mode: 0
     shots: 0
+    burstDelay: 0
   shellsize: 0
   fireRate: 350
   magSize: 12
   pelletCount: 1
+  canReload: 0
+  reloadTime: 0
   scopeTexture: {fileID: 0}
   scopeZoom: 0
   shotSound: {fileID: 0}
@@ -56,5 +60,5 @@ MonoBehaviour:
   returnToCenter: 0
   recoilRecovery: 8
   bulletSpread: 1.02
-  muzzleflash: 
-  tracer: 
+  muzzleflash: DefaultMuzzleFlash
+  tracer: Tracer

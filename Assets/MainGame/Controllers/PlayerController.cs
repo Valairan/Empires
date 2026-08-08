@@ -154,12 +154,12 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     public void BindComponents()
     {
         playerInventoryController.currentWeaponIndex.OnValueChanged += OnWeaponUpdated;
-        playerBuildHandler.locationValidityChange += UiController.Singleton.buildableLocationValid;
+        playerBuildHandler.onBuildvalidityChange += UiController.Singleton.buildableLocationValid;
     }
     public void DetachComponents()
     {
         playerInventoryController.currentWeaponIndex.OnValueChanged -= OnWeaponUpdated;
-        playerBuildHandler.locationValidityChange -= UiController.Singleton.buildableLocationValid;
+        playerBuildHandler.onBuildvalidityChange -= UiController.Singleton.buildableLocationValid;
     }
     #endregion
     #region Input Events
@@ -175,7 +175,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Move += ctx => MoveInput = ctx;
         playerInputHandler.Look += ctx => LookInput = ctx;
         playerInputHandler.Attack += Attack;
-        playerInputHandler.Reload += (bool input) => Debug.Log("Tomato");
+        playerInputHandler.Reload += Reload;
         playerInputHandler.Firemode += toggleFiremode;
         playerInputHandler.Sneak += ctx => sneaking = ctx;
         playerInputHandler.Previous += EquipPreviousItem;
@@ -193,7 +193,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Aim += OnAim;
 
         playerInputHandler.Build += buildButtonPressed;
-        playerInputHandler.Build += toggleInput;
+        //playerInputHandler.Build += toggleInput;
         playerInputHandler.Rotate += playerBuildHandler.rotateButtonPressed;
         playerInputHandler.Cancel += playerBuildHandler.CancelButtonPressed;
 
@@ -208,6 +208,7 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerInputHandler.Move -= ctx => MoveInput = ctx;
         playerInputHandler.Look -= ctx => LookInput = ctx;
         playerInputHandler.Attack -= Attack;
+        playerInputHandler.Reload -= Reload;
         playerInputHandler.Sneak -= ctx => sneaking = ctx;
         playerInputHandler.Previous -= EquipPreviousItem;
         playerInputHandler.Next -= EquipNextItem;
@@ -448,15 +449,22 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
 
         if (newValue == -1) // No weapon equipped
         {
-            if (playerCombatController.currentWeapon != null)
-                if (playerCombatController.currentWeapon.onAttack != null)
-                    playerCombatController.currentWeapon.onAttack -= playerAnimationController.attack;
+            if (playerCombatController.currentWeapon != null) if (playerCombatController.currentWeapon.onAttack != null)
+            {
+                playerCombatController.currentWeapon.onAttack -= playerAnimationController.attack;
+                if (playerCombatController.currentWeapon is RangedWeaponBehaviour rwb)
+                {
+                    rwb.onSpecialToggle -= UiController.Singleton.UpdateFiremode;
+                    UiController.Singleton.toggleFiremode(false);
+                }
+            }
 
             playerCombatController.currentWeapon = null;
             playerAnimationController.transition(
                 playerAnimationController.availableStates[states.Unarmed]);
             return;
         }
+
 
         WeaponStorageSlot slot = playerInventoryController.weaponStorage[newValue];
         WeaponBehaviour weapon = slot.onplayer_behaviour;
@@ -466,6 +474,13 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         playerAnimationController.transition(playerAnimationController.availableStates[states.EquipState]);
 
         playerCombatController.currentWeapon.onAttack += playerAnimationController.attack;
+        if (playerCombatController.currentWeapon is RangedWeaponBehaviour rwb_temp)
+        {
+            rwb_temp.onSpecialToggle += UiController.Singleton.UpdateFiremode;
+            UiController.Singleton.UpdateFiremode((int)rwb_temp.currentFiremode.mode);
+            UiController.Singleton.toggleFiremode(true);
+        }
+
 
     }
 
@@ -473,7 +488,8 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
     public void buildButtonPressed()
     {
         if (!IsLocalPlayer) return;
-        playerBuildHandler.buildButtonPressed();
+        playerBuildHandler.buildButtonPressed(playerCamera.transform.position, playerCamera.transform.forward);
+        //if(UiController.Singleton.)
     }
 
     public Item respondToRaycast()
@@ -511,6 +527,13 @@ public class PlayerController : ItemBehaviour<Item>, IRaycastResponder, IDamagea
         if (Submerged || !Grounded) return;
         if (input) playerCombatController.OnAttackDown();
         else playerCombatController.OnAttackUp();
+
+    }
+    public void Reload(bool input)
+    {
+        if (Submerged) return;
+        if (input) playerAnimationController.animator.SetTrigger("Reload");
+        //else playerCombatController.OnAttackUp();
 
     }
 

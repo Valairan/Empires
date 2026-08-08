@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5facd57acb683fa44a471e647017f867, type: 3}
+  m_Name: Wolf
+  m_EditorClassIdentifier: Items::RangedWeapon
+  ItemId: 57a0de5a-e2a4-4901-b98b-cda1860a7d69
+  ItemIcon: {fileID: 21300000, guid: b4fca94de9b9d20448dca81ce8d54e85, type: 3}
+  ItemName: WOLF
+  ItemDescription: 'Fires 30 rounds at 600 rounds per minute. '
+  stack: 0
+  Type: 2
+  cost:
+    itemsNeededToManufacture: []
+    howManyItemsNeededToManufacture: 
+  WeaponType: 0
+  treeDamage: 0
+  oreDamage: 0
+  headDamage: 35
+  bodyDamage: 25
+  legDamage: 15
+  machineDamage: 0
+  canADS: 0
+  hasAreaEffect: 0
+  weaponPrefab_rb: {fileID: 260881921318493846, guid: fa6a30c1972c36f469a93b4365e3694b, type: 3}
+  weaponPrefab_onplayer: {fileID: 5384119829369097778, guid: e6f36dff62c61de40a00b75d280a559e, type: 3}
+  position: {x: -0.051, y: 0.29, z: 0.028}
+  rotation: {x: 0, y: -90, z: -90}
+  scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: -0.2944, y: 0.086, z: -0.0057}
+  storedPosition: {x: 0, y: 0.06, z: -0.1}
+  storedRotation: {x: 0, y: 90, z: -90}
+  storedScale: {x: 1, y: 1, z: 1}
+  firemodes:
+  - mode: 0
+    shots: 0
+    burstDelay: 0
+  - mode: 1
+    shots: 5
+    burstDelay: 0
+  shellsize: 10
+  fireRate: 600
+  magSize: 30
+  pelletCount: 1
+  canReload: 0
+  reloadTime: 0
+  scopeTexture: {fileID: 0}
+  scopeZoom: 1
+  shotSound: {fileID: 8300000, guid: ec6e72701e366284e87813dcebe9e990, type: 3}
+  reloadSound: {fileID: 0}
+  recoil: 1
+  recoilPattern: {x: 1, y: 2}
+  maxRecoilPitch: 30
+  maxRecoilYaw: 45
+  returnToCenter: 0
+  recoilRecovery: 2
+  bulletSpread: 0.995
+  muzzleflash: DefaultMuzzleFlash
+  tracer: Tracer

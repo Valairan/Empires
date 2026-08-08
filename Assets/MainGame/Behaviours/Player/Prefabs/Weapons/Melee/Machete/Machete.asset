@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05f416e9ba242a048aaf8af342f46ff9, type: 3}
   m_Name: Machete
   m_EditorClassIdentifier: Items::MeleeWeapon
+  ItemId: e6e030bf-6629-484a-acbc-4b120364a77e
   ItemIcon: {fileID: 21300000, guid: f00914fda2ab9ff42908f44c58a9c7f9, type: 3}
   ItemName: Machete
   ItemDescription: 
@@ -20,12 +21,13 @@ MonoBehaviour:
   cost:
     itemsNeededToManufacture: []
     howManyItemsNeededToManufacture: 
-  WeaponType: 0
+  WeaponType: 2
   treeDamage: 20
   oreDamage: 10
   headDamage: 40
   bodyDamage: 30
   legDamage: 10
+  machineDamage: 0
   canADS: 0
   hasAreaEffect: 0
   weaponPrefab_rb: {fileID: 6751512441510544877, guid: 163a8d21a6102b64e8ed3cdba1f9e62c, type: 3}
@@ -33,6 +35,7 @@ MonoBehaviour:
   position: {x: -0.0307, y: 0.0579, z: 0.0189}
   rotation: {x: 24.913376, y: 0, z: 180}
   scale: {x: 1, y: 1, z: 1}
+  forwardOffset: {x: 0, y: 0, z: 0}
   storedPosition: {x: 0.014, y: 0.273, z: -0.117}
   storedRotation: {x: 357.615, y: 359.96173, z: 284.67773}
   storedScale: {x: 1, y: 1, z: 1}

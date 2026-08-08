@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05f416e9ba242a048aaf8af342f46ff9, type: 3}
   m_Name: Pick
   m_EditorClassIdentifier: Items::MeleeWeapon
+  ItemId: 7a955dc3-4a5a-4fd3-b415-44281019d7b7
   ItemIcon: {fileID: 21300000, guid: a25463b61d7f85a46b6db4ddf054ce55, type: 3}
   ItemName: Pick
   ItemDescription: Best used on rocks
@@ -35,7 +36,7 @@ MonoBehaviour:
   rotation: {x: 24.913376, y: 0, z: 180}
   scale: {x: 1, y: 1, z: 1}
   forwardOffset: {x: 0, y: 0, z: 0}
-  storedPosition: {x: 0.014, y: 0.273, z: -0.117}
-  storedRotation: {x: 357.615, y: 359.96173, z: 284.67773}
+  storedPosition: {x: -0.0071, y: 0.2675, z: 0.0121}
+  storedRotation: {x: 345.53088, y: 80.10984, z: 272.49432}
   storedScale: {x: 1, y: 1, z: 1}
   swingSpeed: 1
